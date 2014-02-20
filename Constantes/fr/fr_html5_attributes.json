@@ -1,0 +1,332 @@
+{
+    "accesskey":{
+        "common usage":"",
+        "description":"accesskey vous permet de d\u00e9finir un raccourcis clavier pour invoquer un bouton ou activer le focus sur un \u00e9l\u00e9ment. Le r\u00e9sultat diff\u00e8re selon les navigateurs et appareils. Parfois le navigateur impose d'appuyer sur ALT en plus pour y acc\u00e9der. Pour mettre une alteernative digitale utiliser ce format \"m 4\"",
+        "role":"",
+        "translation":"Raccourcis clavier"
+    },
+    "action":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"a.php- mailto"
+    },
+    "align":{
+        "common usage":"",
+        "description":"Il est d\u00e9cons\u00e9ill\u00e9 de modifier le style avec des attributs HTML. align permet de choisir la position horizontale du texte.Valeurs possibles:left center ou right",
+        "role":"",
+        "translation":"Alignement"
+    },
+    "alt":{
+        "common usage":"",
+        "description":"Ecrivez le texte alternatif au cas o\u00f9 l'objet ne s'affiche pas. Un utilisateur peut tr\u00e8s bien d\u00e9sactiver des fonctionalit\u00e9s ou avoir un navigateur obsol\u00e8te",
+        "role":"",
+        "translation":"Texte alternatif"
+    },
+    "autofocus":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"autofocus"
+    },
+    "autoplay":{
+        "common usage":"",
+        "description":"Cet attribut permet de choisir si le m\u00e9dia commence sans interaction ou non.Valeurs possibles:left center ou right",
+        "role":"",
+        "translation":"Lecture Automatique"
+    },
+    "charset":{
+        "common usage":"",
+        "description":"permet de pr\u00e9ciser l'encodage du document",
+        "role":"",
+        "translation":"Encodage"
+    },
+    "checked":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"checked"
+    },
+    "class":{
+        "common usage":"",
+        "description":"Classe de l'\u00e9l\u00e9ment, qui servira ensuite \u00e0 d\u00e9finir un style commun \u00e0 tous les \u00e9l\u00e9ments appartenant \u00e0 cette classe",
+        "role":"",
+        "translation":"Classe"
+    },
+    "cols":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"Colonnes"
+    },
+    "contenteditable":{
+        "common usage":"",
+        "description":"Indique si l'\u00e9l\u00e9ment et|ou son contenu est modifiable. Utilisez inherit pour que la valeur de cet attribut soit h\u00e9rit\u00e9 de son parent(conteneur). Valeurs possibles:true-false-inherit",
+        "role":"",
+        "translation":"Contenu modifiable"
+    },
+    "contextmenu":{
+        "common usage":"",
+        "description":"Permet d'afficher des menus contextuels suppl\u00e9mentaires. Pas support\u00e9 le 01/2014",
+        "role":"",
+        "translation":"menu contextuel"
+    },
+    "controls":{
+        "common usage":"",
+        "description":"Cet attribut permet de choisir si le m\u00e9dia est accompag\u00e9 de boutons de contr\u00f4les",
+        "role":"",
+        "translation":"Contr\u00f4les"
+    },
+    "dir":{
+        "common usage":"",
+        "description":"Permet d'afficher le sens de lecture (textuelle) du contenu.\"ltr\" pour de gauche \u00e0 droite. \"rtl\" pour de droite \u00e0 gauche et \"auto\" si on ne peut pas savoir. \u00e9viter de mettre auto",
+        "role":"",
+        "translation":"sens de l\u00e9cture"
+    },
+    "draggable":{
+        "common usage":"",
+        "description":"Rend l'\u00e9l\u00e9ment d\u00e9placable. Les liens,images sont souvent d\u00e9placable par d\u00e9faut.A utiliser en combinaison avec ondragstart, ondrop, ondragover et scripts li\u00e9es.true-false-auto",
+        "role":"",
+        "translation":"D\u00e9placable"
+    },
+    "dropzone":{
+        "common usage":"",
+        "description":"Un \u00e9l\u00e9ment de ce type pourra r\u00e9ceptioner/accueuillir des donn\u00e9es transfer\u00e9es avec la m\u00e9thode \"drag and drop\". Les valeurs possibles \u00e0 la place de copy(copier) sont move(mouvoir) et link(lier), ceci change le comportement du lacher d'une donn\u00e9e. [ajouter ici les alternatives de string:text/plain]Un \u00e9l\u00e9ment de avec cet attribut devrait \u00e9galemnt avoir une valeur pour l'attribut title pour les interactions non visuelles",
+        "role":"",
+        "translation":"Zone de lacher"
+    },
+    "for":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"id De l'input associ\u00e9"
+    },
+    "height":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"40"
+    },
+    "hidden":{
+        "common usage":"",
+        "description":"Permet de cacher un \u00e9l\u00e9ment. Utiliser hidden en combination avec un script pour rendre visible une partie de la page apr\u00e8s s'\u00eatre identifi\u00e9 par exemple. Ne pas utiliser pour des parties qui pourraient \u00eatre vus avec une autre interface. Ne pas utiliser non plus pour un syst\u00eame d'onglets car les onglets ne doivent pas cacher mais mieux pr\u00e9senter.",
+        "role":"",
+        "translation":"cach\u00e9"
+    },
+    "href":{
+        "common usage":"",
+        "description":"Vous pouvez utiliser href pour indiquer l'adresse vers laquelle votre objet doit pointer",
+        "role":"",
+        "translation":"Adresse"
+    },
+    "id":{
+        "common usage":"",
+        "description":"Identifiant unique dans le document qui servira ensuite \u00e0 d\u00e9finir un style unique \u00e0 cet \u00e9l\u00e9ment. Si vous voulez utiliser plusieurs fois le m\u00eame id, alors utilisez plut\u00f4t l'attribut class",
+        "role":"",
+        "translation":"identifiant"
+    },
+    "inert":{
+        "common usage":"",
+        "description":"Un objet marqu\u00e9 par cet attribut ne r\u00e9pond pas aux clicks, n'est pas s\u00e9l\u00e9ctionable et ne r\u00e9agit pas aux commandes du navigateur(tels que la recherche de phrases par exemple). De tels \u00e9l\u00e9ments doivent \u00eatre diff\u00e9renciable avec le reste.",
+        "role":"",
+        "translation":"Sans r\u00e9action"
+    },
+    "itemid":{
+        "common usage":"",
+        "description":"Indentificateur global pour un objet micro-format",
+        "role":"",
+        "translation":"Identifiant-micro-format"
+    },
+    "itemprop":{
+        "common usage":"",
+        "description":"Noms des propri\u00e8t\u00e9s d'un objet micro-format",
+        "role":"",
+        "translation":"Propri\u00e8t\u00e9(s) micro-format"
+    },
+    "itemref":{
+        "common usage":"",
+        "description":"R\u00e9f\u00e9rence des \u00e9l\u00e9ments",
+        "role":"",
+        "translation":"micro-format de r\u00e9f\u00e9rence"
+    },
+    "itemscope":{
+        "common usage":"",
+        "description":"Utilisir pour la d\u00e9claration que l'\u00e9l\u00e9ment suit un micro-format. Valeur bool\u00e9enne",
+        "role":"",
+        "translation":"Micro-format"
+    },
+    "itemtype":{
+        "common usage":"",
+        "description":"D\u00e9clation du type de microformat avec l'URL absolue valide de d\u00e9scription de ce format. Par exemple pour d\u00e9crire une personne on utilise http://schema.org/Person",
+        "role":"",
+        "translation":"Type de micro-format"
+    },
+    "label":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"Nom du groupe"
+    },
+    "lang":{
+        "common usage":"",
+        "description":"Indique la langue utilis\u00e9. En g\u00e9n\u00e9ral on met cet attribut dans la balise html et dans toutes les autres o\u00f9 \u00e7a ne correspond plus avec cette donn\u00e9e",
+        "role":"",
+        "translation":"langue"
+    },
+    "list":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"Liste"
+    },
+    "loop":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"true"
+    },
+    "max":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"10"
+    },
+    "maxlength":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"Caract\u00e8res Maximum"
+    },
+    "method":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"post- get"
+    },
+    "min":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"0"
+    },
+    "name":{
+        "common usage":"",
+        "description":"Le nom de la variable",
+        "role":"",
+        "translation":"Nom"
+    },
+    "placeholder":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"Indication"
+    },
+    "poster":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"Image.jpg"
+    },
+    "preload":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"auto- metadata- none"
+    },
+    "rel":{
+        "common usage":"",
+        "description":"Vous pouvez utiliser rel pour indiquer le type de fichier vers lequel l'attribut href pointe Valeur possibles: text- icon - stylesheet ...A completer !l'adresse vers laquelle votre objet doit pointer",
+        "role":"",
+        "translation":"Type du document li\u00e9"
+    },
+    "required":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"required"
+    },
+    "rows":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"Lignes"
+    },
+    "selected":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"selected"
+    },
+    "size":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"Remplissez les Constantes!"
+    },
+    "spellcheck":{
+        "common usage":"",
+        "description":"Indique si le contenu doit \u00eatre lu par le navigateur pour \u00e9ventuellent le corriger- souligner les fautes en rouge ou produire un son. Cet attribut peut avoir des effets tr\u00e8s diff\u00e9rents selon la langue indiqu\u00e9 avec l'attribut langue, l'\u00e9l\u00e9ment sur lequel il est utilis\u00e9,le type d'appareil, et les dictionnaires intall\u00e9s.true-false",
+        "role":"",
+        "translation":"Correction grammaire"
+    },
+    "src":{
+        "common usage":"",
+        "description":"Mettez dans src l'adresse de votre objet. Il est cons\u00e9ill\u00e9 d'utiliser des adresses relatives(qui partent du dossier courant) plut\u00f4t que des adresses absolues. Vous pourrez ainsi aisement changer votre serveur de machine sans probl\u00e8mes",
+        "role":"",
+        "translation":"Source"
+    },
+    "step":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"2"
+    },
+    "style":{
+        "common usage":"",
+        "description":"Vous pouvez appliquer un style particuler gr\u00e2ce \u00e0 l'attribut style",
+        "role":"",
+        "translation":"Style exclusif"
+    },
+    "tabindex":{
+        "common usage":"",
+        "description":"D\u00e9fini si l'\u00e9l\u00e9ment peut porter le focus. -1 pour non 0 et plus pour oui. Si plusieurs \u00e9l\u00e9ments ont tabindex sup\u00e9rieur \u00e0 z\u00e9ro alors un ordre se cr\u00e9e et ceux qui ont la plus petite valeurs recoivent le focus en priorit\u00e9. Les \u00e9l\u00e9mnet a input et autres ont naturellement un focus \u00e0 0",
+        "role":"",
+        "translation":"Ordre de focus"
+    },
+    "target":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"_blank"
+    },
+    "title":{
+        "common usage":"",
+        "description":"La valeur de cet attribut s'affichera comme une infobulle, c'est \u00e0 dire que, apr\u00e8s compilation, quand vous aurez votre pointeur sur l'\u00e9l\u00e9ment en question, le texte s'affichera",
+        "role":"",
+        "translation":"infobulle"
+    },
+    "translate":{
+        "common usage":"",
+        "description":"Vous permet d'indiquer si le contenu de l'\u00e9l\u00e9ment devra \u00eatre traduit ou non avec le reste de la page lors d'eventuelles traductions. Ne rien mettre revient \u00e0 mettre \"yes\". yes-no",
+        "role":"",
+        "translation":"traduction"
+    },
+    "type":{
+        "common usage":"",
+        "description":"Indique le type d'information \u00e0 rentrer. Valeur possibles: text- password- email- tel- url-number- range- color- date- search- checknox- radio- submit",
+        "role":"",
+        "translation":"Type"
+    },
+    "value":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"Valeur au d\u00e9part"
+    },
+    "width":{
+        "common usage":"",
+        "description":"Remplissez les Constantes!",
+        "role":"",
+        "translation":"50"
+    }
+}

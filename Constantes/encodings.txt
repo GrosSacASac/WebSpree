@@ -1,0 +1,13 @@
+﻿#16:46 10/11/2013
+#ATTRIBUTS GENERAUX:
+# format: 
+#Texte;Pyhton codec; nom standard;  **infosuplémentaires saut de ligne
+#Mettre un #pour commenter(au début)
+#
+#Ordre SANS importance
+UTF-8(standard); utf-8;utf-8;
+UTF-16;utf-16;utf-16
+UTF-32;utf-32;utf-32
+ASCII;ascii;US-ASCII
+windows-1252(cp1252);cp1252; windows-1252
+latin-1;latin_1;latin-1

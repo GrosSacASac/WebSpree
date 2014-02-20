@@ -1,0 +1,65 @@
+Last Update of this document:
+23/01/2014
+
+Main language for code:
+Python 3 in English
+
+Main environment:
+Windows xp and later
+
+Portability:
+UniX and MacX should be able to display the app correctly.
+the main code should also work with Python 2.76+ but this may change. When I write this, Python 2 is still used a lot but it may change in the future.
+
+write idiomatic code!(pythonic):
+https://www.jeffknupp.com/writing-idiomatic-python-ebook/
+good
+if a:
+bad
+if a==True:
+
+
+naming:
+check the file in conventions to learn more
+
+docstrings:
+everything you can !(See file in Conventions for details.)
+
+indent:
+use 4 spaces ! Tip: If you are used to press TAB to indent then go into your text editor settings and enable the "automatically replace TAB by 4 spaces" There should be an option like that(if not throw away your text editor).
+
+Newline:
+\r\n or \n but who cares ? I think this can be interesting to reduce a little bit the the size of the project.
+
+GUI:
+tkinter
+
+Format to organize data in files:
+-JSON(For now it s still a custom format I created but I m working on it.)
+
+File encoding:
+UTF-8(without BOM), no exception, period. Have a look at
+http://www.utf8everywhere.org/
+
+Documentation format:
+raw txt for text
+HTML for anything that requires more than just text or that should serve the end-user
+jpg for images
+mp3, flac for sound
+mp4 ,[insert other open format for videos here] for videos
+try to not use other formats, HTML is very easy and with the app it s easier. If you can't then you should make a folder with text files and images and later do html with it.
+
+What should I do:
+Check the To_do.html file in Documentation.
+
+Builds:
+later
+
+Bug-tracking:
+coming
+
+Test driven developpement:
+coming
+
+Distributed Version control:
+For now, everything is on my hard drive. I think git and github can be great for extension. later

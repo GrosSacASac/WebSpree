@@ -1,0 +1,596 @@
+{
+    "a":{
+        "common usage":"Utilis\u00e9 pour faciliter la navigation.",
+        "description":"Ancre ou lien",
+        "role":"",
+        "translation":"Ancre"
+    },
+    "abbr":{
+        "common usage":"",
+        "description":"Abr\u00e9viation ou acronyme. En g\u00e9n\u00e9ral on met le mot complet dans l'attribut title(Infobulle)",
+        "role":"",
+        "translation":"Abr\u00e9viation"
+    },
+    "address":{
+        "common usage":"",
+        "description":"Une s\u00e9ction avec des informations de contacts",
+        "role":"",
+        "translation":"Adresse"
+    },
+    "area":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"aire"
+    },
+    "article":{
+        "common usage":"",
+        "description":"D\u00e9finie une partie qui pourrait se pr\u00e9senter de fa\u00e7on ind\u00e9pendante par rapport au reste du contenu",
+        "role":"",
+        "translation":"Article"
+    },
+    "aside":{
+        "common usage":"",
+        "description":"D\u00e9finie une partie qui pourrait \u00eatre absente sans que le contenu perde sons sens",
+        "role":"",
+        "translation":"Secondaire"
+    },
+    "audio":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Audio"
+    },
+    "b":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Gras"
+    },
+    "base":{
+        "common usage":"",
+        "description":"D\u00e9finit la base URL pour tous les URL relatifs de la page",
+        "role":"",
+        "translation":"Racine URL"
+    },
+    "blockquote":{
+        "common usage":"",
+        "description":"Indique que le contenu est cit\u00e9 depuis une autre source",
+        "role":"",
+        "translation":"Citation externe"
+    },
+    "body":{
+        "common usage":"",
+        "description":"Mettez ici le contenu de votre page",
+        "role":"",
+        "translation":"corps"
+    },
+    "button":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Bouton"
+    },
+    "canvas":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Espace graphique"
+    },
+    "caption":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Description tableau"
+    },
+    "cite":{
+        "common usage":"",
+        "description":"Indique que le texte est le titre d'un livre, film ou autre travail",
+        "role":"",
+        "translation":"Titre d'oeuvre"
+    },
+    "code":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Code"
+    },
+    "col":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Colonne"
+    },
+    "colgroup":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Groupe colonne"
+    },
+    "datalist":{
+        "common usage":"",
+        "description":"Remplir une liste de donn\u00e9es et lui donner un identifiant vous permet par la suite de faire pointer une saisi dessus avec l'attribut list.Cette liste doit \u00eatre rempli uniquement avec des enfant option",
+        "role":"",
+        "translation":"Liste de donn\u00e9es"
+    },
+    "dd":{
+        "common usage":"",
+        "description":"D\u00e9finition du terme qui le pr\u00e9c\u00e8de",
+        "role":"",
+        "translation":"D\u00e9finition"
+    },
+    "del":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Contenu enlev\u00e9"
+    },
+    "details":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"details"
+    },
+    "div":{
+        "common usage":"",
+        "description":"Permet d'organiser le contenu dans des divisions. Ces divisions sont faites pour \u00eatre utils\u00e9es au sein d'autres \u00e9l\u00e9ments structurels tels que header main etc et n'ont aucune signification particuli\u00e8re",
+        "role":"",
+        "translation":"Division"
+    },
+    "dl":{
+        "common usage":"",
+        "description":"Une liste de d\u00e9finitions dont chacune se d\u00e9compose en couple terme/d\u00e9finition",
+        "role":"",
+        "translation":"Liste de d\u00e9finitions"
+    },
+    "dt":{
+        "common usage":"",
+        "description":"terme \u00e0 d\u00e9finir dans la liste \u00e0 d\u00e9finition",
+        "role":"",
+        "translation":"Terme"
+    },
+    "em":{
+        "common usage":"",
+        "description":"Permet de faire resortir du texte pour qu'on y pr\u00eate une intention plus forte que le reste. Pour les aveugles, ce bout de texte sera plus accentu\u00e9 lors de la l\u00e9cture",
+        "role":"",
+        "translation":"En emphase"
+    },
+    "embed":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Application externe"
+    },
+    "fieldset":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Division formulaire"
+    },
+    "figcaption":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"D\u00e9scription de figure"
+    },
+    "figure":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Figure"
+    },
+    "footer":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Pied de page"
+    },
+    "form":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Formulaire"
+    },
+    "h1":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Titre 1"
+    },
+    "h2":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Titre 2"
+    },
+    "h3":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Titre 3"
+    },
+    "h4":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Titre 4"
+    },
+    "h5":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Titre 5"
+    },
+    "h6":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Titre 6"
+    },
+    "head":{
+        "common usage":"",
+        "description":"Mettez ici les informations qui concernent le document lui m\u00eame. Ces informations sont appel\u00e9s m\u00e9tadonn\u00e9es et incluent le plus souvent des liens ou des d\u00e9finitions sur les scripts, feuilles de style,langues et encodages",
+        "role":"",
+        "translation":"en-t\u00eate"
+    },
+    "header":{
+        "common usage":"",
+        "description":"D\u00e9finie l'ent\u00eate de la page. Souvent il contient un logo, le titre du site et quelques liens de navigations internes",
+        "role":"",
+        "translation":"En-t\u00eate"
+    },
+    "hr":{
+        "common usage":"",
+        "description":"S\u00e9pare deux \u00e9l\u00e9ments. On peut l'utiliser entre 2 articles par exemple",
+        "role":"",
+        "translation":"S\u00e9parateur"
+    },
+    "html":{
+        "common usage":"",
+        "description":"Votre document html doit se trouver entre ces balises",
+        "role":"",
+        "translation":"HTML"
+    },
+    "i":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Italique"
+    },
+    "iframe":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Rectangle multim\u00e9dia"
+    },
+    "img":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Image"
+    },
+    "input":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Saisie"
+    },
+    "ins":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Contenu ajout\u00e9"
+    },
+    "kbd":{
+        "common usage":"",
+        "description":"Represents user input , often from the keyboard, but not necessarily",
+        "role":"",
+        "translation":"Entr\u00e9e utilisateur"
+    },
+    "keygen":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"G\u00e9n\u00e9rateur de Clef"
+    },
+    "label":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Explication de Saisie"
+    },
+    "legend":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Titre de division de F."
+    },
+    "li":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"El\u00e9ment de liste"
+    },
+    "link":{
+        "common usage":"",
+        "description":"Indiquez ici tout document externe associ\u00e9 e.g Feuilles de style, Javascript ...",
+        "role":"",
+        "translation":"Document li\u00e9"
+    },
+    "main":{
+        "common usage":"",
+        "description":"Le principal contenu. Il ne peut que y avoir un seul main par document",
+        "role":"",
+        "translation":"Principal"
+    },
+    "map":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Map"
+    },
+    "mark":{
+        "common usage":"",
+        "description":"dans les citations on peut rajouter un mot pour la compr\u00e9hension avec mark pour que le l\u00e9cteur et le navigateur comprenne que \u00e7a a \u00e9t\u00e9 ajout\u00e9",
+        "role":"",
+        "translation":"Contenu ajout\u00e9"
+    },
+    "math":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Formule math\u00e9matique"
+    },
+    "menu":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Menu"
+    },
+    "menuitem":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"El\u00e9ment menu"
+    },
+    "meta":{
+        "common usage":"",
+        "description":"Informations sur le document",
+        "role":"",
+        "translation":"M\u00e9ta-Informations"
+    },
+    "meter":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"M\u00e8tre"
+    },
+    "nav":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Navigation"
+    },
+    "noscript":{
+        "common usage":"",
+        "description":"Le contenu affich\u00e9 si les scripts sont d\u00e9sactiv\u00e9s",
+        "role":"",
+        "translation":"Non-Script"
+    },
+    "object":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Objet"
+    },
+    "ol":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Liste ordonn\u00e9"
+    },
+    "optgroup":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Groupe d'options"
+    },
+    "option":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Option"
+    },
+    "output":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"R\u00e9sultat calcul"
+    },
+    "p":{
+        "common usage":"",
+        "description":"On utilise p pour ins\u00e9rer du contenu de type texte. A chaque nouveau p, il y aura un retour \u00e0 la ligne",
+        "role":"",
+        "translation":"Paragraphe"
+    },
+    "param":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Param\u00e8tres d'objet"
+    },
+    "pre":{
+        "common usage":"",
+        "description":"Indique que le contenu est d\u00e9j\u00e0 format\u00e9. Les sauts de lignes , espace et indentations qui sont normalement tronsform\u00e9s en un unique \u00e9spacement seront ici pr\u00e9s\u00e8rv\u00e9s",
+        "role":"",
+        "translation":"Pr\u00e9format\u00e9"
+    },
+    "progress":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Progression"
+    },
+    "q":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Citation"
+    },
+    "s":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Information obsol\u00e8te"
+    },
+    "samp":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Sortie programme"
+    },
+    "script":{
+        "common usage":"",
+        "description":"Un script",
+        "role":"",
+        "translation":"Script ou Programme"
+    },
+    "section":{
+        "common usage":"",
+        "description":"D\u00e9finie une s\u00e9ction du document",
+        "role":"",
+        "translation":"Section"
+    },
+    "select":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Liste d\u00e9roulante"
+    },
+    "small":{
+        "common usage":"",
+        "description":"Indique un texte, qui \u00e0 l'oppos\u00e9 de strong ,n'est pas tr\u00e8s important",
+        "role":"",
+        "translation":"Petit"
+    },
+    "source":{
+        "common usage":"",
+        "description":"Donne la possibilit\u00e9 de mettre de multiples sources dans une vid\u00e9o ou un audio pour que tous les navigateurs puissent afficher le m\u00e9dia.(Les diff\u00e9rents navigateurs ne lisent pas tous le m\u00eame format)",
+        "role":"",
+        "translation":"Sources"
+    },
+    "span":{
+        "common usage":"",
+        "description":"Le texte avec aucune signification particuli\u00e8re",
+        "role":"",
+        "translation":"Texte simple"
+    },
+    "strong":{
+        "common usage":"",
+        "description":"Indique un texte important",
+        "role":"",
+        "translation":"Important"
+    },
+    "summary":{
+        "common usage":"",
+        "description":"Enfant de details",
+        "role":"",
+        "translation":"Sommaire"
+    },
+    "svg":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Image vectorielle"
+    },
+    "table":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Tableau"
+    },
+    "tbody":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Groupe de Lignes de donn\u00e9es"
+    },
+    "td":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Donn\u00e9e tableau"
+    },
+    "textarea":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Aire de Saisie"
+    },
+    "tfoot":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Groupe de Lignes de r\u00e9sum\u00e9es"
+    },
+    "th":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Donn\u00e9e-titre tableau"
+    },
+    "thead":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Groupe de Lignes de d\u00e9scriptions"
+    },
+    "time":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Temps"
+    },
+    "title":{
+        "common usage":"",
+        "description":"Ce titre s'affichera dans l'onglet \u00e0 droite de l'ic\u00f4ne de votre page",
+        "role":"",
+        "translation":"Titre"
+    },
+    "tr":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Ligne tableau"
+    },
+    "track":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Sous-titres"
+    },
+    "ul":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Liste non-ordonn\u00e9"
+    },
+    "var":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Variable"
+    },
+    "video":{
+        "common usage":"",
+        "description":"Il n'y a pas encore d'aide ici",
+        "role":"",
+        "translation":"Vid\u00e9o"
+    },
+    "wbr":{
+        "common usage":"",
+        "description":"Represents a line break opportunity, that is a suggested point for wrapping text in order to improve readability of text split on several lines.",
+        "role":"",
+        "translation":"Opportunit\u00e9 de passage \u00e0 la ligne"
+    }
+}

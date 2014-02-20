@@ -1,0 +1,23 @@
+[
+    "class",
+    "id",
+    "style",
+    "title",
+    "hidden",
+    "accesskey",
+    "contenteditable",
+    "contextmenu",
+    "dir",
+    "draggable",
+    "dropzone",
+    "inert",
+    "lang",
+    "spellcheck",
+    "tabindex",
+    "translate",
+    "itemscope",
+    "itemtype",
+    "itemid",
+    "itemprop",
+    "itemref"
+]

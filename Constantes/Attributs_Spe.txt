@@ -1,0 +1,43 @@
+#16:15 13/12/2013
+#Liens entres les attributs spécifiques et leurs valeurs: sa traduction sa valeur par défaut et son aide
+# format: 
+#Attribut;traduction,valeur par défaut,aide; info sup** à la ligne
+#nouveau format
+#
+#Mettre un #pour commenter(au début)
+#
+#Ordre SANS importance
+href;Adresse,http://www.w3.org,Vous pouvez utiliser href pour indiquer l'adresse vers laquelle votre objet doit pointer;
+src;Source,AutresMedias/a.mp4,Mettez dans src l'adresse de votre objet. Il est conséillé d'utiliser des adresses relatives(qui partent du dossier courant) plutôt que des adresses absolues. Vous pourrez ainsi aisement changer votre serveur de machine sans problèmes
+alt;Texte alternatif,description,Ecrivez le texte alternatif au cas où l'objet ne s'affiche pas. Un utilisateur peut très bien désactiver des fonctionalités ou avoir un navigateur obsolète
+align;Alignement,left,Il est déconséillé de modifier le style avec des attributs HTML. align permet de choisir la position horizontale du texte.Valeurs possibles:left center ou right
+autoplay;Lecture Automatique,false,Cet attribut permet de choisir si le média commence sans interaction ou non.Valeurs possibles:left center ou right
+controls;Contrôles,false,Cet attribut permet de choisir si le média est accompagé de boutons de contrôles
+type;Type,text,Indique le type d'information à rentrer. Valeur possibles: text- password- email- tel- url-number- range- color- date- search- checknox- radio- submit;Envoi,remplir ici,- image- reset- buttoniput
+name;Nom,banane,Le nom de la variable
+list;Liste;IDdeListe;Permet de lier un input avec une liste de données(datalist)
+for;id De l'input associé 
+size;
+maxlength;Caractères Maximum,
+placeholder;Indication
+value;Valeur au départ
+rows;Lignes
+cols;Colonnes
+min;0
+max;10
+step;2
+checked;checked
+selected;selected
+label;Nom du groupe
+autofocus;autofocus
+required;required
+method;post- get
+action;a.php- mailto
+loop;true
+width;50
+height;40
+preload;auto- metadata- none
+poster;Image.jpg 
+target;_blank;
+rel;Type du document lié,icon,Vous pouvez utiliser rel pour indiquer le type de fichier vers lequel l'attribut href pointe Valeur possibles: text- icon - stylesheet ...A completer !l'adresse vers laquelle votre objet doit pointer;
+charset;Encodage,utf-8,permet de préciser l'encodage du document

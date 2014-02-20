@@ -1,0 +1,20 @@
+﻿source:
+http://www.python.org/dev/peps/pep-0257/ and me
+PEP 257 -- Docstring Conventions 
+
+def pretty_much_anything():
+    """One sentence to describe it, returns True.
+
+    blankline after first <summary line>
+    detailed description here ...
+    It is best to list each argument on a separate line
+    
+    The docstring for a function or method should summarize
+    its behavior and document its arguments, return value(s),
+    side effects, exceptions raised, and restrictions on when
+    it can be called (all if applicable). Optional arguments should be indicated.
+    It should be documented whether keyword arguments are part of the interface.
+    ..."""
+    #code
+    ...
+    return True

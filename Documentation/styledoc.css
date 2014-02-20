@@ -1,0 +1,108 @@
+html, pre
+{
+
+  font-size:1.1em;
+  color:black;
+  background-color:#eedeee;
+  font-family:Sylfaen;
+  position: relative;
+}
+
+body
+{
+counter-reset:patch+7;
+}
+main
+{
+border-left: 2px solid #444;
+margin-left:18em;
+display:block;/*Pour EI*/
+padding-left:1.5em;
+padding-right:2.0em;
+}
+
+nav
+{
+width:18em;
+float:left;
+margin-right:1em;
+}
+
+h1
+{
+text-align:center;
+text-decoration:underline;
+font-size:2.1em;
+}
+
+nav li
+{
+list-style-type:none;
+}
+
+
+nav h1
+{
+font-size:1.4em;
+text-decoration:none;
+}
+
+#patchnotes ol li ul li ol li code
+{
+font-style:normal;
+}
+
+a
+{
+font-size:1.2em;
+display:block;
+text-decoration:none;
+color:#111177;
+background-color:#eedeee;
+}
+
+a:hover,a:active
+{
+text-decoration:underline;
+color:#eedeee;
+background-color:black;
+}
+
+.extern:after
+{
+content:"(lien externe) "url(../Images/docstyle/link2.jpg);
+font-style:italic;
+}
+
+#patchnotes h2:before
+{
+content:"Patch# "counter(patch,decimal)" Version: ";
+}
+
+#patchnotes>ol>li>h2
+{
+counter-increment:patch -1;
+}
+
+#patchnotes>ol>li
+{
+list-style-type:none;
+}
+
+#patchnotes>ol>li>ul>li
+{
+font-family:DejaVu Sans;
+color:green;
+list-style-type:square;
+}
+
+#patchnotes>ol>li>ul>li>ul>li
+{
+list-style-type:disc;
+font-style:italic;
+
+}#patchnotes>ol>li>ul>li>ol>li
+{
+list-style-type:upper-roman;
+font-style:italic;
+}

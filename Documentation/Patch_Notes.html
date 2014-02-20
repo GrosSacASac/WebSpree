@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="styledoc.css" />
+        <link rel="icon" href="../Images/icos/HTML5_Badge_32.gif" type="image/gif">
+        <script type="text/javascript" src="1.js"></script>
+        <title>
+            Patch_Notes
+        </title>
+    </head>
+    <body>
+        <header>
+        </header>
+        <nav>
+            <h1>Liens internes</h1>
+            <ul>
+            <li><a href="Lisez_moi.html">
+                Lisez_moi
+            </a></li>
+            <li><a href="Version.html">
+                Version
+            </a></li>
+            <li><a href="Patch_Notes.html">
+                Notes de mise à jour
+            </a></li>
+            <li><a href="To_do.html">
+                To-do
+            </a></li>
+            </ul>
+            
+            <form accept-charset="UTF-8" name="form">
+                <input type="text" onChange="validate(this, 18, 99);" name="number"/>
+            </form>
+            <A HREF="javascript:void(document.form.submit())">
+Click here to submit</A>
+        </nav>
+        <main>
+            <article id="patchnotes" contenteditable="false" lang="en-us">
+            <h1>Patch Notes</h1>
+            <ol>
+                <li><h2>1.2.3.4</h2>
+                <ul>
+                    <li>Save stuff is now handled by the text object itself</li>
+                    <li>New options:<ul>
+                        <li>"license_accepted_and_read":False,</li>
+                        <li>"language":"fr",</li>
+                        <li>"footer_bonus":False</li>
+                        <li>"html_version":5.0</li></ul></li>
+                    <li>Other minor changes</li>
+                    <li>JavaScript Icon added</li>
+                    <li>Deleted folder AutresMedias</li>
+                    <li>UI better use of space</li>
+                    <li>New Button for more help.</li>
+                    <li>Voids elements are now handled the right way</li>
+                    <li>Deleted some useless test files</li>
+                    <li>Created new classes: Text_ and Text_HTML</li>
+                    <li>Optimized intern data</li>
+                    <li>New function: text_to_mathML</li>
+                    <li>New files in Consatntes<ul>
+                        <li>html5_elements.json</li>
+                        <li>html5_attributes.json</li>
+                        <li>html5_general_attributes.json(this is a list, the description is in html5_attributes.json.</li>
+                        <li>New folder fr<ul>
+                            <li>fr_html5_attributes.json</li>
+                            <li>fr_html5_elements.json</li>
+                        </ul></li>
+                    </ul></li>
+                </ul></li>
+                <li><h2>1.2.3.3</h2>
+                <ul>
+                    <li>New class Options. Options is a class designed to read, add and change informations in a JSON file with a dictionnary in it.
+
+                    The entire object works even if the file is missing since it re-creates it.
+                    If present it must respect the JSON format: e.g. keys must be strings and so on.
+                    If something corrupted the file, just destroy the file or call read_file method to remake it.    with ease.translate_HTML_level is the first options stored there. Now you can keep this option alive throughout you multiple sessions since it is stored and read in a file. If it s accidentally removed it will be recreated automatically with it s default values during the next call. All you have to do to use this class is:<ol><li>
+                        to instantiate the class</li>
+                        <li><code>self.py_variable=self.options_file_object.read_file("your_key")</code> to give your variable the value from the last time or the default if it wasn t created yet.
+                        </li><li><code>self.options_file_object.add_option_to_file("your_key",the_new_value)</code> to store in options.json the new value of the option each time you change it</li></ol>
+                    </li><li>The main reason I created this class is to add more options with just 3 lines of code in the future without
+                    worrying if the final user is touching this file or not</li>
+                    <li>New option available: Replace special characters</li>
+                    <li>New option available: Indent_size 4-3 or 2 spaces</li>
+                    <li>The mac X menu-bar is now as excepted</li>
+                    <li>Bugs fixed</li>
+                    <li>New specifications documentss. Technical and functional are split.</li>
+                    <li>Fresh data injected in Constantes</li>
+                    <li>Zoom in and out with control+/-/0</li>
+                    <li>TABS are hotkey-binded. Try it with alt+ h/c/t</li>
+                    <li>cool new stuff</li>
+                </ul></li>
+                <li>
+                <h2>1.2.3.2</h2>
+                <ul>
+                    <li>New file html5_elements.txt Now the element description is sharper:
+                        <ol>
+                            <li>function -which function does the element belong to; <del>use ---Function group name before the element</del></li>
+                            <li>element -the name of the element in lowercase;</li>
+                            <li>HTML version -since when it this element there ? e&gt;2 or e&gt;4? [++ is it deprecated ? 5&gt;e&gt;2 (since 2 until 5)]</li>
+                            <li>void element or not void- e.g. (img,source and meta are void elements) </li>
+                            <li>must attributes (e.g. src= and alt= for img element)</li>
+                            <li>specific attributes and not must</li>
+                            <li>standard parent</li>
+                        </ol>
+                    </li>
+                    <li>HTML and CSS tabs have now an ico</li>
+                    <li>Fixed minor bugs</li>
+                    <li>New folder in constantes: Fr</li>
+                    <li>The languages are now independent from the rest</li>
+                    <li>New function _(str) to see exactly where a language translation will be needed</li>
+                    <li>the code will be categorized in a MVC way:
+                        <ul>
+                            <li>Core functions(Model)</li>
+                            <li>GUI (e.g. tkinter) functions (The visual thing changes)(View)</li>
+                            <li>GUI handlers (The user cliced or used keybord)(Controller)</li>
+                            <li>Constants</li>
+                            <li>GUI decorations</li>
+                        </ul>
+                    </li>
+                    <li>The GUI should be a class with methods,the methods will take the necessary arguments from the core</li>
+                    <li>For each GUI a new class should be created with the exact same methods names. In future version the GUI will be chosen at the beginning e.i it will create an instance of the chosen GUI</li>
+                    <li>In addition each GUI can have additional methods in it</li>
+                    <li>New option file options.txt, in Cache with the GUI choice in it.It will allow to store user option from one session to another</li>
+                    <li>The documentation has a new css style document.</li>
+                </ul></li><li>
+                <h2>1.2.3.1</h2>
+                <ul>
+                    <li>New binary option compact or extend windows</li>
+                    <li>New Tabs: HTML and CSS</li>
+                    <li>Consants are and will be written in CAPS</li>
+                    <li>New menu management</li>
+                    <li>New file menu.py, in Vieux Fichiers with the old menu management in it</li>
+                    <li>html5 custom has been split in two files: entities.py in Constantes: the exact copy of the original
+                    and html5custom: imports the original and creates a new dicts</li>
+                </ul></li><li>
+                <h2>1.2.3.0</h2>
+                <ul>
+                    <li>The code is now written in English
+                        <ul>
+                            <li>New global name for the application: WebSpree</li>
+                            <li>New file anciensnoms in VieuxFichiers</li>
+                            <li>constantes.py has been splitted in two</li>
+                            <li>New file in Conventions Naming.txt</li>
+                        </ul>
+                    </li>
+                    <li>New folder: Conventions</li>
+                    <li>New file tools_for_me.py</li>
+                    <li>New function int tools_for_me.py: Massive renames</li>
+                    <li>It is now possible to restart a new file without restarting the entire app</li>
+                    <li>At start it is possible to chose the encoding</li>
+                    <li>The app tries to sniff the encoding when opening a file</li>
+                </ul></li><li>
+                <h2>1.2.2.1</h2>
+                <ul>
+                    <li>Files are now encoded as utf-8 file if possible</li>
+                    <li>New function: For void elements like link, meta or img</li>
+                </ul>
+            </li></ol>
+            </article>
+        </main>
+        
+    </body>
+</html>
