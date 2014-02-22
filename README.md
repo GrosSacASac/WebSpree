@@ -8,9 +8,13 @@ Learn Web-related technologies
 
 #How to run the sofware ?
   Download the entire repository.
+  
   Make sure you have Python on your machine
+  
   Run WebSpree.py or WebSpree_beta.py
+  
   ???
+  
   Profit !!!
   
 #Updates
