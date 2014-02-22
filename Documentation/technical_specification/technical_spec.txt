@@ -1,8 +1,4 @@
 Last Update of this document:
-23/01/2014
+22/02/2014
 
-1 Class in 1 File if possible
-
-Tools should be classes
-
-Structured Data should be json files or sql
+It s dark here

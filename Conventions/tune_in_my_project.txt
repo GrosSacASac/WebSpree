@@ -1,5 +1,6 @@
+tune_in_my_project.txt
 Last Update of this document:
-23/01/2014
+22/02/2014
 
 Main language for code:
 Python 3 in English
@@ -53,13 +54,13 @@ What should I do:
 Check the To_do.html file in Documentation.
 
 Builds:
-later
+We need an easy freezing tool : freeze("WebSpree.py") --> WebSpree.exe
+
+Distributed Version control:
+GitHub !
 
 Bug-tracking:
 coming
 
 Test driven developpement:
 coming
-
-Distributed Version control:
-For now, everything is on my hard drive. I think git and github can be great for extension. later

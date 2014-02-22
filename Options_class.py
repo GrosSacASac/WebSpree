@@ -144,6 +144,13 @@ and there should be no problem for reading and writing the file."""
                 possible=False
         return possible
 
+class InterfaceOptions():
+    def __init__(self):
+        pass
+    def set_option(self,option_name,value):
+        self.options_file_object.add_option_to_file(option_name,value)
+    def get_option(self,option_name):
+        return self.options_file_object.read_file(read_this_key_only=option_name)
 
 
 #demo

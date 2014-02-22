@@ -37,7 +37,6 @@ Po='Arial 12 bold'#
 ENTRY_FONT='CourrierNewNormal 11'#Pas utilisé
 ENTRY_COLOR='black'#Couleur symbolique
 ENTRY_BACK_COLOR='white'#Couleur de fond
-#JustificationEn='left'
 ENTRY_STYLE={'fg':ENTRY_COLOR,'bg':ENTRY_BACK_COLOR,'font':ENTRY_FONT}
 
 #Label
