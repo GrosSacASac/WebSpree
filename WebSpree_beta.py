@@ -76,11 +76,10 @@ end: lesser important methods with visual effects but not much more"""
         Tk.__init__(self)
         self.model=model
         self.title(MAIN_TITLE)
-        #self.attributes('-fullscreen', 1)#, '-topmost', 1)fullscreen
-        self.wm_state(newstate="zoomed")#maximize windows size
-        self.geometry('1700x600+0+0')
+        #self.attributes('-fullscreen', 1)#, '-topmost', 1)fullscreen #doesnt exist everywhere
+        #self.geometry('1700x600+0+0')#static size is bad, it doesn t adapt
         self.configure(bd=1,bg=WINDOW_BACK_COLOR)
-        self.iconbitmap(LOGO1_PATH)
+        #self.iconbitmap(LOGO1_PATH)#problems here, icon should be insert when freezing the app not here
         self.protocol("WM_DELETE_WINDOW", self.intercept_close)
 
         self.bind("<Control-t>",self.save_file_to_test_control)
