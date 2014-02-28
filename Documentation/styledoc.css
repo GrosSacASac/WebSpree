@@ -1,16 +1,15 @@
 html, pre
 {
-
-  font-size:1.1em;
-  color:black;
-  background-color:#eedeee;
-  font-family:Sylfaen;
-  position: relative;
+    font-size:1.1em;
+    color:black;
+    background-color:#fedec0;
+    font-family:Sylfaen;
+    position: relative;
 }
 
 body
 {
-counter-reset:patch+7;
+counter-reset:patch+8;
 }
 main
 {

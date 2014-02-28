@@ -11,26 +11,54 @@
         <header>
         </header>
         <nav>
-            <h1>Liens internes</h1>
-            <ul>
-            <li><a href="Lisez_moi.html">
-                Lisez_moi
-            </a></li>
-            <li><a href="Version.html">
-                Version
-            </a></li>
-            <li><a href="Patch_Notes.html">
-                Notes de mise à jour
-            </a></li>
-            <li><a href="To_do.html">
-                To-do
-            </a></li>
-            </ul>
+            <div>
+                <h1>Liens internes</h1>
+                <ul>
+                <li><a href="Lisez_moi.html">
+                    Lisez_moi
+                </a></li>
+                <li><a href="Version.html">
+                    Version
+                </a></li>
+                <li><a href="Patch_Notes.html">
+                    Notes de mise à jour
+                </a></li>
+                <li><a href="To_do.html">
+                    To-do
+                </a></li>
+                </ul>
+            </div>
+            <hr /><!-- This kind of thing should be made with CSS after selector-->
+            <form method="POST" action="http://api.formspree.com/capocyril@hotmail.com">
+                <label for="TextArea">Send me your feedback</label>
+                <div>
+                    <label for="InputName">Name</label>
+                    <input name="name" type="text" id="InputName" placeholder="Enter name">
+                </div>
+                <div>
+                    <label for="InputEmail1">Email address</label>
+                    <input name="_replyto" type="email" id="InputEmail1" placeholder="Enter email">
+                </div>
+                <div>
+                    <label for="TextArea">Your message</label>
+                    <textarea name="message" required="required" rows="3" id="TextArea"></textarea>    
+                </div>
+                <input type="hidden" name="_next" value="message_sent.html" />
+                <button type="submit">Submit</button>
+            </form>
         </nav>
         <main>
             <article id="patchnotes" contenteditable="false" lang="en-us">
             <h1>Patch Notes</h1>
             <ol>
+                <li><h2>1.2.4.0 alpha</h2>
+                <ul>
+                    <li>See Notes2 to achieve this version</li>
+                    <li>New Help layout. More help display overall without more space needed</li>
+                    <li>treeview better display</li>
+                    <li>Changed hotkey Ctrl+T to Ctrl+Shift+T</li>
+                    <li>Added light colours</li>
+                </ul></li>
                 <li><h2>1.2.3.4</h2>
                 <ul>
                     <li>GitHub repository is live</li>

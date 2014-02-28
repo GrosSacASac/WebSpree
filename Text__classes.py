@@ -127,6 +127,8 @@ class Text_HTML(Text_):
         self.element_still_not_closed_list=[]
         self.instant_indenting_level=0
         self.current_direction=0
+        self.last_selected_element="p"
+        self.last_selected_element_is_void=False
         #helps to indent properly
         self.current_translation_needed=True
         #help to detect if we need translation (e.g for display content)

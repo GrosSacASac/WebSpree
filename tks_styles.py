@@ -75,13 +75,20 @@ LISTBOX_STYLE={'font':PoListbox,'fg':CListbox,'bg':CFListbox}
 #solution 2: Find a trick to send (master,style_dic,other) as (master,kw)
 #no importance for now ,just copy parameter 1 by 1 in Treeview init
 
-#Frame
-PoFrame='Arial 18'
+#Label Frame
+PoFrame='Arial 13'
 CFrame='black'#Couleur symbolique
 FRAME_BACK_COLOR=CFLabel#Couleur de fond
 EppaisseurCadres=5
 StyleContour='ridge'
 FRAME_STYLE={'font':PoFrame,'fg':CFrame,'bg':FRAME_BACK_COLOR,'borderwidth':EppaisseurCadres}
+
+#Frame
+FRAME_STYLE_2={'bg':FRAME_BACK_COLOR,'borderwidth':EppaisseurCadres}
+COLOURS_A=["#ffd0d0","#ffffd0","#d0ffd0","#d0d0ff"]#eye friendly
+COLOURS_B=["#ffe2e2","#ffffe2","#e2ffe2","#e2e2ff"]#light
+COLOURS_A=COLOURS_B
+#todo let user choose his own set of coulours
 
 #Fen
 WINDOW_BACK_COLOR=FRAME_BACK_COLOR

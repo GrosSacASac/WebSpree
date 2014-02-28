@@ -107,8 +107,8 @@ def json_file_to_object(directory_name="", file_name=""):
 def load_local_strings(lang="fr"):
     return (json_file_to_object("Constantes/"+lang, lang+"_html5_elements.json"),\
             json_file_to_object("Constantes/"+lang, lang+"_html5_attributes.json"))
-            
-ENCODINGS=table_with_textfile("Constantes/encodings.txt",3)
+
+ENCODINGS=table_with_textfile(os.path.normpath(os.path.join("Constantes","encodings.txt")),3)
 Balises=table_with_textfile("Constantes/balises.txt",3)#obso new 1
 GENERAL_ATTRIBUTES=table_with_textfile("Constantes/attributsall.txt",4)
 LINK_ELEMENT_TO_ATTRIBUTES=dictionary_with_textfile("Constantes/Liens_Balises_Attributs_Spe.txt",0)#obso new1

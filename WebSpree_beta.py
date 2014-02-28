@@ -27,7 +27,6 @@
 ##If you have questions concerning this license you may contact via email Walle Cyril
 ##by sending an email to the following adress:capocyril@hotmail.com
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
 try:#3.X
     from tkinter import*
     import tkinter.ttk  as TTK
@@ -40,19 +39,20 @@ except ImportError:#2.X
     import tkFileDialog as FileDialog
     import tkMessageBox as MessageBox
     import tkFont as TKFonts
+    #from math import abs
 
 
 import webbrowser
 import os
 import time
-import sys
-
+import platform
 
 from Options_class import *
 from log_writer import log_writer
 from Text__classes import*
 from file_extractor import*
 from tks_styles import*
+
 #from tks_widgets_1 import*
 
 def _(l_string):
@@ -82,7 +82,7 @@ end: lesser important methods with visual effects but not much more"""
         #self.iconbitmap(LOGO1_PATH)#problems here, icon should be insert when freezing the app not here
         self.protocol("WM_DELETE_WINDOW", self.intercept_close)
 
-        self.bind("<Control-t>",self.save_file_to_test_control)
+        self.bind("<Control-Shift-T>",self.save_file_to_test_control)
         self.bind("<Control-Shift-S>",self._save_file_dialog)
         self.bind("<Control-s>",self.model.save_html_file)
         self.bind("<Control-o>",self.edit_file_dialog)
@@ -110,7 +110,7 @@ end: lesser important methods with visual effects but not much more"""
         
         self.frame_of_frames_html=Frame(self.group_app_tabs)#html frame
         self.frame_of_frames_css=Frame(self.group_app_tabs)#css frame
-        self.frame_of_frames_js=Frame(self.group_app_tabs)#txt frame
+        self.frame_of_frames_js=Frame(self.group_app_tabs)#js frame
         
         self.group_app_tabs.add(self.frame_of_frames_html,text="HTML",image=self.HTML5_PHOTO_ICO,compound='left',underline=0)
         self.group_app_tabs.add(self.frame_of_frames_css,text="CSS",image=self.CSS3_PHOTO_ICO,compound='left',underline=0)
@@ -119,23 +119,38 @@ end: lesser important methods with visual effects but not much more"""
         Label(self.frame_of_frames_css,text='coming soon ...').pack()
         
         #-HTML- Frames
-        F0=Frame(self.frame_of_frames_html)
-        optimize_space_tab_group_for_html=TTK.Notebook(F0)
-        optimize_space_tab_group_for_html.grid(column=0,row=0,sticky='nswe')
-        F1=LabelFrame(optimize_space_tab_group_for_html, FRAME_STYLE,text=_("1. Choisir une Balise"))#Balises
-        F1Options=LabelFrame(self.frame_of_frames_html, FRAME_STYLE,text=_("2. Choisir les attributs"))#Options
-        F2=LabelFrame(self.frame_of_frames_html, FRAME_STYLE,text=_("3. Saisir Contenu"))#Buttons et saisies
-        F3=LabelFrame(self.frame_of_frames_html, FRAME_STYLE,text=_("4.Code HTML"))#Preview
-        F4=LabelFrame(self.frame_of_frames_html, FRAME_STYLE,text=_("0. Aides"))#Terminer
+        #elements and help
+        frame_element_master=Frame(self.frame_of_frames_html,FRAME_STYLE_2,bg=COLOURS_A[0])
+        self.frame_element_notebook=TTK.Notebook(frame_element_master)
+        self.frame_element_notebook.grid(row=0,column=0,sticky='nsw')
+        
+        self.frame_element=Frame(self.frame_element_notebook,FRAME_STYLE_2)#elements
+        self.frame_element_help=Frame(self.frame_element_notebook,FRAME_STYLE_2)#help elements
+        self.frame_element_notebook.add(self.frame_element,text=_("1. Balises"),sticky='swen')
+        self.frame_element_notebook.add(self.frame_element_help,text=_("Aides"),sticky='swen')
+        
+        
+        #attributes and help
+        frame_attribute_master=Frame(self.frame_of_frames_html,FRAME_STYLE_2,bg=COLOURS_A[1])#attributes
+        self.frame_attribute_notebook=TTK.Notebook(frame_attribute_master)
+        self.frame_attribute_notebook.grid(row=0,column=0,sticky='nsw')
+        
+        self.frame_attribute=Frame(self.frame_attribute_notebook,FRAME_STYLE_2)#attributes
+        self.frame_attribute_help=Frame(self.frame_attribute_notebook,FRAME_STYLE_2)#help attributes
+        self.frame_attribute_notebook.add(self.frame_attribute,text=_("2. Choisir les attributs"),sticky='swen')
+        self.frame_attribute_notebook.add(self.frame_attribute_help,text=_("Aides"),sticky='swen')
+
+        
+        frame_2_user_input=LabelFrame(self.frame_of_frames_html, FRAME_STYLE,text=_("3. Saisir Contenu"),bg=COLOURS_A[2])#Buttons et saisies
+        frame_3_html_box=LabelFrame(self.frame_of_frames_html, FRAME_STYLE,text=_("4.Code HTML"),bg=COLOURS_A[3])#Preview
         self.autoclose_element_check_variable=BooleanVar(value=True)
         self.insertion_tk_var=BooleanVar(value=False)
-        optimize_space_tab_group_for_html.add(F1,text=_("Balises"))
-        #optimize_space_tab_group_for_html.add(F1Options,text="Attributs")
+        #frame_element_notebook.add(frame_attribute,text="Attributs")
 
 
         
-        self.elements_in_treeviews_lift = TTK.Scrollbar(F1)
-        self.elements_in_treeview=TTK.Treeview(F1,selectmode='browse',columns=("local name","element"),height=25,\
+        self.elements_in_treeviews_lift = TTK.Scrollbar(self.frame_element)
+        self.elements_in_treeview=TTK.Treeview(self.frame_element,selectmode='browse',columns=("local name","element"),height=21,\
                                              yscrollcommand=self.elements_in_treeviews_lift.set,padding=0,takefocus=True,\
                                              displaycolumns=(0))#,show='tree'
         self.elements_in_treeview.heading("#0",text=_("Traduction"))
@@ -148,81 +163,108 @@ end: lesser important methods with visual effects but not much more"""
             for ele in couple[1]:
                 self.elements_in_treeview.insert(function,'end', text=LOCAL_ELEMENTS[ele]["translation"],value=ele)
 
-        self.elements_in_treeview.grid(row=1,column=0,sticky='nsw')#sticky remplit colle l'objet vers le n w e ou sud
-        self.elements_in_treeviews_lift.grid(row=1,column=1,sticky='nsw')#sticky remplit colle l'objet vers le n w e ou sud
+        self.elements_in_treeview.grid(row=0,column=0,columnspan=2,sticky='nsw')#sticky remplit colle l'objet vers le n w e ou sud
+        self.elements_in_treeviews_lift.grid(row=0,column=2,sticky='nsw')#sticky remplit colle l'objet vers le n w e ou sud
 
+        #Help
+        self.element_help_and_tip=Label(self.frame_element,HELP_LABEL_STYLE, text=_("Seléctionnez une balise pour avoir de l'aide..."), wrap=400,anchor='nw',fg='#2220dd')
+        self.element_help_and_tip.grid(row=1,column=0,columnspan=3,sticky='nsw')
+        self.element_help_and_tip.bind("<ButtonRelease-1>", self.see_more_help_and_details)
+        self.more_help_2=Button(self.frame_attribute, text=_("Plus d'aide"),anchor='center')
+        self.more_help_2.grid(row=2,column=0,sticky='nswe',columnspan=2)
+        self.more_help_2.bind("<ButtonRelease-1>", self.see_more_help_and_details)
+        self.more_help=Button(self.frame_element, text=_("Plus d'aide"),anchor='center')
+        self.more_help.grid(row=2,column=0,sticky='nswe',columnspan=3)
+        self.more_help.bind("<ButtonRelease-1>", self.see_more_help_and_details)
+        self.leave_help=Button(self.frame_element_help, text=_("Quitter l'aide"),anchor='center')
+        self.leave_help.grid(row=1,column=0,sticky='nswe')
+        self.leave_help.bind("<ButtonRelease-1>", self.see_more_help_and_details)
+        self.leave_help_2=Button(self.frame_attribute_help, text=_("Quitter l'aide"),anchor='center')
+        self.leave_help_2.grid(row=1,column=0,sticky='nswe')
+        self.leave_help_2.bind("<ButtonRelease-1>", self.see_more_help_and_details)
+
+        self.help_in_treeview_elements=TTK.Treeview(self.frame_element_help,selectmode='browse',columns=("key","value"),height=21,\
+                                                    padding=0,takefocus=True,displaycolumns=(0,1))#,show='tree'
+        self.help_in_treeview_elements.grid(row=0,column=0,sticky='nswe')
+        self.help_in_treeview_elements.column('#0', width=0)#take away the icon column
+        self.help_in_treeview_elements.heading("key",text=_("Propriété"))
+        self.help_in_treeview_elements.heading("value",text=_("Valeur"))
+        self.help_in_treeview_elements.insert("", 'end', iid="description", values=(_("description"),_("Ancre ou lien")))
+        self.help_in_treeview_elements.insert("description", 'end', iid="description_full", values=(_("description"),_("Ancre ou lien...")))
+
+        #HyperW3C=Hyperlien(master,"www.w3c.org",LABEL_STYLE,text="Site du World Wide Web Consortium",justify='left')
+        #HyperW3C.pack(side='left',fill='y')
+
+        
 
         #_List of attributes:
         
-        self.general_attributes_treeview=TTK.Treeview(F1Options,selectmode='browse',height=21)
-        self.general_attributes_treeview.heading("#0",text=_("Général"))
+        self.general_attributes_treeview=TTK.Treeview(self.frame_attribute,selectmode='browse',height=21,columns=("real","local"),displaycolumns=(1),show='headings')
+        self.general_attributes_treeview.heading("local",text=_("Général"))
         self.general_attributes_treeview.grid(row=0,column=0,sticky='w')
         for general_attribute in GENERAL_ATTRIBUTES_LIST:
-            self.general_attributes_treeview.insert("",'end', text=LOCAL_ATTRIBUTES[general_attribute]["translation"],value=general_attribute)
+            self.general_attributes_treeview.insert("",'end',values=(general_attribute,LOCAL_ATTRIBUTES[general_attribute]["translation"]))
         self.general_attributes_treeview.bind('<<TreeviewSelect>>',self.add_attribute,"")
         
         
-        self.specific_attributes_treeview=TTK.Treeview(F1Options,selectmode='browse',height=21)
-        self.specific_attributes_treeview.heading("#0",text=_("Spécifique"))
-        self.specific_attributes_treeview.tag_configure("specific_attribute")
+        self.specific_attributes_treeview=TTK.Treeview(self.frame_attribute,selectmode='browse',height=21,columns=("real","local"),displaycolumns=(1),show='headings')
+        self.specific_attributes_treeview.heading("local",text=_("Spécifique"))
+        #self.specific_attributes_treeview.tag_configure("specific_attribute")
         self.specific_attributes_treeview.grid(row=0,column=1,sticky='w')
         self.specific_attributes_treeview.bind('<<TreeviewSelect>>',self.add_attribute,"")
 
-        help_label_for_content=Label(F2,LABEL_STYLE, text=_("Ecrivez le contenu"))
+        self.attribute_help_and_tip=Label(self.frame_attribute,HELP_LABEL_STYLE, text=_("Seléctionnez un attribut pour avoir de l'aide"), wrap=400,anchor='nw',fg='#2220dd')
+        self.attribute_help_and_tip.grid(row=1,column=0,columnspan=2,sticky='nsw')
+        self.attribute_help_and_tip.bind("<ButtonRelease-1>", self.see_more_help_and_details)
+        
+        
+        
+
+        help_label_for_content=Label(frame_2_user_input,LABEL_STYLE, text=_("Ecrivez le contenu"))
         help_label_for_content.grid(row=0,column=0,sticky='nw')
-        help_label_for_attribute=Label(F2,LABEL_STYLE, text=_("Placez les attributs"))
+        help_label_for_attribute=Label(frame_2_user_input,LABEL_STYLE, text=_("Placez les attributs"))
         help_label_for_attribute.grid(row=2,column=0,sticky='nw')
 
-        self.content_area_form=Text(F2,ENTRY_STYLE,width=20,height=10)
+        self.content_area_form=Text(frame_2_user_input,ENTRY_STYLE,width=20,height=10)
         self.content_area_form.grid(row=1,column=0,sticky='nw')
-        self.attribute_area_form=Text(F2,ENTRY_STYLE,width=16,height=10)
+        self.attribute_area_form=Text(frame_2_user_input,ENTRY_STYLE,width=16,height=10)
         self.attribute_area_form.grid(row=3,column=0,sticky='nw')
         #self.content_area_form.bind('<KeyRelease>',write_in_real_time)
 
-        self.confirm_add_button=TTK.Button(F2, text=_("Confirmer"))
+        self.confirm_add_button=TTK.Button(frame_2_user_input, text=_("Confirmer"),command=self.confirm_write)
         self.confirm_add_button.grid(row=4,column=0,sticky='nw')
 
-        self.close_last_element_button=TTK.Button(F2, text=_("Fermer la dernière\nbalise ouverte"), command=self.confirm_close_element)
+        self.close_last_element_button=TTK.Button(frame_2_user_input, text=_("Fermer la dernière\nbalise ouverte"), command=self.confirm_close_element)
         self.close_last_element_button.grid(row=5,column=0,sticky='nw')
 
-        auto_close_checkbutton=TTK.Checkbutton(F2, text=_("Auto Fermeture"),variable=self.autoclose_element_check_variable )
+        auto_close_checkbutton=TTK.Checkbutton(frame_2_user_input, text=_("Auto Fermeture"),variable=self.autoclose_element_check_variable )
         auto_close_checkbutton.grid(row=6,column=0,sticky='nw')
 
 
-        self.main_scrollbar = TTK.Scrollbar(F3)
-        self.main_text_field=Text(F3,yscrollcommand=self.main_scrollbar.set,state='normal',height=35,undo=True,font=self.current_font)#,bg='black',fg='white')
+        self.main_scrollbar = TTK.Scrollbar(frame_3_html_box)
+        self.main_text_field=Text(frame_3_html_box,yscrollcommand=self.main_scrollbar.set,state='normal',height=35,undo=True,font=self.current_font)#,bg='black',fg='white')
         self.main_scrollbar.config(command=self.main_text_field.yview)
         self.main_scrollbar.grid(row=0,column=1,sticky='nsw')
         self.main_text_field.grid(row=0,column=0,sticky='nsw')
         #Indicateur = InformationBubble(parent=main_text_field,texte="Vous pouvez éditer ici directement si vous ça vous chante")
 
-        self.main_text_field.bind("<ButtonRelease-1>", self.switch_writing_place)
-        self.main_text_field.bind("<KeyRelease>", self.switch_writing_place)
+        self.main_text_field.bind("<KeyRelease>", self.so_you_decided_to_write_html_directly)
 
-        F3_1=LabelFrame(F3, text="Outils", relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)#
-        RadioFin=TTK.Radiobutton(F3_1, text=_("Ecrire à la fin"),variable=self.insertion_tk_var, value=False, command=self.switch_writing_place )
+        frame_3_html_box_1=LabelFrame(frame_3_html_box, text="Outils", relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)#
+        RadioFin=TTK.Radiobutton(frame_3_html_box_1, text=_("Ecrire à la fin"),variable=self.insertion_tk_var, value=False, command=self.switch_writing_place )
         RadioFin.grid(row=0,column=0,sticky='nw')
-        RadioIns=TTK.Radiobutton(F3_1, text=_("Insèrer au curseur"),variable=self.insertion_tk_var, value=True,command=self.switch_writing_place )
+        RadioIns=TTK.Radiobutton(frame_3_html_box_1, text=_("Insèrer au curseur"),variable=self.insertion_tk_var, value=True,command=self.switch_writing_place )
         RadioIns.grid(row=1,column=0,sticky='nw')
 
-        self.insertion_cursor=Scale(F3_1,resolution=1, from_=0, to=16, tickinterval=2,length=200,state='active'
+        self.insertion_cursor=Scale(frame_3_html_box_1,resolution=1, from_=0, to=16, tickinterval=2,length=200,state='active'
                        ,orient='horizontal', relief='groove', showvalue=1,sliderlength=30, troughcolor='green')
-        F3_1.grid(row=1,column=0,sticky='e')
+        frame_3_html_box_1.grid(row=1,column=0,sticky='e')
         
         if self.model.get_option("developper_interface"):
-            leave_button=TTK.Button(F3, text="Quitter",command=self._end )
+            leave_button=TTK.Button(frame_3_html_box, text="Quitter",command=self._end )
             leave_button.grid(row=2,column=0,sticky='')
 
-
-        self.element_help_and_tip=Label(F4,HELP_LABEL_STYLE, text=_("Seléctionnez une balise pour avoir de l'aide"), wrap=350,anchor='nw')
-        self.element_help_and_tip.pack(side='left',fill='y')
-        self.more_help=Button(F4, text=_("Plus d'aide"),command=self.see_more_help_and_details,anchor='w')
-        self.more_help.pack(side='bottom')
-        self.attribute_help_and_tip=Label(F4,HELP_LABEL_STYLE, text=_("Seléctionnez un attribut pour avoir de l'aide"), wrap=350,anchor='nw')
-        self.attribute_help_and_tip.pack(side='right',fill='y')
-
-        #HyperW3C=Hyperlien(F4,"www.w3c.org",LABEL_STYLE,text="Site du World Wide Web Consortium",justify='left')
-        #HyperW3C.pack(side='left',fill='y')
+        
 
 
         ######----Menus-----######
@@ -232,7 +274,7 @@ end: lesser important methods with visual effects but not much more"""
                              {'label':_("Ouvrir [Ctrl+O]"),'command':self.edit_file_dialog},\
                              {'label':_("Enregistrer [Ctrl+S]"),'command':lambda: self.model.save_html_file()},\
                              {'label':_("Enregistrer sous[Ctrl+Shift+S]"),'command':lambda: self._save_file_dialog()},\
-                             {'label':_("Essayer ! [Ctrl+T]"),'command':lambda: self.save_file_to_test_control()}]
+                             {'label':_("Essayer ! [Ctrl+Shift+T]"),'command':lambda: self.save_file_to_test_control()}]
         FILEMENU["radiobutton"]=[]
 
         EDITMENU={}
@@ -304,7 +346,6 @@ end: lesser important methods with visual effects but not much more"""
     
         self.columnconfigure(0,weight=1)
         self.rowconfigure(0,weight=1)
-        #F0.grid(row=0,column=0,columnspan=3,sticky='we')#Menus
         intern_root.grid(row=0,column=0,sticky='snew')
         intern_root.columnconfigure(0,weight=2)
         intern_root.rowconfigure(0,weight=2)
@@ -313,74 +354,69 @@ end: lesser important methods with visual effects but not much more"""
         self.group_app_tabs.columnconfigure(0,weight=3)
         self.group_app_tabs.rowconfigure(0,weight=3)
 
-        #self.frame_of_frames_html.columnconfigure(0,weight=4)
-        #self.frame_of_frames_html.rowconfigure(0,weight=4)
 
-        F0.grid(row=0,column=0,sticky='nsw')
+
         
-        F1Options.grid(row=0,column=1,sticky='nsw')
-        F2.grid(row=0,column=2,sticky='nsw')
-        F3.grid(row=0,column=3,sticky='nsw',rowspan=2)
-        F4.grid(row=1,column=0,columnspan=3,sticky='nsew')#columnspan est la taille de l'objet
-
+        frame_element_master.grid(row=0,column=0,sticky='nsw')
+        frame_attribute_master.grid(row=0,column=1,sticky='nsw')
+        frame_2_user_input.grid(row=0,column=2,sticky='nsw')
+        frame_3_html_box.grid(row=0,column=3,sticky='nsw',rowspan=2)
+        #self.grid_columnconfigure(0,weight=0)
     def _prepare_new_session(self):#view
-        if not self.model.get_option("license_accepted_and_read"):
-            self.view_license()
-        else:
-            self.Contexte=Toplevel(self,bd=1,bg=WINDOW_BACK_COLOR)
-            self.Contexte.title(_("Commencer"))
-            self.Contexte.geometry('700x600+200+200')
-            self.Contexte.grab_set()
-            self.Contexte.focus_set()
-            self.Contexte.focus_force()#force focus
-            
-            frame_title=LabelFrame(self.Contexte, FRAME_STYLE,text=_("Titre du document"))
-            self.title_tk_var=StringVar(value=self.model.get_option("last_html_document_title"))
-            Entry(frame_title,ENTRY_STYLE,textvariable=self.title_tk_var).pack()
+        self.Contexte=Toplevel(self,bd=1,bg=WINDOW_BACK_COLOR)
+        self.Contexte.title(_("Commencer"))
+        self.Contexte.geometry('700x600+200+200')
+        self.Contexte.grab_set()
+        self.Contexte.focus_set()
+        self.Contexte.focus_force()#force focus
+        
+        frame_title=LabelFrame(self.Contexte, FRAME_STYLE,text=_("Titre du document"))
+        self.title_tk_var=StringVar(value=self.model.get_option("last_html_document_title"))
+        Entry(frame_title,ENTRY_STYLE,textvariable=self.title_tk_var).pack()
 
-            
-            self.new_doc_radiobutton_var=IntVar(value=0)
-            frame_where_to_start=LabelFrame(self.Contexte, FRAME_STYLE,text=_("Document"))
-            new_doc_radiobutton=TTK.Radiobutton(frame_where_to_start, text=_("Commencer un nouveau document standard"),value=0,variable=self.new_doc_radiobutton_var)
-            new_doc_radiobutton.pack(anchor="w")
-            new_blank_doc_radiobutton=TTK.Radiobutton(frame_where_to_start,text=_("Commencer un nouveau document vierge"), value=-1,variable=self.new_doc_radiobutton_var)
-            new_blank_doc_radiobutton.pack(anchor="w")
-            edit_doc_radiobutton=TTK.Radiobutton(frame_where_to_start, text=_("Modifier un document existant"),value=1,variable=self.new_doc_radiobutton_var)
-            edit_doc_radiobutton.pack(anchor="w")
-            
-            #to do change this barbar method to control encoding properly
-            self._which_encoding_var=StringVar(value=self.model.current_text_html.get_encoding()+";"+self.model.current_text_html.get_w3c_encoding())
-            frame_which_encoding=LabelFrame(self.Contexte, FRAME_STYLE,text=_("Encodage(beta)"))
-            for encotext,pyencodings,standardenco in ENCODINGS:
-                encoding_radiobutton=TTK.Radiobutton(frame_which_encoding, text=encotext,value=pyencodings+";"+standardenco,variable=self._which_encoding_var)
-                encoding_radiobutton.pack(anchor='w')
+        
+        self.new_doc_radiobutton_var=IntVar(value=0)
+        frame_where_to_start=LabelFrame(self.Contexte, FRAME_STYLE,text=_("Document"))
+        new_doc_radiobutton=TTK.Radiobutton(frame_where_to_start, text=_("Commencer un nouveau document standard"),value=0,variable=self.new_doc_radiobutton_var)
+        new_doc_radiobutton.pack(anchor="w")
+        new_blank_doc_radiobutton=TTK.Radiobutton(frame_where_to_start,text=_("Commencer un nouveau document vierge"), value=-1,variable=self.new_doc_radiobutton_var)
+        new_blank_doc_radiobutton.pack(anchor="w")
+        edit_doc_radiobutton=TTK.Radiobutton(frame_where_to_start, text=_("Modifier un document existant"),value=1,variable=self.new_doc_radiobutton_var)
+        edit_doc_radiobutton.pack(anchor="w")
+        
+        #to do change this barbar method to control encoding properly
+        self._which_encoding_var=StringVar(value=self.model.current_text_html.get_encoding()+";"+self.model.current_text_html.get_w3c_encoding())
+        frame_which_encoding=LabelFrame(self.Contexte, FRAME_STYLE,text=_("Encodage(beta)"))
+        for encotext,pyencodings,standardenco in ENCODINGS:
+            encoding_radiobutton=TTK.Radiobutton(frame_which_encoding, text=encotext,value=pyencodings+";"+standardenco,variable=self._which_encoding_var)
+            encoding_radiobutton.pack(anchor='w')
 
-            self.indent_style_tk_var=StringVar(value=self.model.get_option("indent_style"))
-            self.indent_size_tk_var_2=IntVar(value=self.model.get_option("indent_size"))
-            frame_indentation=LabelFrame(self.Contexte, FRAME_STYLE,text=_("Indentation"))
-            indent_style_radiobutton=TTK.Radiobutton(frame_indentation, text=_("Espaces"),value=" ",variable=self.indent_style_tk_var)
-            indent_style_radiobutton.pack(anchor='w')
-            indent_style_radiobutton2=TTK.Radiobutton(frame_indentation, text=_("Tabulations"),value="\t",variable=self.indent_style_tk_var)
-            indent_style_radiobutton2.pack(anchor='w')
-            for i in range(1,9):
-                indent_size_radiobutton=TTK.Radiobutton(frame_indentation, text=str(i),value=i,variable=self.indent_size_tk_var_2)
-                indent_size_radiobutton.pack(anchor='w')
+        self.indent_style_tk_var=StringVar(value=self.model.get_option("indent_style"))
+        self.indent_size_tk_var_2=IntVar(value=self.model.get_option("indent_size"))
+        frame_indentation=LabelFrame(self.Contexte, FRAME_STYLE,text=_("Indentation"))
+        indent_style_radiobutton=TTK.Radiobutton(frame_indentation, text=_("Espaces"),value=" ",variable=self.indent_style_tk_var)
+        indent_style_radiobutton.pack(anchor='w')
+        indent_style_radiobutton2=TTK.Radiobutton(frame_indentation, text=_("Tabulations"),value="\t",variable=self.indent_style_tk_var)
+        indent_style_radiobutton2.pack(anchor='w')
+        for i in range(1,9):
+            indent_size_radiobutton=TTK.Radiobutton(frame_indentation, text=str(i),value=i,variable=self.indent_size_tk_var_2)
+            indent_size_radiobutton.pack(anchor='w')
 
-            frame_submit=LabelFrame(self.Contexte, FRAME_STYLE,text=_("Valider"))
-            accept_and_begin=TTK.Button(frame_submit, text=_("Confirmer[Entrée]"), command=self._confirm_new_session)
-            accept_and_begin.grid(row=0,column=0)
-            cancel=TTK.Button(frame_submit, text=_("Annuler"), command=self.Contexte.destroy)
-            cancel.grid(row=1,column=0)
+        frame_submit=LabelFrame(self.Contexte, FRAME_STYLE,text=_("Valider"))
+        accept_and_begin=TTK.Button(frame_submit, text=_("Confirmer[Entrée]"), command=self._confirm_new_session)
+        accept_and_begin.grid(row=0,column=0)
+        cancel=TTK.Button(frame_submit, text=_("Annuler"), command=self.Contexte.destroy)
+        cancel.grid(row=1,column=0)
 
-            
-            frame_title.grid(row=0,column=0,sticky='w')
-            frame_where_to_start.grid(row=1,column=0,sticky='nswe')
-            frame_which_encoding.grid(row=1,column=1,sticky='nswe')
-            frame_indentation.grid(row=2,column=0,sticky='nswe')
-            frame_submit.grid(row=2,column=1,sticky='nswe')
+        
+        frame_title.grid(row=0,column=0,sticky='w')
+        frame_where_to_start.grid(row=1,column=0,sticky='nswe')
+        frame_which_encoding.grid(row=1,column=1,sticky='nswe')
+        frame_indentation.grid(row=2,column=0,sticky='nswe')
+        frame_submit.grid(row=2,column=1,sticky='nswe')
 
 
-            self.Contexte.bind("<Return>",self._confirm_new_session)
+        self.Contexte.bind("<Return>",self._confirm_new_session)
 
         
     def _confirm_new_session(self,*event):#controller
@@ -417,14 +453,15 @@ end: lesser important methods with visual effects but not much more"""
         if not attribute in self.attribute_area_form.get('1.0', 'end'+'-1c'):
             self.attribute_area_form.insert('end',"{}=\"{}\"\n".format(attribute,attribute_details["default_value"]))
             
-        self.attribute_help_and_tip['text']=_("Aide pour l'attribut {} ({}) : \n{}\nValeur par défaut: {}").\
-                                             format(attribute,attribute_local_details["translation"],attribute_local_details["description"],\
-                                                    attribute_details["default_value"])
+        self.attribute_help_and_tip['text']=(_("Attribut {}:\n{}").\
+                                             format(attribute,attribute_local_details["description"]))[0:60]+"..."
         
     def update_choice1(self,*event):
         selected_item_id=self.elements_in_treeview.selection()[0]
         if not self.elements_in_treeview.get_children(selected_item_id):#we do nothing if user opened a folder(who has childs)
             element_tag=(self.elements_in_treeview.item(selected_item_id,'value'))[0]
+            self.model.current_text_html.last_selected_element=element_tag
+            
 
             previous=self.content_area_form['state']
             self.content_area_form['state']='normal'
@@ -434,76 +471,67 @@ end: lesser important methods with visual effects but not much more"""
             
             
             self.elements_in_treeview.heading("local name",text=_("Code: ")+element_tag)
-            self.element_help_and_tip['text']=_("Aide pour")+((" <%s> (%s):\n%s") %\
-                                                              (element_tag,LOCAL_ELEMENTS[element_tag]["translation"],\
-                                                               LOCAL_ELEMENTS[element_tag]["description"]))
+            self.element_help_and_tip['text']=(("<%s>\n%s") %\
+                                                              (element_tag,LOCAL_ELEMENTS[element_tag]["description"]))[0:60]+"..."
             
             _i=self.specific_attributes_treeview.get_children()
-            for item in _i: self.specific_attributes_treeview.delete(item)#delete all items in specific_attributes_treeview before
+            for item in _i:
+                self.specific_attributes_treeview.delete(item)#delete all items in specific_attributes_treeview before
             for couple in ELEMENTS:
                 for ele in couple[1]:
                     if ele==element_tag:
-                        self.current_element_void=couple[1][ele]["void"]
+                        self.model.current_text_html.last_selected_element_is_void=couple[1][ele]["void"]
                         self.content_area_form['state']='normal'
-                        if self.current_element_void:
+                        if self.model.current_text_html.last_selected_element_is_void:
                             self.content_area_form.insert('end',_("Les éléments vides n'ont pas de contenu"))
                             self.content_area_form['state']='disabled'
                         #todo add must attributes somewhere
                         for attribute in couple[1][ele]["specific_attributes"]:
-                                self.specific_attributes_treeview.insert("",'end',text=attribute,value=attribute,tags="specific_attribute")
+                                self.specific_attributes_treeview.insert("",'end',values=(attribute,LOCAL_ATTRIBUTES[attribute]["translation"]))#,tags="specific_attribute")
+                                
                         break
 
 
-            self.confirm_add_button['command']=self.confirm_write
+                
+    def confirm_write(self):
+        element_tag=self.model.current_text_html.last_selected_element
+        attributes_with_spaces=self.attribute_area_form.get('1.0', 'end'+'-1c').strip()
+        if attributes_with_spaces!="":
+            attributes_with_spaces=" "+attributes_with_spaces.replace("\n"," ")
         
-   
-    def switch_writing_place(self,*event):
+        if self.model.current_text_html.last_selected_element_is_void:
+            text_to_add=self.model.current_text_html.add_indent_and_line(self.model.current_text_html.open_close_void_element(element_tag,attributes_with_spaces))
+        else:
+            text_to_add=self.model.current_text_html.add_indent_and_line(self.model.current_text_html.open_element(element_tag, attributes_with_spaces))
+            text_to_add+=self.model.current_text_html.add_indent_and_line(self.content_area_form.get('1.0', 'end'+'-1c'))
+            if self.autoclose_element_check_variable.get():
+                text_to_add+=self.model.current_text_html.add_indent_and_line(self.model.current_text_html.close_element())
+        self.model.current_text_html.add_to_text(text_to_add)
+        self.tk_copy_text(self.model.current_text_html)
+        
+        if not self.model.current_text_html.element_still_not_closed_list:
+            self.close_last_element_button['state']='disabled'
+        else:
+            self.close_last_element_button['state']='active'###
+    #todo here put the cursor at the end of what is just added
+
+    
+            
+    def so_you_decided_to_write_html_directly(self,event):
         if self.model.current_text_html.text!=self.main_text_field.get('1.0', 'end'+'-1c'):
             self.model.current_text_html.text=self.main_text_field.get('1.0', 'end'+'-1c')
-        if event:
-            pass
-            #self.insertion_tk_var.set(True)
+            
+    def switch_writing_place(self):#todo redesign this old thing
         if self.insertion_tk_var.get():
             line_before=self.main_text_field.get('insert'+'-1l', 'insert')
             #CTabulations=line_before.count(indent_var_changed)
             self.insertion_cursor.grid(row=2,column=0,sticky='nw')
             #self.insertion_cursor.set(CTabulations)            
             before_cursor_text=self.main_text_field.get('1.0', 'insert')
-            
             self.model.current_text_html.insertion=len(before_cursor_text)
         else:
             self.insertion_cursor.grid_forget()
             self.model.current_text_html.insertion=None
-            
-    def confirm_write(self):
-        selected_item_id=self.elements_in_treeview.selection()[0]
-        if self.elements_in_treeview.get_children(selected_item_id):
-            previous=self.content_area_form['state']
-            self.content_area_form['state']='normal'
-            self.content_area_form.insert('end',_("Vous devez choisir une balise"))
-            self.content_area_form['state']=previous
-        else:
-            element_tag=(self.elements_in_treeview.item(selected_item_id,'value'))[0]
-            attributes_with_spaces=" "+self.attribute_area_form.get('1.0', 'end'+'-1c').replace("\n"," ")
-            
-            
-            if self.current_element_void:
-                text_to_add=self.model.current_text_html.add_indent_and_line(self.model.current_text_html.open_close_void_element(element_tag,attributes_with_spaces))
-            else:
-                text_to_add=self.model.current_text_html.add_indent_and_line(self.model.current_text_html.open_element(element_tag, attributes_with_spaces))
-                text_to_add+=self.model.current_text_html.add_indent_and_line(self.content_area_form.get('1.0', 'end'+'-1c'))
-                if self.autoclose_element_check_variable.get():
-                    text_to_add+=self.model.current_text_html.add_indent_and_line(self.model.current_text_html.close_element())
-            self.model.current_text_html.add_to_text(text_to_add)
-            self.tk_copy_text(self.model.current_text_html)
-            
-                    
-            if not self.model.current_text_html.element_still_not_closed_list:
-                self.close_last_element_button['state']='disabled'
-            else:
-                self.close_last_element_button['state']='active'###
-                        
-        #todo here put the cursor at the end of what is just added
         
                    
 ##    def write_in_real_time(self,*event):#TODO
@@ -519,7 +547,6 @@ end: lesser important methods with visual effects but not much more"""
             self.tk_copy_text(self.model.current_text_html)
         else:
             pass
-        
         if self.model.current_text_html.element_still_not_closed_list:#there is still something to close
             pass
         else:
@@ -555,11 +582,14 @@ end: lesser important methods with visual effects but not much more"""
             if self.model._save_html_file_as(NomDuFichier):
                 self._mark_as_not_modified()
                 return True
-
         return False
     
+    def save_file_to_test_control(self,*event):#Try with CTRL+Shift+T
+        self.model.save_file_totest()
+        
     def _start(self):
-        self._prepare_new_session()
+        if not self.model.get_option("license_accepted_and_read"):
+            self.view_license(already_accepted=False)
         log_writer("width",self.winfo_screenwidth())
         log_writer("height",self.winfo_screenheight())
         self.mainloop()
@@ -584,8 +614,7 @@ end: lesser important methods with visual effects but not much more"""
             self.model.set_option("indent_size",self.indent_size_tk_var.get())
             self.model.set_option("indent_style"," ")
         
-    def save_file_to_test_control(self,*event):#Try with CTRL+T
-        self.model.save_file_totest()
+    
 
     def intercept_close(self): # intercept_close
         try:
@@ -606,10 +635,16 @@ end: lesser important methods with visual effects but not much more"""
 
 #Mostly visual and not important --------------###############################
             
-    def see_more_help_and_details(self):
-        help_window=Toplevel(self)
-        helpstyle={}
-        Label(help_window,text="help... coming").pack()
+    def see_more_help_and_details(self,event):
+        def toogle_index(i):#0 becomes 1 and 1 becomes
+            return int(not i)
+        w=event.widget
+        group=w.nametowidget(w.nametowidget(w.winfo_parent()).winfo_parent())
+        current_tab=w.nametowidget(w.winfo_parent())
+        not_current_tab_as_index=toogle_index(group.index(current_tab))
+        group.select(not_current_tab_as_index)
+        #redirect to the correct help tab
+        
      
     def _mark_as_modified(self):
         self.title(MAIN_TITLE_2)
@@ -626,7 +661,7 @@ end: lesser important methods with visual effects but not much more"""
             equivalent=event#zoom with something else 
         if equivalent== '0':
             self.current_font['size']= -12
-            self.elements_in_treeview['height']=25
+            self.elements_in_treeview['height']=21
         elif equivalent == 'plus':
             if self.current_font['size'] > -50:
                 self.current_font['size'] -= 1
@@ -648,13 +683,13 @@ end: lesser important methods with visual effects but not much more"""
         License_notice_text=Text(license_window)
         License_notice_text.grid(column=1,row=0)
         License_notice_text.insert('end',LICENSE_NOTICE)
+        license_window.lift()
         
         if not already_accepted:
             license_window.grab_set()
             license_window.focus_set()
             license_window.focus_force()#force focus
-            def accept(self,prepation):
-                print("should be true now")
+            def accept(self):
                 self.model.set_option("license_accepted_and_read",True)
                 license_window.destroy()
                 self._prepare_new_session()
@@ -665,7 +700,7 @@ end: lesser important methods with visual effects but not much more"""
             
             license_window.protocol("WM_DELETE_WINDOW", lambda:refuse(self))
             
-            accept_button=Button(license_window,text=_("Accepter"),command=lambda:accept(self,license_window))
+            accept_button=Button(license_window,text=_("Accepter"),command=lambda:accept(self))
             accept_button.grid(column=0,row=1)
             refuse_button=Button(license_window,text=_("Refuser"),command=lambda:refuse(self))
             refuse_button.grid(column=0,row=2)
@@ -706,7 +741,7 @@ creating a copy of this object starts the app."""
                 }
         
         self.options_file_object=Options(imported_default_values=default_values)#do not touch this directly use interface methods
-        log_writer("system platform",sys.platform)
+        
         
         #start
         self.graphical_user_interface_tk=GraphicalUserInterfaceTk(self)
@@ -767,6 +802,15 @@ creating a copy of this object starts the app."""
         self.current_text_html.test_file_with_browser()
 
 
-        
 if __name__=='__main__':
+    log_writer("platform", platform.platform())
+    log_writer("python_build", platform.python_build())
     WebSpreeInstance=WebSpree()
+
+##except Exception as E:
+##    log_writer("error",str(E))
+##    #os.chdir(path)to change cwd
+##    print(os.getcwd())
+##    print(E)
+##    a=input("erreur veuillez l'indiquer sur le site.\
+##    Vous retrouverez peut-être l'erreur dans Cache/journal.json")

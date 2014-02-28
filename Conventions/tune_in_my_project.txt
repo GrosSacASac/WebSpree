@@ -50,8 +50,8 @@ mp3, flac for sound
 mp4 ,[insert other open format for videos here] for videos
 try to not use other formats, HTML is very easy and with the app it s easier. If you can't then you should make a folder with text files and images and later do html with it.
 
-What should I do:
-Check the To_do.html file in Documentation.
+What should I do?
+Check the To_do.html file in Documentation to find interesting and exciting tasks.
 
 Builds:
 We need an easy freezing tool : freeze("WebSpree.py") --> WebSpree.exe
