@@ -51,6 +51,8 @@ def _(l_string):
 def get_time(time_modell="%d/%m/%Y\n%H:%M:%S"):
     return time.strftime(time_modell)
 
+def title_from_path(path):
+    return os.path.splitext(os.path.basename(path))[0]
 
 
 class WebSpree(InterfaceOptions):#Model
@@ -81,24 +83,29 @@ creating a copy of this object starts the app."""
         
         #start
         #we create 1 html tab. Each tab is an instance of Text_HTML class
+        #each tab is represented by 1 element of this list
         self.tabs_html=[Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")]
         #this is the variable to know which one the user is currently editing
         self.selected_tab=0
+        self.existing_tabs=1
         
         self.graphical_user_interface_tk=GraphicalUserInterfaceTk(self)
         self.graphical_user_interface_tk._start()
         
     def _start_new_session(self):
-        self.selected_tab+=1
-        #self.start_mod=-2#0:standard, -1: blank, 1:open ,2new tab-2 nothing
+        #self.start_mod=-2#0:standard, -1: blank, 1:open ,2new tabwhen there is nothing-2 nothing
         if self.start_mod==0:
+            self.selected_tab=self.existing_tabs
+            self.existing_tabs+=1
             current_text_html=Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
             current_text_html.add_standard_beginning()
             self.tabs_html.append(current_text_html)
             self.graphical_user_interface_tk.tk_copy_text(current_text_html,new=True)
         elif self.start_mod==-1:
+            self.selected_tab=self.existing_tabs
+            self.existing_tabs+=1
             current_text_html=Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
             self.tabs_html.append(current_text_html)
@@ -107,14 +114,24 @@ creating a copy of this object starts the app."""
             self.graphical_user_interface_tk.edit_file_dialog()
             #perhaps check if correctly opened here and update some data
             #but then Ctrl+N hotkey misses something
+        elif self.start_mod==2:
+            self.selected_tab=0
+            self.existing_tabs=1
+            current_text_html=Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
+                                         w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
+            self.tabs_html.append(current_text_html)
+            self.graphical_user_interface_tk.tk_copy_text(current_text_html,new=True)
          
     def edit_file(self,file_path):
         ContenuExistant=codecs.open(file_path,'r','utf-8').read()
         #set other usefull data here
-        self.current_text_html=Text_HTML(self.options_file_object,content=ContenuExistant,saved=True,path=file_path,encoding_py=DEFAULT_ENCODING_PY,\
+        current_text_html=Text_HTML(self.options_file_object,content=ContenuExistant,saved=True,path=file_path,encoding_py=DEFAULT_ENCODING_PY,\
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
-        
-        self.graphical_user_interface_tk.tk_copy_text(self.current_text_html)
+        self.tabs_html.append(current_text_html)
+        self.selected_tab=self.existing_tabs
+        self.existing_tabs+=1
+        self.set_option("last_html_document_title",title_from_path(file_path))
+        self.graphical_user_interface_tk.tk_copy_text(current_text_html,new=True)
         #todo
         #change the way it sniffs out the encoding  and redesign this method
         
@@ -132,7 +149,7 @@ creating a copy of this object starts the app."""
         
         current_text_html.set_save_path(file_path)
         current_text_html.save_in_file()
-        self.graphical_user_interface_tk.html_text_tabs.tab(tab_index,text=os.path.basename(file_path))
+        self.graphical_user_interface_tk.html_text_tabs.tab(tab_index,text=title_from_path(file_path))
         return True#only when success
 
     def save_html_file(self,*event):
@@ -147,7 +164,7 @@ creating a copy of this object starts the app."""
         
     def save_file_totest(self):#Try with CTRL+T
         current_text_html=self.tabs_html[self.selected_tab]
-        current_text_htmltest_file_with_browser()
+        current_text_html.test_file_with_browser()
 
 
 if __name__=='__main__':

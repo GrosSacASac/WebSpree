@@ -51,7 +51,8 @@ from file_extractor import*
 from tks_styles import*
 ##LOG##
 from log_writer import log_writer
-
+##TOOLS##
+from tk_tools import*
 #from tks_widgets_1 import*
 
 def _(l_string):
@@ -79,16 +80,17 @@ end: lesser important methods with visual effects but not much more"""
         #self.iconbitmap(LOGO1_PATH)#problems here, icon should be insert when freezing the app not here
         self.protocol("WM_DELETE_WINDOW", self.intercept_close)
 
-        self.bind("<Control-Shift-T>",self.save_file_to_test_control)
-        self.bind("<Control-Shift-S>",self._save_file_dialog)
-        self.bind("<Control-s>",self.model.save_html_file)
-        self.bind("<Control-o>",self.edit_file_dialog)
-        self.bind("<Control-n>",self.new_file)
+        self.bind('<Control-Shift-T>',self.save_file_to_test_control)
+        self.bind('<Control-Shift-S>',self._save_file_dialog)
+        self.bind('<Control-s>',self.model.save_html_file)
+        self.bind('<Control-o>',self.edit_file_dialog)
+        self.bind('<Control-n>',self.new_file)
+        self.bind('<Control-w>',self.close_tab)
         
 
-        self.bind("<Control-plus>",self.change_size)
-        self.bind("<Control-minus>",self.change_size)
-        self.bind("<Control-0>",self.change_size)
+        self.bind('<Control-plus>',self.change_size)
+        self.bind('<Control-minus>',self.change_size)
+        self.bind('<Control-0>',self.change_size)
         
         
         self.HTML5_PHOTO_ICO = PhotoImage(file="images/icos/HTML5_Badge_32.gif")#image is ready for tkinter
@@ -124,7 +126,7 @@ end: lesser important methods with visual effects but not much more"""
         
         self.frame_element=Frame(self.frame_element_notebook,FRAME_STYLE_2)#elements
         self.frame_element_help=Frame(self.frame_element_notebook,FRAME_STYLE_2)#help elements
-        self.frame_element_notebook.add(self.frame_element,text=_("1. Balises"),sticky='swen')
+        self.frame_element_notebook.add(self.frame_element,text=_("Balises"),sticky='swen')
         self.frame_element_notebook.add(self.frame_element_help,text=_("Aides"),sticky='swen')
         
         
@@ -135,11 +137,11 @@ end: lesser important methods with visual effects but not much more"""
         
         self.frame_attribute=Frame(self.frame_attribute_notebook,FRAME_STYLE_2)#attributes
         self.frame_attribute_help=Frame(self.frame_attribute_notebook,FRAME_STYLE_2)#help attributes
-        self.frame_attribute_notebook.add(self.frame_attribute,text=_("2. Choisir les attributs"),sticky='swen')
+        self.frame_attribute_notebook.add(self.frame_attribute,text=_("Choisir les attributs"),sticky='swen')
         self.frame_attribute_notebook.add(self.frame_attribute_help,text=_("Aides"),sticky='swen')
 
         
-        frame_2_user_input=LabelFrame(self.frame_of_frames_html, FRAME_STYLE,text=_("3. Saisir Contenu"),bg=COLOURS_A[2])#Buttons et saisies
+        frame_2_user_input=LabelFrame(self.frame_of_frames_html, FRAME_STYLE,text=_("Saisir Contenu"),bg=COLOURS_A[2])#Buttons et saisies
         frame_3_html_box=Frame(self.frame_of_frames_html, FRAME_STYLE_2,bg=COLOURS_A[3])#Preview
         
         
@@ -177,22 +179,22 @@ end: lesser important methods with visual effects but not much more"""
         #Help
         self.attribute_help_and_tip=Label(self.frame_attribute,HELP_LABEL_STYLE, text=_("Sélectionnez un attribut pour avoir de l'aide..."), wrap=400,anchor='nw',fg='#2220dd')
         self.attribute_help_and_tip.grid(row=1,column=0,columnspan=2,sticky='nsw')
-        self.attribute_help_and_tip.bind("<ButtonRelease-1>", self.see_more_help_and_details)
+        self.attribute_help_and_tip.bind('<ButtonRelease-1>', self.see_more_help_and_details)
         self.element_help_and_tip=Label(self.frame_element,HELP_LABEL_STYLE, text=_("Sélectionner  une balise pour avoir de l'aide..."), wrap=400,anchor='nw',fg='#2220dd')
         self.element_help_and_tip.grid(row=1,column=0,columnspan=3,sticky='nsw')
-        self.element_help_and_tip.bind("<ButtonRelease-1>", self.see_more_help_and_details)
+        self.element_help_and_tip.bind('<ButtonRelease-1>', self.see_more_help_and_details)
         self.more_help_2=TTK.Button(self.frame_attribute, text=_("Plus d'aide"))
         self.more_help_2.grid(row=2,column=0,sticky='nswe',columnspan=2)
-        self.more_help_2.bind("<ButtonRelease-1>", self.see_more_help_and_details)
+        self.more_help_2.bind('<ButtonRelease-1>', self.see_more_help_and_details)
         self.more_help=TTK.Button(self.frame_element, text=_("Plus d'aide"))
         self.more_help.grid(row=2,column=0,sticky='nswe',columnspan=3)
-        self.more_help.bind("<ButtonRelease-1>", self.see_more_help_and_details)
+        self.more_help.bind('<ButtonRelease-1>', self.see_more_help_and_details)
         self.leave_help=TTK.Button(self.frame_element_help, text=_("Quitter l'aide"))
         self.leave_help.grid(row=1,column=0,sticky='nswe')        
-        self.leave_help.bind("<ButtonRelease-1>", self.see_more_help_and_details)
+        self.leave_help.bind('<ButtonRelease-1>', self.see_more_help_and_details)
         self.leave_help_2=TTK.Button(self.frame_attribute_help, text=_("Quitter l'aide"))
         self.leave_help_2.grid(row=1,column=0,sticky='nswe')
-        self.leave_help_2.bind("<ButtonRelease-1>", self.see_more_help_and_details)
+        self.leave_help_2.bind('<ButtonRelease-1>', self.see_more_help_and_details)
 
         self.complete_help_element=TTK.Label(self.frame_element_help, text=_(""),wrap=400)
         self.complete_help_element.grid(row=0,column=0,sticky='nswe')
@@ -235,12 +237,12 @@ end: lesser important methods with visual effects but not much more"""
         
         self.var_for_auto_close_checkbutton=BooleanVar(value=True)
         self.auto_close_checkbutton=TTK.Checkbutton(frame_2_user_input, text=_("Auto Fermeture"),variable=self.var_for_auto_close_checkbutton)
-        self.auto_close_checkbutton.grid(row=4,column=1,sticky='nw')
+        self.auto_close_checkbutton.grid(row=5,column=0,sticky='nw')
         
 
         self.html_text_tabs=TTK.Notebook(frame_3_html_box)
         self.html_text_tabs.grid(row=0,column=0,sticky='nsw')
-        self.html_text_tabs.bind("<<NotebookTabChanged>>",self.change_tab)#xxx#
+        self.html_text_tabs.bind('<<NotebookTabChanged>>',self.change_tab)#xxx#
         self.text_fields=[]
         self.new_html_tab(0,"new_1")
         
@@ -271,12 +273,15 @@ end: lesser important methods with visual effects but not much more"""
                              {'label':_("Ouvrir [Ctrl+O]"),'command':self.edit_file_dialog},\
                              {'label':_("Enregistrer [Ctrl+S]"),'command':lambda: self.model.save_html_file()},\
                              {'label':_("Enregistrer sous[Ctrl+Shift+S]"),'command':lambda: self._save_file_dialog()},\
-                             {'label':_("Essayer ! [Ctrl+Shift+T]"),'command':lambda: self.save_file_to_test_control()}]
+                             {'label':_("Essayer ! [Ctrl+Shift+T]"),'command':lambda: self.save_file_to_test_control()},\
+                             {'label':_("Fermer Onglet [Ctrl+W]"),'command':lambda: self.close_tab()},\
+                             {'label':_("Quitter"),'command':lambda: self.intercept_close()}]
         FILEMENU["radiobutton"]=[]
 
         EDITMENU={}
         EDITMENU["name"]=_("Edition")
-        EDITMENU["command"]=[]
+        EDITMENU["command"]=[{'label':_("test"),'command':cut},\
+            ]
         EDITMENU["radiobutton"]=[]
 
         VIEWMENU={}
@@ -403,7 +408,7 @@ end: lesser important methods with visual effects but not much more"""
         frame_submit=LabelFrame(self.Contexte, FRAME_STYLE,text=_("Valider"))
         accept_and_begin=TTK.Button(frame_submit, text=_("Confirmer[Entrée]"), command=self._confirm_new_session)
         accept_and_begin.grid(row=0,column=0)
-        cancel=TTK.Button(frame_submit, text=_("Annuler"), command=self.Contexte.destroy)
+        cancel=TTK.Button(frame_submit, text=_("Annuler[Escape]"), command=self.Contexte.destroy)
         cancel.grid(row=1,column=0)
 
         
@@ -413,8 +418,8 @@ end: lesser important methods with visual effects but not much more"""
         frame_indentation.grid(row=2,column=0,sticky='nswe')
         frame_submit.grid(row=2,column=1,sticky='nswe')
 
-
-        self.Contexte.bind("<Return>",self._confirm_new_session)
+        self.Contexte.bind('<Escape>',lambda e:self.Contexte.destroy())
+        self.Contexte.bind('<Return>',self._confirm_new_session)
 
         
     def _confirm_new_session(self,*event):#controller
@@ -456,20 +461,55 @@ end: lesser important methods with visual effects but not much more"""
         #tab_index=self.model.selected_tab
         #self.text_fields[tab_index][0]  Text
         #self.text_fields[tab_index][1]  close_last_element_button
+
         
-                                 
         main_scrollbar.config(command=self.text_fields[tab_index][0])
         self.text_fields[tab_index][0].grid(row=0,column=0,sticky='nsw')
-        self.text_fields[tab_index][0].bind("<KeyRelease>", self.so_you_decided_to_write_html_directly)
+        self.text_fields[tab_index][0].bind('<KeyRelease>', self.so_you_decided_to_write_html_directly)
+        self.text_fields[tab_index][0].bind('<Button-3>',create_context_menu)#it doesn t change the objetct !!!
         self.text_fields[tab_index][1].grid(row=1,column=0,sticky='nsw')
         self.text_fields[tab_index][1]['state']='disabled'
         #Indicateur = InformationBubble(parent=main_text_field,texte=_("Vous pouvez éditer ici directement si vous ça vous chante"))
         self.html_text_tabs.add(html_text_tab,text=title)
         self.html_text_tabs.select(tab_index)
 
-    def change_tab(self,*event):
-        print(self.html_text_tabs.index(self.html_text_tabs.select()))
+    def change_tab(self,*event):#mysteriously non functional
+        print(event[0].__dir__())
+        self.html_text_tabs.update_idletasks()
         self.model.selected_tab=self.html_text_tabs.index(self.html_text_tabs.select())
+    def close_tab(self,*event):
+        def kill_tab(self,tab_index):
+            self.model.existing_tabs-=1
+            del self.model.tabs_html[tab_index]
+            del self.text_fields[tab_index]
+            self.html_text_tabs.forget(tab_index)
+            if self.model.existing_tabs>0:
+                self.html_text_tabs.select(0)
+                self.model.selected_tab=0
+            else:
+                self.destroy()
+#here is the way to let open at least 1 tab instead of closing the app
+##                self.model.start_mod=2
+##                self.model._start_new_session()
+                
+        tab_index=self.model.selected_tab
+        print("diifficult inex:",tab_index)
+        current_object=self.model.tabs_html[tab_index]
+        try:
+            if not current_object.is_saved():
+                answer=MessageBox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer cet onglet ?"))#True False ou None 
+                if answer:                                                      # Yes
+                    if self.model.save_html_file():
+                        kill_tab(self,tab_index)
+                elif answer==None: pass                               # Cancel or X pressed
+                else :
+                    kill_tab(self,tab_index)                             # Non
+            else:
+                kill_tab(self,tab_index)
+        except Exception:#caused when the windows creation process was interrupted because the
+            #current_text_html.is_saved() attribute is created after the windows
+            #solution: just le the user close the windows since nothing can be lost
+            kill_tab(self,tab_index)
                                 
     def update_attribute_selection(self,event):
         selected_item_id=event.widget.selection()[0]
@@ -602,7 +642,6 @@ end: lesser important methods with visual effects but not much more"""
         
     def confirm_close_element(self):
         tab_index=self.model.selected_tab
-        print(tab_index)
         current_object=self.model.tabs_html[tab_index]
         current_close_last=self.text_fields[tab_index][1]
         
@@ -669,6 +708,7 @@ end: lesser important methods with visual effects but not much more"""
         if  new:
             title=self.model.get_option("last_html_document_title")
             self.new_html_tab(index,title)
+
         
         current_widget=self.text_fields[index][0]
         #self._mark_as_modified()
@@ -690,29 +730,18 @@ end: lesser important methods with visual effects but not much more"""
     
 
     def intercept_close(self): # intercept_close
-        
-        #tab_index=self.model.selected_tab
-        #self.text_fields[tab_index][0]  Text
-        #self.text_fields[tab_index][1]  close_last_element_button
         tab_index=self.model.selected_tab
         current_object=self.model.tabs_html[tab_index]
         current_text_field=self.text_fields[tab_index][0]
         current_close_last=self.text_fields[tab_index][1]
-        try:
-            if not current_object.is_saved():
-                Reponse=MessageBox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de quitter ?"))#True False ou None 
-                if Reponse:                                                      # Oui
-                    if self.model.save_html_file():
-                        self.destroy()
-                elif Reponse==None: pass                             # Annuler
-                else :
-                    self.destroy()                                              # Non
-            else:
-                self.destroy()
-        except Exception:#caused when the windows creation process was interrupted because the
-            #current_text_html.is_saved() attribute is created after the windows
-            #solution: just le the user close the windows since nothing can be lost
-            self.destroy()
+        print("existing_tabs",self.model.existing_tabs)
+        print("range: ",list(range(self.model.existing_tabs-1,-1,-1)))
+        for tab_not_closed_index in range(self.model.existing_tabs-1,-1,-1):
+            self.html_text_tabs.select(tab_not_closed_index)
+            self.model.selected_tab=tab_not_closed_index
+            #self.html_text_tabs.select(tab_not_closed_index)
+            self.close_tab()
+        
 
 #Mostly visual and not important --------------###############################
             
