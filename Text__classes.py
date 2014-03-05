@@ -220,7 +220,9 @@ class Text_HTML(Text_):
             insertion=len(self)
         else:
             insertion=self.insertion
-        self.text=(self[0:insertion] + text+self[insertion:])
+        self.text="%s%s%s" % (self[0:insertion],text,self[insertion:])
+        if insertion==self.insertion:
+            self.insertion+=len(text)
         
     def add_standard_beginning(self):
         beginning=""

@@ -31,6 +31,9 @@
 import codecs
 import os
 import json
+def _(l_string):
+    #print("local language: "+l_string)
+    return l_string
 
 class Options():
     """Options is a class designed to read, add and change informations in a JSON file with a dictionnary in it.
@@ -152,10 +155,26 @@ class InterfaceOptions():
     def get_option(self,option_name):
         return self.options_file_object.read_file(read_this_key_only=option_name)
 
-
+DEFAULT_VALUES={\
+#editing global
+    "translate_html_level": 1,\
+    "indent_size":2,\
+    "indent_style":" ",\
+    "footer_bonus":False,\
+#editing local (read only to set a default value)
+    "html_version":5.0,\
+    "document_language":"fr",\
+#history
+    "last_html_document_title":_("Titre"),\
+    "last_css_document_title":_("Titre"),\
+    "previous_files_opened":[],\
+#app
+    "license_accepted_and_read":False,\
+    "app_language":"fr",\
+    "developper_interface":False\
+    }
 #demo
 if __name__ == '__main__':
-    
     option_file_object=Options()
     print(option_file_object.__doc__)
     print("\n",option_file_object.read_file())

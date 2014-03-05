@@ -61,36 +61,31 @@ class WebSpree(InterfaceOptions):#Model
 creating a copy of this object starts the app."""
     def __init__(self):
         #options
-        default_values={\
-            #editing global
-                "translate_html_level": 1,\
-                "indent_size":2,\
-                "indent_style":" ",\
-                "footer_bonus":False,\
-            #editing local (read only to set a default value)
-                "html_version":5.0,\
-                "document_language":"fr",\
-            #history
-                "last_html_document_title":_("Titre"),\
-                "last_css_document_title":_("Titre"),\
-            #app
-                "license_accepted_and_read":False,\
-                "app_language":"fr",\
-                "developper_interface":False\
-                }
         
-        self.options_file_object=Options(imported_default_values=default_values)#do not touch this directly use interface methods
+        
+        self.options_file_object=Options(imported_default_values=DEFAULT_VALUES)#do not touch this directly use interface methods
         
         #start
         #we create 1 html tab. Each tab is an instance of Text_HTML class
         #each tab is represented by 1 element of this list
-        self.tabs_html=[Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
-                                         w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")]
+        
         #this is the variable to know which one the user is currently editing
         self.selected_tab=0
-        self.existing_tabs=1
+        self.existing_tabs=0
         
         self.graphical_user_interface_tk=GraphicalUserInterfaceTk(self)
+        self.tabs_html=[]
+        self.graphical_user_interface_tk.text_fields=[]
+        for path in self.get_option("previous_files_opened"):
+            #try:
+            self.edit_file(path)
+            #except Exception:
+                #pass#file not found or something
+        if not self.tabs_html:#nothing opened so we provide a blank "new" file
+            self.tabs_html(Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
+                                         w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr"))
+            self.graphical_user_interface_tk.new_html_tab(0,_("nouveau"))
+            
         self.graphical_user_interface_tk._start()
         
     def _start_new_session(self):

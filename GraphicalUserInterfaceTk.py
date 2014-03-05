@@ -53,7 +53,7 @@ from tks_styles import*
 from log_writer import log_writer
 ##TOOLS##
 from tk_tools import*
-#from tks_widgets_1 import*
+from tks_widgets_1 import DragDropFeedback
 
 def _(l_string):
     #print("local language: "+l_string)
@@ -92,9 +92,9 @@ end: lesser important methods with visual effects but not much more"""
         self.bind('<Control-minus>',self.change_size)
         self.bind('<Control-0>',self.change_size)
         
-        
-        self.HTML5_PHOTO_ICO = PhotoImage(file="images/icos/HTML5_Badge_32.gif")#image is ready for tkinter
-        self.CSS3_PHOTO_ICO = PhotoImage(file="images/icos/CSS3_Badge_32.gif")#image is ready for tkinter
+        #image is ready for tkinter
+        self.HTML5_PHOTO_ICO = PhotoImage(file="images/icos/HTML5_Badge_32.gif")
+        self.CSS3_PHOTO_ICO = PhotoImage(file="images/icos/CSS3_Badge_32.gif")
         self.JS_PHOTO_ICO = PhotoImage(file="images/icos/js32.gif")
         #self.plus_image = PhotoImage(file="images/widgets/plus_1.gif")
         intern_root=Frame(self)#this is almost the root
@@ -104,7 +104,7 @@ end: lesser important methods with visual effects but not much more"""
         #mystyle.theme_use('clam')
         self.group_app_tabs=TTK.Notebook(intern_root)#this contains every tab,html,css,...
         self.group_app_tabs.enable_traversal()
-        self.current_font=TKFonts.Font(family='helvetica', size=-13)
+        self.current_font=TKFonts.Font(family='helvetica', size=-15)
         mystyle=TTK.Style()
         mystyle.configure('.',font=self.current_font)
         
@@ -112,9 +112,12 @@ end: lesser important methods with visual effects but not much more"""
         self.frame_of_frames_css=Frame(self.group_app_tabs)#css frame
         self.frame_of_frames_js=Frame(self.group_app_tabs)#js frame
         
-        self.group_app_tabs.add(self.frame_of_frames_html,text="HTML",image=self.HTML5_PHOTO_ICO,compound='left',underline=0)
-        self.group_app_tabs.add(self.frame_of_frames_css,text="CSS",image=self.CSS3_PHOTO_ICO,compound='left',underline=0)
-        self.group_app_tabs.add(self.frame_of_frames_js,text="JavaScript",image=self.JS_PHOTO_ICO,compound='left',underline=0)
+        self.group_app_tabs.add(self.frame_of_frames_html,text="HTML",image=\
+                                self.HTML5_PHOTO_ICO,compound='left',underline=0)
+        self.group_app_tabs.add(self.frame_of_frames_css,text="CSS",image=\
+                                self.CSS3_PHOTO_ICO,compound='left',underline=0)
+        self.group_app_tabs.add(self.frame_of_frames_js,text="JavaScript",image=\
+                                self.JS_PHOTO_ICO,compound='left',underline=0)
         Label(self.frame_of_frames_js,text='coming soon ...').pack()
         Label(self.frame_of_frames_css,text='coming soon ...').pack()
         
@@ -141,7 +144,7 @@ end: lesser important methods with visual effects but not much more"""
         self.frame_attribute_notebook.add(self.frame_attribute_help,text=_("Aides"),sticky='swen')
 
         
-        frame_2_user_input=LabelFrame(self.frame_of_frames_html, FRAME_STYLE,text=_("Saisir Contenu"),bg=COLOURS_A[2])#Buttons et saisies
+        frame_2_user_input=Frame(self.frame_of_frames_html, FRAME_STYLE_2,bg=COLOURS_A[2])#Buttons et saisies
         frame_3_html_box=Frame(self.frame_of_frames_html, FRAME_STYLE_2,bg=COLOURS_A[3])#Preview
         
         
@@ -151,14 +154,18 @@ end: lesser important methods with visual effects but not much more"""
 
         
         self.elements_in_treeviews_lift = TTK.Scrollbar(self.frame_element)
-        self.elements_in_treeview=TTK.Treeview(self.frame_element,selectmode='browse',columns=("element","local"),height=21,\
+        self.elements_in_treeview=TTK.Treeview(self.frame_element,selectmode='browse',\
+                                            columns=("element","local"),height=21,cursor="hand2",\
                                              yscrollcommand=self.elements_in_treeviews_lift.set,padding=0,takefocus=True,\
-                                             displaycolumns=(1,0))#,show='headings')#,show='tree'
+                                             displaycolumns=(1,0),show='headings')#,show='tree'
         self.elements_in_treeview.column("#0",width=20,stretch=False)
         self.elements_in_treeview.heading("local",text=_("Traduction"))
         self.elements_in_treeview.column("local",minwidth=100)
         self.elements_in_treeview.heading("element",text=_("Code"))
         self.elements_in_treeview.bind('<<TreeviewSelect>>',self.update_element_selection)
+        self.elements_in_treeview.bind('<Button-1>',self.drag_start,add='+')
+        self.elements_in_treeview.bind("<B1-Motion>",self.drag_and_drop_visual, add='+')
+        self.elements_in_treeview.bind('<ButtonRelease-1>',self.drop_end,add='+')
         self.elements_in_treeviews_lift.config(command=self.elements_in_treeview.yview)
         #_List of elements:
         i=0
@@ -170,31 +177,32 @@ end: lesser important methods with visual effects but not much more"""
             function=self.elements_in_treeview.insert("",'end',values=("",couple[0]),tag=tags[i%2])
             i+=1
             for ele in couple[1]:
-                self.elements_in_treeview.insert(function,'end', values=(ele,LOCAL_ELEMENTS[ele]["translation"]),tag="tag_3")
+                self.elements_in_treeview.insert(function,'end', \
+                                                 values=(ele,LOCAL_ELEMENTS[ele]["translation"]),tag="tag_3")
 
-        self.elements_in_treeview.grid(row=0,column=0,columnspan=2,sticky='nsw')#sticky remplit colle l'objet vers le n w e ou sud
-        self.elements_in_treeviews_lift.grid(row=0,column=2,sticky='nsw')#sticky remplit colle l'objet vers le n w e ou sud
+        self.elements_in_treeview.grid(row=0,column=0,columnspan=2,sticky='nsw')
+        self.elements_in_treeviews_lift.grid(row=0,column=2,sticky='nsw')
 
 
         #Help
         self.attribute_help_and_tip=Label(self.frame_attribute,HELP_LABEL_STYLE, text=_("Sélectionnez un attribut pour avoir de l'aide..."), wrap=400,anchor='nw',fg='#2220dd')
         self.attribute_help_and_tip.grid(row=1,column=0,columnspan=2,sticky='nsw')
-        self.attribute_help_and_tip.bind('<ButtonRelease-1>', self.see_more_help_and_details)
+        self.attribute_help_and_tip.bind('<ButtonRelease-1>', self.switch_help)
         self.element_help_and_tip=Label(self.frame_element,HELP_LABEL_STYLE, text=_("Sélectionner  une balise pour avoir de l'aide..."), wrap=400,anchor='nw',fg='#2220dd')
         self.element_help_and_tip.grid(row=1,column=0,columnspan=3,sticky='nsw')
-        self.element_help_and_tip.bind('<ButtonRelease-1>', self.see_more_help_and_details)
+        self.element_help_and_tip.bind('<ButtonRelease-1>', self.switch_help)
         self.more_help_2=TTK.Button(self.frame_attribute, text=_("Plus d'aide"))
         self.more_help_2.grid(row=2,column=0,sticky='nswe',columnspan=2)
-        self.more_help_2.bind('<ButtonRelease-1>', self.see_more_help_and_details)
+        self.more_help_2.bind('<ButtonRelease-1>', self.switch_help)
         self.more_help=TTK.Button(self.frame_element, text=_("Plus d'aide"))
         self.more_help.grid(row=2,column=0,sticky='nswe',columnspan=3)
-        self.more_help.bind('<ButtonRelease-1>', self.see_more_help_and_details)
+        self.more_help.bind('<ButtonRelease-1>', self.switch_help)
         self.leave_help=TTK.Button(self.frame_element_help, text=_("Quitter l'aide"))
         self.leave_help.grid(row=1,column=0,sticky='nswe')        
-        self.leave_help.bind('<ButtonRelease-1>', self.see_more_help_and_details)
+        self.leave_help.bind('<ButtonRelease-1>', self.switch_help)
         self.leave_help_2=TTK.Button(self.frame_attribute_help, text=_("Quitter l'aide"))
         self.leave_help_2.grid(row=1,column=0,sticky='nswe')
-        self.leave_help_2.bind('<ButtonRelease-1>', self.see_more_help_and_details)
+        self.leave_help_2.bind('<ButtonRelease-1>', self.switch_help)
 
         self.complete_help_element=TTK.Label(self.frame_element_help, text=_(""),wrap=400)
         self.complete_help_element.grid(row=0,column=0,sticky='nswe')
@@ -205,7 +213,8 @@ end: lesser important methods with visual effects but not much more"""
 
         
         #_List of attributes:
-        self.general_attributes_treeview=TTK.Treeview(self.frame_attribute,selectmode='browse',height=21,columns=("real","local"),displaycolumns=(1),show='headings')
+        self.general_attributes_treeview=TTK.Treeview(self.frame_attribute,selectmode='browse',\
+                                        height=21,columns=("real","local"),displaycolumns=(1),show='headings')
         self.general_attributes_treeview.heading("local",text=_("Général"))
         self.general_attributes_treeview.grid(row=0,column=0,sticky='w')
         for general_attribute in GENERAL_ATTRIBUTES_LIST:
@@ -223,28 +232,28 @@ end: lesser important methods with visual effects but not much more"""
         help_label_for_content=TTK.Label(frame_2_user_input, text=_("Ecrivez le contenu"))
         help_label_for_content.grid(row=0,column=0,sticky='nw')
         help_label_for_attribute=TTK.Label(frame_2_user_input, text=_("Placez les attributs"))
-        help_label_for_attribute.grid(row=2,column=0,sticky='nw')
+        help_label_for_attribute.grid(row=0,column=1,sticky='nw')
 
-        self.content_area_form=Text(frame_2_user_input,ENTRY_STYLE,width=20,height=10)
+        self.content_area_form=Text(frame_2_user_input,ENTRY_STYLE,width=42,height=10)
         self.content_area_form.grid(row=1,column=0,sticky='nw')
-        self.attribute_area_form=Text(frame_2_user_input,ENTRY_STYLE,width=16,height=10)
-        self.attribute_area_form.grid(row=3,column=0,sticky='nw')
+        self.content_area_form.bind('<Button-3>',create_context_menu)
+        self.attribute_area_form=Text(frame_2_user_input,ENTRY_STYLE,width=40,height=10)
+        self.attribute_area_form.bind('<Button-3>',create_context_menu)
+        self.attribute_area_form.grid(row=1,column=1,sticky='nw')
         #self.content_area_form.bind('<KeyRelease>',write_in_real_time)
 
         self.confirm_add_button=TTK.Button(frame_2_user_input, text=_("Confirmer"),command=self.confirm_write)
-        self.confirm_add_button.grid(row=4,column=0,sticky='nw')
+        self.confirm_add_button.grid(row=2,column=0,sticky='nw')
 
         
         self.var_for_auto_close_checkbutton=BooleanVar(value=True)
         self.auto_close_checkbutton=TTK.Checkbutton(frame_2_user_input, text=_("Auto Fermeture"),variable=self.var_for_auto_close_checkbutton)
-        self.auto_close_checkbutton.grid(row=5,column=0,sticky='nw')
+        self.auto_close_checkbutton.grid(row=2,column=1,sticky='nw')
         
 
         self.html_text_tabs=TTK.Notebook(frame_3_html_box)
         self.html_text_tabs.grid(row=0,column=0,sticky='nsw')
         self.html_text_tabs.bind('<<NotebookTabChanged>>',self.change_tab)#xxx#
-        self.text_fields=[]
-        self.new_html_tab(0,"new_1")
         
 
         frame_3_html_box_1=LabelFrame(frame_3_html_box, text="Outils", relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)#
@@ -274,7 +283,7 @@ end: lesser important methods with visual effects but not much more"""
                              {'label':_("Enregistrer [Ctrl+S]"),'command':lambda: self.model.save_html_file()},\
                              {'label':_("Enregistrer sous[Ctrl+Shift+S]"),'command':lambda: self._save_file_dialog()},\
                              {'label':_("Essayer ! [Ctrl+Shift+T]"),'command':lambda: self.save_file_to_test_control()},\
-                             {'label':_("Fermer Onglet [Ctrl+W]"),'command':lambda: self.close_tab()},\
+                             {'label':_("Fermer Onglet [Ctrl+W]"),'command':lambda: self.close_tab(("easy"))},\
                              {'label':_("Quitter"),'command':lambda: self.intercept_close()}]
         FILEMENU["radiobutton"]=[]
 
@@ -361,8 +370,8 @@ end: lesser important methods with visual effects but not much more"""
         
         frame_element_master.grid(row=0,column=0,sticky='nsw')
         frame_attribute_master.grid(row=0,column=1,sticky='nsw')
-        frame_2_user_input.grid(row=0,column=2,sticky='nsw')
-        frame_3_html_box.grid(row=0,column=3,sticky='nsw',rowspan=2)
+        frame_2_user_input.grid(row=1,column=0,columnspan=2,sticky='nsw')
+        frame_3_html_box.grid(row=0,column=2,sticky='nsw',rowspan=2)
         #self.grid_columnconfigure(0,weight=0)
     def _prepare_new_session(self):#view
         self.Contexte=Toplevel(self,bd=1,bg=WINDOW_BACK_COLOR)
@@ -463,8 +472,9 @@ end: lesser important methods with visual effects but not much more"""
         #self.text_fields[tab_index][1]  close_last_element_button
 
         
-        main_scrollbar.config(command=self.text_fields[tab_index][0])
+        main_scrollbar.config(command=self.text_fields[tab_index][0].yview)
         self.text_fields[tab_index][0].grid(row=0,column=0,sticky='nsw')
+        main_scrollbar.grid(row=0,column=1,sticky='ns')
         self.text_fields[tab_index][0].bind('<KeyRelease>', self.so_you_decided_to_write_html_directly)
         self.text_fields[tab_index][0].bind('<Button-3>',create_context_menu)#it doesn t change the objetct !!!
         self.text_fields[tab_index][1].grid(row=1,column=0,sticky='nsw')
@@ -474,9 +484,9 @@ end: lesser important methods with visual effects but not much more"""
         self.html_text_tabs.select(tab_index)
 
     def change_tab(self,*event):#mysteriously non functional
-        print(event[0].__dir__())
         self.html_text_tabs.update_idletasks()
         self.model.selected_tab=self.html_text_tabs.index(self.html_text_tabs.select())
+        
     def close_tab(self,*event):
         def kill_tab(self,tab_index):
             self.model.existing_tabs-=1
@@ -491,25 +501,35 @@ end: lesser important methods with visual effects but not much more"""
 #here is the way to let open at least 1 tab instead of closing the app
 ##                self.model.start_mod=2
 ##                self.model._start_new_session()
-                
+        
         tab_index=self.model.selected_tab
-        print("diifficult inex:",tab_index)
         current_object=self.model.tabs_html[tab_index]
-        try:
+        if event[0]=="for_save":
             if not current_object.is_saved():
                 answer=MessageBox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer cet onglet ?"))#True False ou None 
                 if answer:                                                      # Yes
-                    if self.model.save_html_file():
-                        kill_tab(self,tab_index)
-                elif answer==None: pass                               # Cancel or X pressed
-                else :
-                    kill_tab(self,tab_index)                             # Non
-            else:
-                kill_tab(self,tab_index)
-        except Exception:#caused when the windows creation process was interrupted because the
-            #current_text_html.is_saved() attribute is created after the windows
-            #solution: just le the user close the windows since nothing can be lost
+                    self.model.save_html_file()
+                elif answer==None:                                      # Cancel or X pressed
+                    return "cancel"
+            return "no_cancel"
+        elif event[0]=="already_saved":
             kill_tab(self,tab_index)
+        else:#manual tab_closing
+            try:
+                if not current_object.is_saved():
+                    answer=MessageBox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer cet onglet ?"))#True False ou None 
+                    if answer:                                                      # Yes
+                        if self.model.save_html_file():
+                            kill_tab(self,tab_index)
+                    elif answer==None: pass                                  # Cancel or X pressed
+                    else :
+                        kill_tab(self,tab_index)                             # Non
+                else:
+                    kill_tab(self,tab_index)
+            except Exception:#caused when the windows creation process was interrupted because the
+                #current_text_html.is_saved() attribute is created after the windows
+                #solution: just le the user close the windows since nothing can be lost
+                kill_tab(self,tab_index)
                                 
     def update_attribute_selection(self,event):
         selected_item_id=event.widget.selection()[0]
@@ -535,7 +555,9 @@ end: lesser important methods with visual effects but not much more"""
         current_object=self.model.tabs_html[index]
         current_widget=self.text_fields[index][0]
         selected_item_id=self.elements_in_treeview.selection()[0]
-        if not self.elements_in_treeview.get_children(selected_item_id):#we do nothing now if user opened a folder(who has childs)
+        if self.elements_in_treeview.get_children(selected_item_id):#folder of element
+            self.elements_in_treeview.see(self.elements_in_treeview.get_children(selected_item_id)[0])
+        else:#element
             element_tag=(self.elements_in_treeview.item(selected_item_id,'value'))[0]
             current_object.last_selected_element=element_tag
             
@@ -545,7 +567,7 @@ end: lesser important methods with visual effects but not much more"""
             self.content_area_form.delete('1.0', 'end'+'-1c')#Mettre en option
             self.content_area_form['state']=previous
             self.attribute_area_form.delete('1.0', 'end'+'-1c')
-            self.elements_in_treeview.heading("local",text=_("Code: ")+element_tag)
+            self.elements_in_treeview.heading("element",text=_("Code: ")+element_tag)
             
             
             
@@ -622,15 +644,18 @@ end: lesser important methods with visual effects but not much more"""
             current_object.text=current_text_field.get('1.0', 'end'+'-1c')
             
     def switch_writing_place(self):#todo redesign this old thing
+        tab_index=self.model.selected_tab
+        current_object=self.model.tabs_html[tab_index]
+        current_text_field=self.text_fields[tab_index][0]
         if self.insertion_tk_var.get():
-            line_before=self.main_text_field.get('insert'+'-1l', 'insert')
+            #line_before=current_text_field.get('insert'+'-1l', 'insert')
             #CTabulations=line_before.count(indent_var_changed)
-            self.insertion_cursor.grid(row=2,column=0,sticky='nw')
+            #self.insertion_cursor.grid(row=2,column=0,sticky='nw')
             #self.insertion_cursor.set(CTabulations)            
-            before_cursor_text=self.main_text_field.get('1.0', 'insert')
+            before_cursor_text=current_text_field.get('1.0', 'insert')
             current_object.insertion=len(before_cursor_text)
         else:
-            self.insertion_cursor.grid_forget()
+            #self.insertion_cursor.grid_forget()
             current_object.insertion=None
         
                    
@@ -660,18 +685,6 @@ end: lesser important methods with visual effects but not much more"""
             
     def new_file(self,*event):
         self._prepare_new_session()
-##        
-##        if current_object.is_saved():
-##            self._prepare_new_session()
-##        else:
-##            Reponse=MessageBox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de commencer un nouveau document ?"))#True False ou None 
-##            if Reponse:                                                      # Oui
-##                if self.model.save_html_file():
-##                    self._mark_as_not_modified()
-##                    self._prepare_new_session()
-##            elif Reponse is None: pass                             # Annuler
-##            else :
-##                self._prepare_new_session()                       #Non
     
     def edit_file_dialog(self,*event):
         file_path=FileDialog.askopenfilename(defaultextension=".html",filetypes=[("HyperText Mark-Up Language file", "*.html" ),])
@@ -698,6 +711,8 @@ end: lesser important methods with visual effects but not much more"""
             self.view_license(already_accepted=False)
         log_writer("width",self.winfo_screenwidth())
         log_writer("height",self.winfo_screenheight())
+        
+                
         self.mainloop()
 
     def _end(self):
@@ -732,21 +747,27 @@ end: lesser important methods with visual effects but not much more"""
     def intercept_close(self): # intercept_close
         tab_index=self.model.selected_tab
         current_object=self.model.tabs_html[tab_index]
-        current_text_field=self.text_fields[tab_index][0]
-        current_close_last=self.text_fields[tab_index][1]
-        print("existing_tabs",self.model.existing_tabs)
-        print("range: ",list(range(self.model.existing_tabs-1,-1,-1)))
-        for tab_not_closed_index in range(self.model.existing_tabs-1,-1,-1):
+        for tab_not_closed_index in range(self.model.existing_tabs-1,-1,-1):#we save all tabs or cancel
             self.html_text_tabs.select(tab_not_closed_index)
             self.model.selected_tab=tab_not_closed_index
-            #self.html_text_tabs.select(tab_not_closed_index)
-            self.close_tab()
+            close_all=self.close_tab(("for_save"))
+            if close_all=="cancel":
+                break
+        if close_all!="cancel":
+            path_list=[]
+            for tab_not_closed_index in range(self.model.existing_tabs-1,-1,-1):#we close all tabs and save the location for the next time
+                if self.model.tabs_html[tab_not_closed_index].get_save_path():
+                    path_list.insert(0,self.model.tabs_html[tab_not_closed_index].get_save_path())
+                self.html_text_tabs.select(tab_not_closed_index)
+                self.model.selected_tab=tab_not_closed_index
+                self.close_tab(("already_saved"))
+            self.model.set_option("previous_files_opened",path_list)
         
 
 #Mostly visual and not important --------------###############################
             
-    def see_more_help_and_details(self,event):
-        def toogle_index(i):#0 becomes 1 and 1 becomes
+    def switch_help(self,event):
+        def toogle_index(i):#0 becomes 1 and 1 becomes 0
             return int(not i)
         w=event.widget
         group=w.nametowidget(w.nametowidget(w.winfo_parent()).winfo_parent())
@@ -755,12 +776,35 @@ end: lesser important methods with visual effects but not much more"""
         group.select(not_current_tab_as_index)
         #redirect to the correct help tab
         
-     
-    def _mark_as_modified(self):
-        self.title(MAIN_TITLE_2)
+    def drag_start(self,event):
+        self.drag_element=self.elements_in_treeview.set(self.elements_in_treeview.identify_row(event.y),column="element")
+    def drag_and_drop_visual(self,event):
+        if self.drag_element!="":
+            try:
+                self.info.reset_position(event.x,event.y)
+            except AttributeError:
+                self.info=DragDropFeedback(parent=None,text="<%s>" % self.drag_element, x=event.x, y=event.y)
+                
+##            self.drop_menu = Menu(event.widget, tearoff=0, takefocus=0)
+##            self.drop_menu.add_command(label=self.drag_element)
+##            self.drop_menu.tk_popup(event.x_root+42, event.y_root+10,entry="0")
+        
+    def drop_end(self,event):
+        try:
+            self.info.destroy()
+            del self.info
+        except AttributeError:
+            pass
+        tab_index=self.model.selected_tab
+        current_object=self.model.tabs_html[tab_index]
+        current_text_field=self.text_fields[tab_index][0]
+        if self.drag_element!="" and self.winfo_containing(event.x_root,event.y_root) is current_text_field:            
+            line_dot_char=current_text_field.index("@%s,%s" % (event.x, event.y))
+            current_object.insertion=len("\n".join(current_object.text.split("\n")[0:int(line_dot_char.split(".")[0])]))
+            self.confirm_write()
+    
 
-    def _mark_as_not_modified(self):
-        self.title(MAIN_TITLE)
+    
 
     def change_size(self,event):
         #treeview is growing, even with control- fix it with something like that
@@ -773,7 +817,7 @@ end: lesser important methods with visual effects but not much more"""
         for treeview in self._treeviews:
             treeview.column("local",width=200)
         if equivalent== '0':
-            self.current_font['size']= -13
+            self.current_font['size']= -15
         elif equivalent == 'plus':
             if self.current_font['size'] > -60:
                 self.current_font['size'] -= 1
