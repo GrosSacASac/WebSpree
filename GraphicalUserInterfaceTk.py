@@ -476,7 +476,8 @@ end: lesser important methods with visual effects but not much more"""
         self.text_fields[tab_index][0].grid(row=0,column=0,sticky='nsw')
         main_scrollbar.grid(row=0,column=1,sticky='ns')
         self.text_fields[tab_index][0].bind('<KeyRelease>', self.so_you_decided_to_write_html_directly)
-        self.text_fields[tab_index][0].bind('<Button-3>',create_context_menu)#it doesn t change the objetct !!!
+        self.text_fields[tab_index][0].bind('<Button-3>',create_context_menu)#it doesn t change the real object !!!
+        self.text_fields[tab_index][0].bind('<ButtonRelease-1>',self.switch_writing_place)
         self.text_fields[tab_index][1].grid(row=1,column=0,sticky='nsw')
         self.text_fields[tab_index][1]['state']='disabled'
         #Indicateur = InformationBubble(parent=main_text_field,texte=_("Vous pouvez éditer ici directement si vous ça vous chante"))
@@ -640,10 +641,11 @@ end: lesser important methods with visual effects but not much more"""
         tab_index=self.model.selected_tab
         current_object=self.model.tabs_html[tab_index]
         current_text_field=self.text_fields[tab_index][0]
+        self.switch_writing_place()
         if current_object.text!=current_text_field.get('1.0', 'end'+'-1c'):
             current_object.text=current_text_field.get('1.0', 'end'+'-1c')
             
-    def switch_writing_place(self):#todo redesign this old thing
+    def switch_writing_place(self,*event):#todo redesign this old thing
         tab_index=self.model.selected_tab
         current_object=self.model.tabs_html[tab_index]
         current_text_field=self.text_fields[tab_index][0]
@@ -687,18 +689,21 @@ end: lesser important methods with visual effects but not much more"""
         self._prepare_new_session()
     
     def edit_file_dialog(self,*event):
-        file_path=FileDialog.askopenfilename(defaultextension=".html",filetypes=[("HyperText Mark-Up Language file", "*.html" ),])
+        file_path=FileDialog.askopenfilename(defaultextension=".html",initialdir=self.model.guess_dir(),\
+                                             filetypes=[("HyperText Mark-Up Language file", "*.html" ), ("All","*.*")])
         #to-do double check if the file exist here because it could have been deleted during the time the user chooses the file
         if file_path:
             self.model.edit_file(file_path)
 
 
     def _save_file_dialog(self,*event):
-        NomDuFichier=FileDialog.asksaveasfilename(defaultextension=".html",filetypes=[("HyperText Mark-Up Language file", "*.html" ),],\
+        file_path=FileDialog.asksaveasfilename(defaultextension=".html",initialdir=self.model.guess_dir(),\
+                                                  filetypes=[("HyperText Mark-Up Language file", "*.html" ),\
+                                                                   ("All","*.*")],\
                                                   initialfile=self.model.get_option("last_html_document_title"))
         
-        if NomDuFichier != "":
-            if self.model._save_html_file_as(NomDuFichier):
+        if file_path:
+            if self.model._save_html_file_as(file_path):
                 #self._mark_as_not_modified()
                 return True
         return False

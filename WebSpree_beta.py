@@ -28,10 +28,13 @@
 ##by sending an email to the following adress:capocyril@hotmail.com
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-import webbrowser
-import os
+try:
+    import os#problem with Mac
+except Exception:
+    pass
 import time
 import platform
+import webbrowser
 
 ##DATA##
 #from file_extractor import*
@@ -157,10 +160,16 @@ creating a copy of this object starts the app."""
                 return True
             
         
-    def save_file_totest(self):#Try with CTRL+T
+    def save_file_totest(self):#Try with CTRL+Shift+T
         current_text_html=self.tabs_html[self.selected_tab]
         current_text_html.test_file_with_browser()
-
+    def guess_dir(self):
+        current_text_html=self.tabs_html[self.selected_tab]
+        last_path=current_text_html.get_save_path()
+        if last_path:
+            return os.path.splitext(last_path)[0]
+        else:
+            return ""
 
 if __name__=='__main__':
     log_writer("platform", platform.platform())
