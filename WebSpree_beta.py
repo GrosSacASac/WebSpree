@@ -80,12 +80,13 @@ creating a copy of this object starts the app."""
         self.tabs_html=[]
         self.graphical_user_interface_tk.text_fields=[]
         for path in self.get_option("previous_files_opened"):
-            #try:
-            self.edit_file(path)
-            #except Exception:
-                #pass#file not found or something
+            try:
+                self.edit_file(path)
+            except Exception:
+                pass#file not found or something
         if not self.tabs_html:#nothing opened so we provide a blank "new" file
-            self.tabs_html(Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
+            self.existing_tabs+=1
+            self.tabs_html.append(Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr"))
             self.graphical_user_interface_tk.new_html_tab(0,_("nouveau"))
             
