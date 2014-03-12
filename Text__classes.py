@@ -168,24 +168,27 @@ class Text_HTML(Text_):
             return normal_char
 
     def add_indent_and_line(self, text, first=False):
-        indented_text="\n"
-        if first:
-            indented_text=""
-        for _ in range(self.instant_indenting_level+self.current_direction):
-            indented_text+=(self.get_option("indent_size") * self.get_option("indent_style"))
-            
-        if not(self.current_translation_needed) or self.get_option("translate_html_level")==0:
-            indented_text+=text
+        if text=="":
+            return ""
         else:
-            for chars in text:
-                indented_text+=self.normal_char_to_html(chars)
-                if self.normal_char_to_html(chars)=="<br />":#Ce if rend la prévisualisation plus lisible
-                    indented_text+="\n"
-                    for _ in range(self.instant_indenting_level+self.current_direction):
-                        indented_text+=(self.get_option("indent_size") * self.get_option("indent_style"))
-        self.current_direction=0
-        self.current_translation_needed=True
-        return indented_text
+            indented_text="\n"
+            if first:
+                indented_text=""
+            for _ in range(self.instant_indenting_level+self.current_direction):
+                indented_text+=(self.get_option("indent_size") * self.get_option("indent_style"))
+                
+            if not(self.current_translation_needed) or self.get_option("translate_html_level")==0:
+                indented_text+=text
+            else:
+                for chars in text:
+                    indented_text+=self.normal_char_to_html(chars)
+                    if self.normal_char_to_html(chars)=="<br />":#Ce if rend la prévisualisation plus lisible
+                        indented_text+="\n"
+                        for _ in range(self.instant_indenting_level+self.current_direction):
+                            indented_text+=(self.get_option("indent_size") * self.get_option("indent_style"))
+            self.current_direction=0
+            self.current_translation_needed=True
+            return indented_text
 
 #editing macros with border effect
     def open_close_void_element(self,lone_element,attributes=""):
@@ -241,8 +244,19 @@ class Text_HTML(Text_):
             beginning+=self.add_indent_and_line(self.close_element())#title close
             beginning+=self.add_indent_and_line(self.close_element())#head close
             beginning+=self.add_indent_and_line(self.open_element("body"))
-        elif self.version==4.0:
-             pass#complete here ...
+        elif self.version=="HTML 4.01 Strict":
+            beginning+= self.add_indent_and_line("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">",first=True)
+            beginning+=self.add_indent_and_line(self.open_element("html"," lang=\"{}\"".format(self.document_language)))
+            beginning+=self.add_indent_and_line(self.open_element("head"))
+            beginning+=self.add_indent_and_line(self.open_close_void_element("meta"," charset=\"{}\"".format(self.get_w3c_encoding())))
+            beginning+=self.add_indent_and_line(self.open_close_void_element("link"," rel=\"stylesheet\" href=\"{}\"".format("coming_style.css")))
+            beginning+=self.add_indent_and_line(self.open_element("title"))
+            beginning+=self.add_indent_and_line(self.get_option("last_html_document_title"))
+            beginning+=self.add_indent_and_line(self.close_element())#title close
+            beginning+=self.add_indent_and_line(self.close_element())#head close
+            beginning+=self.add_indent_and_line(self.open_element("body"))
+        elif self.version=="HTML 4.01 Transitional":
+            pass
             
         self.add_to_text(beginning)
 

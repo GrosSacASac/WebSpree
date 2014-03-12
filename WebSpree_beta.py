@@ -5,7 +5,7 @@
 #Role: main file
 
 #Walle Cyril
-#20/02/2014
+#11/03/2014
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -51,6 +51,7 @@ def _(l_string):
     #print("local language: "+l_string)
     return l_string
 
+DEFAULT_ENCODING_PY = DEFAULT_ENCODING_WEB = "utf-8"
 def get_time(time_modell="%d/%m/%Y\n%H:%M:%S"):
     return time.strftime(time_modell)
 
@@ -64,8 +65,6 @@ class WebSpree(InterfaceOptions):#Model
 creating a copy of this object starts the app."""
     def __init__(self):
         #options
-        
-        
         self.options_file_object=Options(imported_default_values=DEFAULT_VALUES)#do not touch this directly use interface methods
         
         #start
@@ -78,17 +77,16 @@ creating a copy of this object starts the app."""
         
         self.graphical_user_interface_tk=GraphicalUserInterfaceTk(self)
         self.tabs_html=[]
-        self.graphical_user_interface_tk.text_fields=[]
+        self.graphical_user_interface_tk.html_window.text_fields=[]
         for path in self.get_option("previous_files_opened"):
             try:
                 self.edit_file(path)
             except Exception:
                 pass#file not found or something
         if not self.tabs_html:#nothing opened so we provide a blank "new" file
-            self.existing_tabs+=1
-            self.tabs_html.append(Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
-                                         w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr"))
-            self.graphical_user_interface_tk.new_html_tab(0,_("nouveau"))
+            self.start_mod=2
+            self._start_new_session()
+            
             
         self.graphical_user_interface_tk._start()
         
@@ -101,16 +99,16 @@ creating a copy of this object starts the app."""
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
             current_text_html.add_standard_beginning()
             self.tabs_html.append(current_text_html)
-            self.graphical_user_interface_tk.tk_copy_text(current_text_html,new=True)
+            self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html,new=True)
         elif self.start_mod==-1:
             self.selected_tab=self.existing_tabs
             self.existing_tabs+=1
             current_text_html=Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
             self.tabs_html.append(current_text_html)
-            self.graphical_user_interface_tk.tk_copy_text(current_text_html,new=True)
+            self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html,new=True)
         elif self.start_mod==1:
-            self.graphical_user_interface_tk.edit_file_dialog()
+            self.graphical_user_interface_tk.html_window.edit_file_dialog()
             #perhaps check if correctly opened here and update some data
             #but then Ctrl+N hotkey misses something
         elif self.start_mod==2:
@@ -119,7 +117,9 @@ creating a copy of this object starts the app."""
             current_text_html=Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
             self.tabs_html.append(current_text_html)
-            self.graphical_user_interface_tk.tk_copy_text(current_text_html,new=True)
+            
+            self.set_option("last_html_document_title",_("nouveau"))
+            self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html,new=True)
          
     def edit_file(self,file_path):
         ContenuExistant=codecs.open(file_path,'r','utf-8').read()
@@ -130,7 +130,7 @@ creating a copy of this object starts the app."""
         self.selected_tab=self.existing_tabs
         self.existing_tabs+=1
         self.set_option("last_html_document_title",title_from_path(file_path))
-        self.graphical_user_interface_tk.tk_copy_text(current_text_html,new=True)
+        self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html,new=True)
         #todo
         #change the way it sniffs out the encoding  and redesign this method
         
@@ -140,15 +140,15 @@ creating a copy of this object starts the app."""
         if self.get_option("footer_bonus"):
             optional_bonus=("<!-- Document produit avec WebSpree\n{}\n{} -->".format(get_time(),"Fait par Cyril Walle\ncapocyril@hotmail.com"))
             current_text_html.add_to_text(optional_bonus)
-            self.graphical_user_interface_tk.tk_copy_text(current_text_html)
+            self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html)
         
-        if os.path.splitext(file_path)[1]!=".html":
-            file_path=os.path.splitext(file_path)[0]+".html"
+        #if os.path.splitext(file_path)[1]!=".html":
+            #file_path=os.path.splitext(file_path)[0]+".html"
         #TODO Let user choose other extension if he/she really wants to have a forced extension
         
         current_text_html.set_save_path(file_path)
         current_text_html.save_in_file()
-        self.graphical_user_interface_tk.html_text_tabs.tab(tab_index,text=title_from_path(file_path))
+        self.graphical_user_interface_tk.html_window.html_text_tabs.tab(tab_index,text=title_from_path(file_path))
         return True#only when success
 
     def save_html_file(self,*event):
@@ -157,7 +157,7 @@ creating a copy of this object starts the app."""
             current_text_html.save_in_file()
             return True
         else:#ask for a new path
-            if self.graphical_user_interface_tk._save_file_dialog():
+            if self.graphical_user_interface_tk.html_window._save_file_dialog():
                 return True
             
         

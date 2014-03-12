@@ -27,14 +27,7 @@
 ##If you have questions concerning this license you may contact via email Walle Cyril
 ##by sending an email to the following adress:capocyril@hotmail.com
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-try:
-    from Constantes.entities import html5
-except ImportError:
-    import sys
-    sys.path.insert(0, "/Constantes")
-    from entities import html5
-"""HTML character entity references."""
-
+from entities import html5
 
 html5reci={}
 for (codeh5, normal) in html5.items():
