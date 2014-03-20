@@ -1,0 +1,25 @@
+[
+    {
+        "afterthis":"page2.html",
+        "this":"page1.html",
+        "show_solution":false,
+        "verification":[
+            "bonjour"
+        ],
+        "showlink":false
+    },
+    {
+        "afterthis":"END",
+        "this":"page2.html",
+        "show_solution":false,
+        "verification":[
+            "patatemann",
+            "{tc:3}li",
+            "{t:4}li",
+            "{a:href:1}a:",
+            "{d:any}[0-9]{7}"
+        ],
+        "showlink":false
+    }
+
+]

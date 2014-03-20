@@ -29,8 +29,9 @@
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 try:
-    import os#problem with Mac
+    import os
 except Exception:
+    print("Do you see this ? #problem with Mac still dont know where it comes from")
     pass
 import time
 import platform
@@ -46,6 +47,8 @@ from GraphicalUserInterfaceTk import *
 from Options_class import *
 ##LOG##
 from log_writer import log_writer
+##parser##
+#from custom_parser import*
 
 def _(l_string):
     #print("local language: "+l_string)
@@ -73,7 +76,7 @@ creating a copy of this object starts the app."""
         
         #this is the variable to know which one the user is currently editing
         self.selected_tab=0
-        self.existing_tabs=0
+        #use len(self.tabs_html) to count existing_tabs
         
         self.graphical_user_interface_tk=GraphicalUserInterfaceTk(self)
         self.tabs_html=[]
@@ -93,16 +96,16 @@ creating a copy of this object starts the app."""
     def _start_new_session(self):
         #self.start_mod=-2#0:standard, -1: blank, 1:open ,2new tabwhen there is nothing-2 nothing
         if self.start_mod==0:
-            self.selected_tab=self.existing_tabs
-            self.existing_tabs+=1
+            self.selected_tab=len(self.tabs_html)
+            
             current_text_html=Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
             current_text_html.add_standard_beginning()
             self.tabs_html.append(current_text_html)
             self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html,new=True)
         elif self.start_mod==-1:
-            self.selected_tab=self.existing_tabs
-            self.existing_tabs+=1
+            self.selected_tab=len(self.tabs_html)
+            
             current_text_html=Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
             self.tabs_html.append(current_text_html)
@@ -113,7 +116,7 @@ creating a copy of this object starts the app."""
             #but then Ctrl+N hotkey misses something
         elif self.start_mod==2:
             self.selected_tab=0
-            self.existing_tabs=1
+            
             current_text_html=Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
             self.tabs_html.append(current_text_html)
@@ -122,13 +125,14 @@ creating a copy of this object starts the app."""
             self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html,new=True)
          
     def edit_file(self,file_path):
+        self.selected_tab=len(self.tabs_html)
         ContenuExistant=codecs.open(file_path,'r','utf-8').read()
         #set other usefull data here
         current_text_html=Text_HTML(self.options_file_object,content=ContenuExistant,saved=True,path=file_path,encoding_py=DEFAULT_ENCODING_PY,\
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
         self.tabs_html.append(current_text_html)
-        self.selected_tab=self.existing_tabs
-        self.existing_tabs+=1
+        
+        
         self.set_option("last_html_document_title",title_from_path(file_path))
         self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html,new=True)
         #todo
@@ -164,14 +168,20 @@ creating a copy of this object starts the app."""
     def save_file_totest(self):#Try with CTRL+Shift+T
         current_text_html=self.tabs_html[self.selected_tab]
         current_text_html.test_file_with_browser()
+        
     def guess_dir(self):
         current_text_html=self.tabs_html[self.selected_tab]
         last_path=current_text_html.get_save_path()
         if last_path:
-            return os.path.splitext(last_path)[0]
+            return os.path.dirname(last_path)
         else:
             return ""
+        
 
+
+        
+
+            
 if __name__=='__main__':
     log_writer("platform", platform.platform())
     log_writer("python_build", platform.python_build())

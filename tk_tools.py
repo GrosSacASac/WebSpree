@@ -50,7 +50,7 @@ def paste(event):
     event.widget.event_generate('<Control-v>')
     event.widget.event_generate('<KeyRelease>')
 
-class handler():
+class handler(object):
     def __init__(self,function,*event):
         self.function=function
         self.event=event

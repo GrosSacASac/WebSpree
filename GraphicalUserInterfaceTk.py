@@ -44,8 +44,10 @@ except ImportError:#2.X
 
 import webbrowser
 import codecs
+import os
 
 ##DATA##
+from tutorial import detect_existing_tutorials,start_tutorial
 #from file_extractor import*
 ##STYLES##
 from tks_styles import*
@@ -61,11 +63,7 @@ def _(l_string):
 class GraphicalUserInterfaceTk(tk.Tk):
     """tkinter interface for WebSpree.
 
- out of date comments below
-graphic user interface, view and controller
-begin: methods that changes something important
-middle: intern methods
-end: lesser important methods with visual effects but not much more"""
+"""
 
 #methods that changes something important --------------###############################
     
@@ -80,12 +78,13 @@ end: lesser important methods with visual effects but not much more"""
         self.bind('<Control-plus>',self.change_size)
         self.bind('<Control-minus>',self.change_size)
         self.bind('<Control-0>',self.change_size)
+        self.bind('<Control-Shift-A>',self.save_all)
         
         #image is ready for tkinter
-        self.HTML5_PHOTO_ICO = tk.PhotoImage(file="images/icos/HTML5_Badge_32.gif")
-        self.CSS3_PHOTO_ICO = tk.PhotoImage(file="images/icos/CSS3_Badge_32.gif")
-        self.JS_PHOTO_ICO = tk.PhotoImage(file="images/icos/js32.gif")
-        #self.plus_image = tk.PhotoImage(file="images/widgets/plus_1.gif")
+        self.HTML5_PHOTO_ICO = tk.PhotoImage(file=os.path.normpath("images/icos/HTML5_Badge_32.gif"))
+        self.CSS3_PHOTO_ICO = tk.PhotoImage(file=os.path.normpath("images/icos/CSS3_Badge_32.gif"))
+        self.JS_PHOTO_ICO = tk.PhotoImage(file=os.path.normpath("images/icos/js32.gif"))
+        #self.plus_image = tk.PhotoImage(file=os.path.normpath("images/widgets/plus_1.gif"))
         intern_root=tk.Frame(self)#this is almost the root
         self.group_app_tabs=ttk.Notebook(intern_root)#this contains every tab,html,css,...
         self.group_app_tabs.enable_traversal()
@@ -105,7 +104,7 @@ end: lesser important methods with visual effects but not much more"""
                                 self.CSS3_PHOTO_ICO,compound='left',underline=0)
         self.group_app_tabs.add(self.frame_of_frames_js,text="JavaScript",image=\
                                 self.JS_PHOTO_ICO,compound='left',underline=0)
-        tk.Label(self.frame_of_frames_js,text='coming soon ...').pack()
+        tk.Label(self.frame_of_frames_js,text='coming VERY soon . really.').pack()
         tk.Label(self.frame_of_frames_css,text='coming soon ...').pack()
         
         
@@ -118,6 +117,7 @@ end: lesser important methods with visual effects but not much more"""
                              {'label':_("Ouvrir [Ctrl+O]"),'command':self.html_window.edit_file_dialog},\
                              {'label':_("Enregistrer [Ctrl+S]"),'command':lambda: self.html_window.model.save_html_file()},\
                              {'label':_("Enregistrer sous[Ctrl+Shift+S]"),'command':lambda: self.html_window._save_file_dialog()},\
+                             {'label':_("Enregistrer tout [Ctrl+Shift+A]"),'command':lambda: self.save_all("forced_arg")},\
                              {'label':_("Essayer ! [Ctrl+Shift+T]"),'command':lambda: self.html_window.save_file_to_test_control()},\
                              {'label':_("Fermer Onglet [Ctrl+W]"),'command':lambda: self.html_window.close_tab(("easy"))},\
                              {'label':_("Quitter"),'command':lambda: self.intercept_close()}]
@@ -163,8 +163,16 @@ end: lesser important methods with visual effects but not much more"""
                                     #{'label':_("Etendu"),'command':self.change_mapping,'value':False,"variable":self.small_layout}])
         TUTORIALMENU={}
         TUTORIALMENU["name"]=_("Tutoriel")
-        TUTORIALMENU["command"]=([
-                              {'label':_("tuto_1"),'command':lambda: webbrowser.open("Documentation\Lisez_moi.html",new=2)}])
+        TUTORIALMENU["command"]=[]
+        tutorial_finished=self.model.get_option("tutorial_finished")
+        for name,folder in detect_existing_tutorials():
+            c="#e5e5e5"#near white
+            expl=""
+            if folder in tutorial_finished:
+                c="#46a717"#green
+                expl=_(" (tutoriel terminé)")
+            TUTORIALMENU["command"].append({'label':name+expl,"bg":c,'command':lambda: start_tutorial(folder,self)})
+        
         TUTORIALMENU["radiobutton"]=[]
         
         HELPMENU={}
@@ -189,7 +197,10 @@ end: lesser important methods with visual effects but not much more"""
             sub_menu_list.append(tk.Menu(self.Menus_tk,tearoff=0))#,tearoff=0 disables the popopable menu item with the dottet bar
             self.Menus_tk.add_cascade(label=submenu["name"], menu=sub_menu_list[index],underline=0)
             for command_ in submenu["command"]:
-                sub_menu_list[len(sub_menu_list)-1].add_command(label=command_["label"], command=command_["command"],activebackground="blue")
+                c="white"
+                if 'bg' in command_:
+                    c=command_['bg']
+                sub_menu_list[len(sub_menu_list)-1].add_command(label=command_["label"], command=command_["command"],background=c,activebackground="blue")
             for radiobutton_ in submenu["radiobutton"]:
                 sub_menu_list[len(sub_menu_list)-1].add_radiobutton(label=radiobutton_["label"], command=radiobutton_["command"],\
                                                                     variable=radiobutton_["variable"],value=radiobutton_["value"],activebackground="blue")
@@ -213,18 +224,24 @@ end: lesser important methods with visual effects but not much more"""
     def _end(self):
         self.destroy()
 
-    def intercept_close(self): # intercept_close
-        tab_index=self.model.selected_tab
-        current_object=self.model.tabs_html[tab_index]
-        for tab_not_closed_index in range(self.model.existing_tabs-1,-1,-1):#we save all tabs or cancel
+    def save_all(self,*event):
+        m="for_save"
+        if event:#called directly
+            m="for_save_no_warning"
+        #change this with css
+        for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):#we save all tabs or cancel
             self.html_window.html_text_tabs.select(tab_not_closed_index)
             self.model.selected_tab=tab_not_closed_index
-            close_all=self.html_window.close_tab(("for_save"))
+            close_all=self.html_window.close_tab((m))
             if close_all=="cancel":
-                break
-        if close_all!="cancel":
+                return close_all
+        return "no_cancel"
+    
+    def intercept_close(self):
+        #change this with css
+        if self.save_all() != "cancel":
             path_list=[]
-            for tab_not_closed_index in range(self.model.existing_tabs-1,-1,-1):#we close all tabs and save the location for the next time
+            for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):#we close all tabs and save the location for the next time
                 if self.model.tabs_html[tab_not_closed_index].get_save_path():
                     path_list.insert(0,self.model.tabs_html[tab_not_closed_index].get_save_path())
                 self.html_window.html_text_tabs.select(tab_not_closed_index)
@@ -232,7 +249,7 @@ end: lesser important methods with visual effects but not much more"""
                 self.html_window.close_tab(("already_saved"))
             self.model.set_option("previous_files_opened",path_list)
             self._end()
-            
+    
     def view_license(self,already_accepted=False):
         license_window=tk.Toplevel(self,bd=1,bg=WINDOW_BACK_COLOR)
         license_window.title("LICENSE")
@@ -241,7 +258,7 @@ end: lesser important methods with visual effects but not much more"""
         license_text.grid(column=0,row=0)
         license_text.insert('end',LICENSE)
         
-        LICENSE_NOTICE=codecs.open("Documentation/notice_license.txt",'r','utf-8').read()
+        LICENSE_NOTICE=codecs.open(os.path.normpath("Documentation/notice_license.txt"),'r','utf-8').read()
         License_notice_text=tk.Text(license_window)
         License_notice_text.grid(column=1,row=0)
         License_notice_text.insert('end',LICENSE_NOTICE)
@@ -284,4 +301,9 @@ end: lesser important methods with visual effects but not much more"""
                 self.current_font['size'] -= 1
         elif equivalent == 'minus':
             if self.current_font['size'] < -7:
-                self.current_font['size'] += 1 
+                self.current_font['size'] += 1
+    def lock_tutorial(self):
+        #TODO when a tutorial starts, lock all tutorial.
+        #to unlock you have to say yes to a cancelyes dialog
+        #this fun is already linked correctly
+        pass

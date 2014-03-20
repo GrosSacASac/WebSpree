@@ -1,7 +1,7 @@
 #! /usr/bin/python
 #-*-coding:utf-8*
 
-#Label_Plus
+#Label_Plus --> lol
 #InformationBubble avec failles
 #HyperLink
 import webbrowser
@@ -34,6 +34,7 @@ class MainPlusHelp(ttk.Notebook):
         self.short_help=tk.Label(self.main_frame,HELP_LABEL_STYLE, text=_("Cliquer sur un objet pour avoir de l'aide..."), wrap=400,anchor='nw',fg='#2220dd')
         self.short_help.grid(row=1,column=0,columnspan=2,sticky='nsw')
         self.short_help.bind('<ButtonRelease-1>', self.switch_help)
+        self.short_help['cursor']="hand2"
         
         more_help_button=ttk.Button(self.main_frame, text=_("Plus d'aide"))
         more_help_button.grid(row=2,column=0,sticky='nswe',columnspan=3)
@@ -52,118 +53,76 @@ class MainPlusHelp(ttk.Notebook):
         not_current_tab_as_index=toogle_index(self.index(current_tab))
         self.select(not_current_tab_as_index)
         #redirect to the correct help tab
-
-class HyperLink():
-    def __init__(self,parent,URL="",*TkPaquet,**TkDic):
-        if 'text' in (TkDic):
-            pass
-        else:
-            TkDic['text']=URL
-        self.URL=URL
-        self.lab=tk.Label(parent,TkDic,fg='blue')
-        Police = tkfont.Font(self.lab, self.lab.cget('font'))# On prend la police
-        Police['underline'] = True# On la rend soulignée
-        self.lab['font'] = Police           # On la reaffecte
         
-        self.lab.bind('<ButtonRelease-1>',self.OuvrirLien)#La souris clique droit
-        self.lab['cursor']='center_ptr'#Curseur flèche
-    def OuvrirLien(self,event):
-        print(event.x_root,event.y_root)
-        if self.lab.winfo_containing(event.x_root,event.y_root) is self.lab:
+class HyperLink(tk.Label):
+    def __init__(self,parent,URL,text):
+        tk.Label.__init__(self,parent,text=text)
+        if not (URL=="" and text==""):
+            self.URL=URL
+
+            #underline font and blue it
+            font=tkfont.Font(self, self.cget('font'))
+            font['underline'] = True
+            self['font']=font
+            self['fg']="blue"
+
+            #change cursor
+            self['cursor']="hand2"
+            self.bind('<ButtonRelease-1>',self.open_link)
+        
+    def open_link(self,event):
+        #if the pointer is still on the link when click released
+        if self.winfo_containing(event.x_root,event.y_root) is self:
             webbrowser.open_new_tab(self.URL)
-    def pack(self):
-        self.lab.pack()
-    
-    
-
-
-
-class InformationBubble(tk.Toplevel):
-    def __init__(self,parent=None,texte="", DecalageX=20, DecalageY=0):
-        tk.Toplevel.__init__(self,parent,bd=1,bg='black')
-        self.parent=parent
-        self.withdraw()#L'objet  se fait effacer
-        self.overrideredirect(1)#L'objet n as pas le contour d'une fenetre
-        self.transient()#Effet sur le focus
-        InfoTexte=tk.Label(self,text=texte,justify='left',bg='light yellow')
-        InfoTexte.pack()
-        #InfoTexte.update_idletasks()
-        
-        self.LargeurObjet = InfoTexte.winfo_width()#On adapte la taille de l'InformationBubble à son contenu(texte); largeur
-        self.HauteurObjet = InfoTexte.winfo_height()#hauteur
-
-        self.DecalageX=DecalageX
-        self.DecalageY=DecalageY
-        self.parent.bind('<Enter>',self.Afficher)#La souris entre
-        self.parent.bind('<Button-1>',self.Effacer)#La souris clique droit
-        self.parent.bind('<Button-2>',self.Effacer)
-        self.parent.bind('<Button-3>',self.Effacer)
-        self.parent.bind('<Button-4>',self.Effacer)
-        self.parent.bind('<Leave>',self.Effacer)#La souris sort
-        self.parent.bind('<Motion>',self.Mouver)#La souris bouge
-    
-    def Reajustement(self,event):
-        #localisation du widget parent+localisation de la souris +10
-        PosX=self.parent.winfo_rootx()+event.x+self.DecalageX#On suit la souris
-        PosY=self.parent.winfo_rooty()+event.y+self.DecalageY
-        if PosX + self.LargeurObjet > self.winfo_screenwidth():#Si on dépasse l'écran ...
-            PosX = PosX-self.winfo_width()-self.LargeurObjet
-        if PosY + self.HauteurObjet > self.winfo_screenheight():
-            PosY = PosY-self.winfo_height()-self.HauteurObjet
-        return PosX,PosY
- 
-    def Afficher(self,event):
-        self.update_idletasks()
-        PosX,PosY=self.Reajustement(event)
-        self.geometry("+"+str(PosX)+"+"+str(PosY))
-        self.deiconify()#L'objet  se fait dessiner
-        self.update_idletasks()
- 
-    def Mouver(self,event):
-        PosX,PosY=self.Reajustement(event)
-        self.geometry("+"+str(PosX)+"+"+str(PosY))
-        self.update_idletasks()
- 
-    def Effacer(self,event):
-        self.withdraw()#L'objet  se fait effacer
         
 class DragDropFeedback(tk.Toplevel):
     def __init__(self,parent=None,text="no text given", x=0, y=0):
         tk.Toplevel.__init__(self,parent,bd=0,bg='#333300')
         self.reset_position(x,y)
-        tk.Label(self,text=text).pack()
+        tk.Label(self,text=text).grid()
         self.overrideredirect(1)#L'objet n as pas le contour d'une fenetre
     def reset_position(self,x,y):
-        self.geometry('200x20+%d+%d' % (135+x,240+y))
+        self.geometry('200x20+%d+%d' % (0+x,0+y))
+
+class InformationBubble(tk.Toplevel):#broken do not use
+    def __init__(self,parent=None,texte="", DecalageX=20, DecalageY=0):
+        #I deleted this becuase it was full of bugs and impolite
+        pass
         
- 
 if __name__ == '__main__':#essay
     root=tk.Tk()
-    F1=tk.LabelFrame(root, FRAME_STYLE,text="Infobulles")
+    F1=tk.LabelFrame(root, FRAME_STYLE,text="links")
     F2=tk.LabelFrame(root, FRAME_STYLE,text="LabelFrame_2")
-    F3=tk.LabelFrame(root, FRAME_STYLE,text="testzqts")
+    F3=tk.LabelFrame(root, FRAME_STYLE,text="test")
     F4=tk.LabelFrame(root, FRAME_STYLE,text="main and help")
 
-    H=HyperLink(F1,URL="www.python.org",text="Lien Avec Texte particulier",font='50');H.pack()
-    H2=HyperLink(F1,URL="www.wikipedia.org",font='10');H2.pack()
-    AideLien = InformationBubble(parent=H2.lab,texte="Lien sans texte particulier",DecalageX=0, DecalageY=-50)
+    H=HyperLink(F1,URL="www.python.org",text="PYTHON");H.grid()
+    H2=HyperLink(F1,URL="www.wikipedia.org",text="wikipedia !!!");H2.grid()
+    #AideLien = InformationBubble(parent=H2,texte="Lien sans texte particulier",DecalageX=0, DecalageY=-50)
 
 
-    YOLO=tk.Label(F1,text="YOLO",font='10');YOLO.pack()
-    azr=TRY(F3)
+    YOLO=tk.Label(F1,text="YOLO",font='10');YOLO.grid()
+    azr=MainPlusHelp(F3,"content","helplabel")
     help_and=MainPlusHelp(F4,"data","help about data")
     main_c=tk.Label(help_and.main_frame,text="Main content This can be anything",font='10');main_c.grid(row=0,column=0)
     help_c=tk.Label(help_and.help_frame,text="help_details This can be anything",font='10');help_c.grid(row=0,column=0)
-    test2 = InformationBubble(parent=YOLO,texte="You Only Live Online",DecalageX=-15, DecalageY=35)
+    #test2 = InformationBubble(parent=YOLO,texte="You Only Live Online",DecalageX=-15, DecalageY=35)
 
-    A=tk.Listbox(F2,LISTBOX_STYLE);A.pack()
+    A=tk.Listbox(F2,LISTBOX_STYLE);A.grid()
     A.insert('end', 'element 1');A.insert('end', 'element 2')
+    
+    search_bar=tk.Text(F1,state='normal',height=5)
+    search_bar.grid()
 
+    results=tk.Listbox(search_bar,state='normal',height=1)
+    results.insert('end',"result1")
+    results.insert('end',"result2")
+    results.insert('end',"result3")
+    search_bar.window_create("1.1", window=results)
 
-    F1.pack(side='left')
-    F2.pack(side='right')
-    F3.pack(side='right')
-    F4.pack(side='right')
+    F1.grid(row=0,column=0)
+    F2.grid(row=0,column=1)
+    F3.grid(row=0,column=2)
+    F4.grid(row=0,column=3)
     root.mainloop()
     
-    az2r=TRY()

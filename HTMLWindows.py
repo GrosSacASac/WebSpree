@@ -45,6 +45,7 @@ except ImportError:#2.X
 import webbrowser
 
 
+from tutorial import*
 ##DATA##
 from file_extractor import*
 ##STYLES##
@@ -53,7 +54,7 @@ from tks_styles import*
 #from log_writer import log_writer
 ##TOOLS##
 from tk_tools import*
-from tks_widgets_1 import DragDropFeedback,MainPlusHelp
+from tks_widgets_1 import DragDropFeedback, MainPlusHelp, HyperLink
 
 def _(l_string):
     #print("local language: "+l_string)
@@ -146,15 +147,15 @@ class HTMLWindows(tk.Frame):
         
         #user input
         frame_2_user_input=tk.Frame(self, FRAME_STYLE_2,bg=COLOURS_A[2])#Buttons et saisies
-        help_label_for_content=ttk.Label(frame_2_user_input, text=_("Ecrivez le contenu"))
+        help_label_for_content=ttk.Label(frame_2_user_input,text=_("Ecrivez le contenu"))
         help_label_for_content.grid(row=0,column=0,sticky='nw')
         help_label_for_attribute=ttk.Label(frame_2_user_input, text=_("Placez les attributs"))
         help_label_for_attribute.grid(row=0,column=1,sticky='nw')
 
-        self.content_area_form=Text(frame_2_user_input,ENTRY_STYLE,width=42,height=10)
+        self.content_area_form=tk.Text(frame_2_user_input,ENTRY_STYLE,width=42,height=6)
         self.content_area_form.grid(row=1,column=0,sticky='nw')
         self.content_area_form.bind('<Button-3>',create_context_menu)
-        self.attribute_area_form=Text(frame_2_user_input,ENTRY_STYLE,width=40,height=10)
+        self.attribute_area_form=tk.Text(frame_2_user_input,ENTRY_STYLE,width=40,height=6)
         self.attribute_area_form.grid(row=1,column=1,sticky='nw')
         self.attribute_area_form.bind('<Button-3>',create_context_menu)
         #self.content_area_form.bind('<KeyRelease>',write_in_real_time)
@@ -175,16 +176,19 @@ class HTMLWindows(tk.Frame):
         
 
         frame_3_html_box_1=tk.LabelFrame(frame_3_html_box, text="Outils", relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)#
-        RadioFin=ttk.Radiobutton(frame_3_html_box_1, text=_("Ecrire à la fin"),variable=self.insertion_tk_var, value=False, command=self.switch_writing_place )
-        RadioFin.grid(row=0,column=0,sticky='nw')
-        RadioIns=ttk.Radiobutton(frame_3_html_box_1, text=_("Insèrer au curseur"),variable=self.insertion_tk_var, value=True,command=self.switch_writing_place )
-        RadioIns.grid(row=1,column=0,sticky='nw')
+        write_end_choice=ttk.Radiobutton(frame_3_html_box_1, text=_("Ecrire à la fin"),variable=self.insertion_tk_var, value=False, command=self.switch_writing_place )
+        write_end_choice.grid(row=0,column=0,sticky='nw')
+        write_cursor_choice=ttk.Radiobutton(frame_3_html_box_1, text=_("Insèrer au curseur"),variable=self.insertion_tk_var, value=True,command=self.switch_writing_place )
+        write_cursor_choice.grid(row=1,column=0,sticky='nw')
 
         
         frame_3_html_box_1.grid(row=1,column=0,sticky='e')
         if self.model.get_option("developper_interface"):
-            leave_button=ttk.Button(frame_3_html_box, text="Quitter",command=self.master_window._end )
+            leave_button=ttk.Button(frame_3_html_box, text="Quit(instantly)",command=self.master_window._end )
             leave_button.grid(row=2,column=0,sticky='')
+            self.tutorial_button=ttk.Button(frame_3_html_box_1, text="Check exercice",command=lambda:verify(self.model))
+            self.tutorial_button.grid(row=3,column=0,sticky='')
+            self.tutorial_button['state']='disabled'
 
         self.master_window._treeviews=self.master_window._treeviews+[self.elements_in_treeview,self.general_attributes_treeview,self.specific_attributes_treeview]
         #keep this do work around a ttk bug: growing treeviews
@@ -290,13 +294,13 @@ class HTMLWindows(tk.Frame):
     def new_html_tab(self,tab_index,title):
         html_text_tab=tk.Frame(self.html_text_tabs)
         main_scrollbar = ttk.Scrollbar(html_text_tab)
-        self.text_fields.append([Text(html_text_tab,yscrollcommand=main_scrollbar.set,state='normal',height=35,undo=True),\
+        self.text_fields.append([tk.Text(html_text_tab,yscrollcommand=main_scrollbar.set,state='normal',height=35,undo=True),\
                                              ttk.Button(html_text_tab, text=_("Fermer la dernière\nbalise ouverte"), command=self.confirm_close_element)])
 
         #tab_index=self.model.selected_tab
         #self.text_fields[tab_index][0]  Text
         #self.text_fields[tab_index][1]  close_last_element_button
-
+        
         
         main_scrollbar.config(command=self.text_fields[tab_index][0].yview)
         self.text_fields[tab_index][0].grid(row=0,column=0,sticky='nsw')
@@ -316,11 +320,10 @@ class HTMLWindows(tk.Frame):
         
     def close_tab(self,*event):
         def kill_tab(self,tab_index):
-            self.model.existing_tabs-=1
             del self.model.tabs_html[tab_index]
             del self.text_fields[tab_index]
             self.html_text_tabs.forget(tab_index)
-            if self.model.existing_tabs>0:
+            if len(self.model.tabs_html)>0:
                 self.html_text_tabs.select(0)
                 self.model.selected_tab=0
             else:
@@ -332,11 +335,16 @@ class HTMLWindows(tk.Frame):
         current_object=self.model.tabs_html[tab_index]
         if event[0]=="for_save":
             if not current_object.is_saved():
-                answer=messagebox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer cet onglet ?"))#True False ou None 
+                answer=messagebox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer l'onglet %s?" % (self.html_text_tabs.tab(tab_index,option='text'))))#True False ou None 
                 if answer:                                                      # Yes
                     if not self.model.save_html_file():
                         return "cancel"
                 elif answer==None:                                      # Cancel or X pressed
+                    return "cancel"
+            return "no_cancel"
+        elif event[0]=="for_save_no_warning":
+            if not current_object.is_saved():
+                if not self.model.save_html_file():
                     return "cancel"
             return "no_cancel"
         elif event[0]=="already_saved":
@@ -536,13 +544,29 @@ class HTMLWindows(tk.Frame):
         
     
 
-    
+    def prepare_verification(self):
+        self.tutorial_button['state']='normal'
+        
+
+    def feedback_verification(self,messages,links,finished):
+        if finished:            
+            self.tutorial_button['state']='disabled'
+            
+        self.info=tk.Toplevel(self)
+        for message in messages:
+            ttk.Label(self.info,text=message).grid()
+        for link in links:
+            HyperLink(self.info,link[0],link[1]).grid()
+        ttk.Button(self.info,text=_("Compris"),command=self.info.destroy).grid()
+        self.info.grid()
+        
         
     def tk_copy_text(self,text_to_copy,new=False):
         index=self.model.selected_tab
         if  new:
             title=self.model.get_option("last_html_document_title")
             self.new_html_tab(index,title)
+            
 
         
         current_widget=self.text_fields[index][0]
@@ -550,6 +574,7 @@ class HTMLWindows(tk.Frame):
         current_widget.delete('1.0', 'end'+'-1c')
         current_widget.insert('end',text_to_copy)
         current_widget.yview("moveto","1.0")
+        current_widget.edit_reset()
         
     def set_translation(self):
         self.model.set_option("translate_html_level",self.translate_html_level_tk_var.get())
@@ -576,9 +601,9 @@ class HTMLWindows(tk.Frame):
     def drag_and_drop_visual(self,event):
         if self.drag_element!="":
             try:
-                self.info.reset_position(event.x,event.y)
+                self.info.reset_position(event.x_root,event.y_root)
             except AttributeError:
-                self.info=DragDropFeedback(parent=None,text="<%s>" % self.drag_element, x=event.x, y=event.y)
+                self.info=DragDropFeedback(parent=None,text="<%s>" % self.drag_element, x=event.x_root, y=event.y_root)
                 
 ##            self.drop_menu = Menu(event.widget, tearoff=0, takefocus=0)
 ##            self.drop_menu.add_command(label=self.drag_element)
@@ -588,12 +613,13 @@ class HTMLWindows(tk.Frame):
         try:
             self.info.destroy()
             del self.info
+            tab_index=self.model.selected_tab
+            current_object=self.model.tabs_html[tab_index]
+            current_text_field=self.text_fields[tab_index][0]
+            if self.drag_element!="" and self.winfo_containing(event.x_root,event.y_root) is current_text_field:            
+                line_dot_char=current_text_field.index("@%s,%s" % (event.x, event.y))
+                current_object.insertion=len("\n".join(current_object.text.split("\n")[0:int(line_dot_char.split(".")[0])]))
+                self.confirm_write()
         except AttributeError:
             pass
-        tab_index=self.model.selected_tab
-        current_object=self.model.tabs_html[tab_index]
-        current_text_field=self.text_fields[tab_index][0]
-        if self.drag_element!="" and self.winfo_containing(event.x_root,event.y_root) is current_text_field:            
-            line_dot_char=current_text_field.index("@%s,%s" % (event.x, event.y))
-            current_object.insertion=len("\n".join(current_object.text.split("\n")[0:int(line_dot_char.split(".")[0])]))
-            self.confirm_write()
+        

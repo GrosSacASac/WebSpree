@@ -171,7 +171,9 @@ DEFAULT_VALUES={\
 #app
     "license_accepted_and_read":False,\
     "app_language":"fr",\
-    "developper_interface":False\
+    "developper_interface":False,\
+#tutorials
+    "tutorial_finished":[]\
     }
 #demo
 if __name__ == '__main__':
