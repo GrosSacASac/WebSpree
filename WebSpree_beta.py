@@ -80,7 +80,7 @@ creating a copy of this object starts the app."""
         
         self.graphical_user_interface_tk=GraphicalUserInterfaceTk(self)
         self.tabs_html=[]
-        self.graphical_user_interface_tk.html_window.text_fields=[]
+        self.graphical_user_interface_tk.text_fields=[]#variable should be created in gui
         for path in self.get_option("previous_files_opened"):
             try:
                 self.edit_file(path)
@@ -102,14 +102,14 @@ creating a copy of this object starts the app."""
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
             current_text_html.add_standard_beginning()
             self.tabs_html.append(current_text_html)
-            self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html,new=True)
+            self.graphical_user_interface_tk.tk_copy_text(current_text_html,new=True)
         elif self.start_mod==-1:
             self.selected_tab=len(self.tabs_html)
             
             current_text_html=Text_HTML(self.options_file_object,content="",saved=True,path="",encoding_py=DEFAULT_ENCODING_PY,\
                                          w3c_encoding=DEFAULT_ENCODING_WEB,version=5.0,document_language="fr")
             self.tabs_html.append(current_text_html)
-            self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html,new=True)
+            self.graphical_user_interface_tk.tk_copy_text(current_text_html,new=True)
         elif self.start_mod==1:
             self.graphical_user_interface_tk.html_window.edit_file_dialog()
             #perhaps check if correctly opened here and update some data
@@ -122,7 +122,7 @@ creating a copy of this object starts the app."""
             self.tabs_html.append(current_text_html)
             
             self.set_option("last_html_document_title",_("nouveau"))
-            self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html,new=True)
+            self.graphical_user_interface_tk.tk_copy_text(current_text_html,new=True)
          
     def edit_file(self,file_path):
         self.selected_tab=len(self.tabs_html)
@@ -134,7 +134,7 @@ creating a copy of this object starts the app."""
         
         
         self.set_option("last_html_document_title",title_from_path(file_path))
-        self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html,new=True)
+        self.graphical_user_interface_tk.tk_copy_text(current_text_html,new=True)
         #todo
         #change the way it sniffs out the encoding  and redesign this method
         
@@ -144,7 +144,7 @@ creating a copy of this object starts the app."""
         if self.get_option("footer_bonus"):
             optional_bonus=("<!-- Document produit avec WebSpree\n{}\n{} -->".format(get_time(),"Fait par Cyril Walle\ncapocyril@hotmail.com"))
             current_text_html.add_to_text(optional_bonus)
-            self.graphical_user_interface_tk.html_window.tk_copy_text(current_text_html)
+            self.graphical_user_interface_tk.tk_copy_text(current_text_html)
         
         #if os.path.splitext(file_path)[1]!=".html":
             #file_path=os.path.splitext(file_path)[0]+".html"
@@ -152,7 +152,7 @@ creating a copy of this object starts the app."""
         
         current_text_html.set_save_path(file_path)
         current_text_html.save_in_file()
-        self.graphical_user_interface_tk.html_window.html_text_tabs.tab(tab_index,text=title_from_path(file_path))
+        self.graphical_user_interface_tk.html_text_tabs.tab(tab_index,text=title_from_path(file_path))
         return True#only when success
 
     def save_html_file(self,*event):

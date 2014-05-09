@@ -55,11 +55,15 @@ from tks_styles import*
 from log_writer import log_writer
 ##Window##
 from HTMLWindows import HTMLWindows
+from CSSWindows import CSSWindows
+##TOOLS##
+from tk_tools import* #def create_context_menu
 
 
 def _(l_string):
     #print("local language: "+l_string)
     return l_string
+
 class GraphicalUserInterfaceTk(tk.Tk):
     """tkinter interface for WebSpree.
 
@@ -79,47 +83,83 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.bind('<Control-minus>',self.change_size)
         self.bind('<Control-0>',self.change_size)
         self.bind('<Control-Shift-A>',self.save_all)
+        self.bind_all('<Control-w>',self.close_tab)
         
         #image is ready for tkinter
         self.HTML5_PHOTO_ICO = tk.PhotoImage(file=os.path.normpath("images/icos/HTML5_Badge_32.gif"))
         self.CSS3_PHOTO_ICO = tk.PhotoImage(file=os.path.normpath("images/icos/CSS3_Badge_32.gif"))
         self.JS_PHOTO_ICO = tk.PhotoImage(file=os.path.normpath("images/icos/js32.gif"))
+        self.images=[self.HTML5_PHOTO_ICO, self.CSS3_PHOTO_ICO, self.JS_PHOTO_ICO]
         #self.plus_image = tk.PhotoImage(file=os.path.normpath("images/widgets/plus_1.gif"))
-        intern_root=tk.Frame(self)#this is almost the root
-        self.group_app_tabs=ttk.Notebook(intern_root)#this contains every tab,html,css,...
-        self.group_app_tabs.enable_traversal()
+        #intern_root=tk.Frame(self)#this is almost the root
+        self.general_frame=ttk.Frame(self,border=1)#this contains the common widgets e.g text editor
+        self.special_frame=ttk.Frame(self,border=1)#this contains every specifiq widget,html,css,...
+
+        self.general_frame.grid(row=0,column=0,sticky='nswe')
+        self.special_frame.grid(row=0,column=1,sticky='nswe')
+        
         self.current_font=tkfont.Font(family='helvetica', size=-15)
         mystyle=ttk.Style()
         mystyle.configure('.',font=self.current_font)
 
         #keep this do work around a ttk bug: growing treeviews
         self._treeviews=[]
-        self.html_window=HTMLWindows(self.group_app_tabs,self,model)#html frame
-        self.frame_of_frames_css=tk.Frame(self.group_app_tabs)#css frame
-        self.frame_of_frames_js=tk.Frame(self.group_app_tabs)#js frame
+        self.html_window=HTMLWindows(self.special_frame,self,model)#html frame
+        self.frame_of_frames_css=CSSWindows(self.special_frame,self,model)#css frame
+        self.frame_of_frames_js=tk.Frame(self.special_frame)#js frame
+        self.t_frames=[self.html_window, self.frame_of_frames_css, self.frame_of_frames_js]
         
-        self.group_app_tabs.add(self.html_window,text="HTML",image=\
-                                self.HTML5_PHOTO_ICO,compound='left',underline=0)
-        self.group_app_tabs.add(self.frame_of_frames_css,text="CSS",image=\
-                                self.CSS3_PHOTO_ICO,compound='left',underline=0)
-        self.group_app_tabs.add(self.frame_of_frames_js,text="JavaScript",image=\
-                                self.JS_PHOTO_ICO,compound='left',underline=0)
-        tk.Label(self.frame_of_frames_js,text='coming VERY soon . really.').pack()
-        tk.Label(self.frame_of_frames_css,text='coming soon ...').pack()
-        
-        
+        self.html_window.grid()
+        #self.frame_of_frames_css.grid()
+        #self.frame_of_frames_js.grid()
 
+
+        tk.Label(self.frame_of_frames_js,text='coming VERY soon . really.').grid()
+        
+        
+        
+        content_frame=tk.Frame(self.general_frame, FRAME_STYLE_2,bg=COLOURS_A[3])
+        self.html_text_tabs=ttk.Notebook(content_frame)
+        self.html_text_tabs.grid(row=0,column=0,sticky='nsw',columnspan=2)
+        self.html_text_tabs.bind('<<NotebookTabChanged>>',self.change_tab)#xxx#
+        
+        
+        
+        self.mode=tk.IntVar(value=0)
+        mode=tk.LabelFrame(content_frame, text=_("Mode d'édition"), relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)
+        texts=["HTML","CSS","JS"]
+        for i in range(3):
+            radiobutton_i=ttk.Radiobutton(mode,text=texts[i],image=self.images[i],compound='left',command=self.change_mod,variable=self.mode,value=i)
+            radiobutton_i.grid(row=0,column=i)
+        
+        mode.grid(row=1,column=0,sticky='w')
+
+        self.insertion_tk_var=tk.BooleanVar(value=False)
+        tools=tk.LabelFrame(content_frame, text=_("Outils"), relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)#
+        write_end_choice=ttk.Radiobutton(tools, text=_("Ecrire à la fin"),variable=self.insertion_tk_var, value=False, command=self.switch_writing_place )
+        write_end_choice.grid(row=0,column=0,sticky='nw')
+        write_cursor_choice=ttk.Radiobutton(tools, text=_("Insèrer au curseur"),variable=self.insertion_tk_var, value=True,command=self.switch_writing_place )
+        write_cursor_choice.grid(row=1,column=0,sticky='nw')
+        tools.grid(row=1,column=1,sticky='e')
+        
+        content_frame.grid(row=0,column=2,sticky='nsw',columnspan=1)
+        if self.model.get_option("developper_interface"):
+            leave_button=ttk.Button(tools, text="Quit(instantly)",command=self._end )
+            leave_button.grid(row=4,column=0,sticky='')
+            self.tutorial_button=ttk.Button(tools, text="Check exercice",command=lambda:verify(self.model))
+            self.tutorial_button.grid(row=3,column=0,sticky='')
+            self.tutorial_button['state']='disabled'
         self.protocol("WM_DELETE_WINDOW", self.intercept_close)
         ######----Menus-----######
         FILEMENU={}
         FILEMENU["name"]=_("Fichier")
         FILEMENU["command"]=[{'label':_("Nouveau [Ctrl+N]"),'command':self.html_window.new_file},\
                              {'label':_("Ouvrir [Ctrl+O]"),'command':self.html_window.edit_file_dialog},\
-                             {'label':_("Enregistrer [Ctrl+S]"),'command':lambda: self.html_window.model.save_html_file()},\
+                             {'label':_("Enregistrer [Ctrl+S]"),'command':lambda: self.model.save_html_file()},\
                              {'label':_("Enregistrer sous[Ctrl+Shift+S]"),'command':lambda: self.html_window._save_file_dialog()},\
                              {'label':_("Enregistrer tout [Ctrl+Shift+A]"),'command':lambda: self.save_all("forced_arg")},\
                              {'label':_("Essayer ! [Ctrl+Shift+T]"),'command':lambda: self.html_window.save_file_to_test_control()},\
-                             {'label':_("Fermer Onglet [Ctrl+W]"),'command':lambda: self.html_window.close_tab(("easy"))},\
+                             {'label':_("Fermer Onglet [Ctrl+W]"),'command':lambda: self.close_tab(("easy"))},\
                              {'label':_("Quitter"),'command':lambda: self.intercept_close()}]
         FILEMENU["radiobutton"]=[]
 
@@ -166,7 +206,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         TUTORIALMENU["command"]=[]
         tutorial_finished=self.model.get_option("tutorial_finished")
         for name,folder in detect_existing_tutorials():
-            c="#e5e5e5"#near white
+            c="#fefefe"#near white
             expl=""
             if folder in tutorial_finished:
                 c="#46a717"#green
@@ -206,14 +246,121 @@ class GraphicalUserInterfaceTk(tk.Tk):
                                                                     variable=radiobutton_["variable"],value=radiobutton_["value"],activebackground="blue")
 
 
-    
-        self.columnconfigure(0,weight=1)
-        self.rowconfigure(0,weight=1)
-        self.group_app_tabs.grid()
-        intern_root.grid(row=0,column=0,sticky='snew')
-        intern_root.columnconfigure(0,weight=2)
-        intern_root.rowconfigure(0,weight=2)
         
+        
+        #self.columnconfigure(0,weight=1)
+        #self.rowconfigure(0,weight=1)
+        
+    def change_tab(self,*event):#mysteriously non functional# this has been fixed otherwise #comment out of date
+        self.html_text_tabs.update_idletasks()
+        self.model.selected_tab=self.html_text_tabs.index(self.html_text_tabs.select())
+        
+    def close_tab(self,*event):
+        def kill_tab(self,tab_index):
+            del self.model.tabs_html[tab_index]
+            del self.text_fields[tab_index]
+            self.html_text_tabs.forget(tab_index)
+            if len(self.model.tabs_html)>0:
+                self.html_text_tabs.select(0)
+                self.model.selected_tab=0
+            else:
+#here is the way to let open at least 1 tab instead of closing the app
+                self.model.start_mod=2
+                self.model._start_new_session()#open with a different name than last name used
+        
+        tab_index=self.model.selected_tab
+        current_object=self.model.tabs_html[tab_index]
+        if event[0]=="for_save":
+            if not current_object.is_saved():
+                answer=messagebox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer l'onglet %s?" % (self.html_text_tabs.tab(tab_index,option='text'))))#True False ou None 
+                if answer:                                                      # Yes
+                    if not self.model.save_html_file():
+                        return "cancel"
+                elif answer==None:                                      # Cancel or X pressed
+                    return "cancel"
+            return "no_cancel"
+        elif event[0]=="for_save_no_warning":
+            if not current_object.is_saved():
+                if not self.model.save_html_file():
+                    return "cancel"
+            return "no_cancel"
+        elif event[0]=="already_saved":
+            kill_tab(self,tab_index,)
+        else:#manual tab_closing
+            try:
+                if not current_object.is_saved():
+                    answer=messagebox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer cet onglet ?"))#True False ou None 
+                    if answer:                                                      # Yes
+                        if self.model.save_html_file():
+                            kill_tab(self,tab_index)
+                    elif answer==None: pass                                  # Cancel or X pressed
+                    else :
+                        kill_tab(self,tab_index)                             # Non
+                else:
+                    kill_tab(self,tab_index)
+            except Exception:#caused when the windows creation process was interrupted because the
+                #current_text_html.is_saved() attribute is created after the windows
+                #solution: just le the user close the windows since nothing can be lost
+                kill_tab(self,tab_index)
+                
+    def tk_copy_text(self,text_to_copy,new=False):
+        index=self.model.selected_tab
+        if  new:
+            title=self.model.get_option("last_html_document_title")
+            self.new_html_tab(index,title)
+        current_widget=self.text_fields[index][0]
+        #self._mark_as_modified()
+        current_widget.delete('1.0', 'end'+'-1c')
+        current_widget.insert('end',text_to_copy)
+        current_widget.yview("moveto","1.0")
+        current_widget.edit_reset()
+        
+    def new_html_tab(self,tab_index,title):
+        html_text_tab=tk.Frame(self.html_text_tabs)
+        main_scrollbar = ttk.Scrollbar(html_text_tab)
+        self.text_fields.append([tk.Text(html_text_tab,yscrollcommand=main_scrollbar.set,state='normal',height=35,undo=True),\
+                                             ttk.Button(html_text_tab, text=_("Fermer la dernière\nbalise ouverte"), command=self.confirm_close_element)])
+
+        #tab_index=self.model.selected_tab
+        #self.text_fields[tab_index][0]  Text
+        #self.text_fields[tab_index][1]  close_last_element_button
+        
+        
+        main_scrollbar.config(command=self.text_fields[tab_index][0].yview)
+        self.text_fields[tab_index][0].grid(row=0,column=0,sticky='nsw')
+        main_scrollbar.grid(row=0,column=1,sticky='ns')
+        self.text_fields[tab_index][0].bind('<KeyRelease>', self.so_you_decided_to_write_html_directly)
+        self.text_fields[tab_index][0].bind('<Button-3>',create_context_menu)#it doesn t change the real object !!!
+        self.text_fields[tab_index][0].bind('<ButtonRelease-1>',self.switch_writing_place)
+        self.text_fields[tab_index][1].grid(row=1,column=0,sticky='nsw')
+        self.text_fields[tab_index][1]['state']='disabled'
+        #Indicateur = InformationBubble(parent=main_text_field,texte=_("Vous pouvez éditer ici directement si vous ça vous chante"))
+        self.html_text_tabs.add(html_text_tab,text=title)
+        self.html_text_tabs.select(tab_index)
+        
+    def so_you_decided_to_write_html_directly(self,event):
+        tab_index=self.model.selected_tab
+        current_object=self.model.tabs_html[tab_index]
+        current_text_field=self.text_fields[tab_index][0]
+        self.switch_writing_place()
+        if current_object.text!=current_text_field.get('1.0', 'end'+'-1c'):
+            current_object.text=current_text_field.get('1.0', 'end'+'-1c')
+
+    def confirm_close_element(self):
+        tab_index=self.model.selected_tab
+        current_object=self.model.tabs_html[tab_index]
+        current_close_last=self.text_fields[tab_index][1]
+        
+        if current_object.element_still_not_closed_list:#there is something to close
+            current_object.add_to_text(current_object.add_indent_and_line(current_object.close_element()))
+            self.tk_copy_text(current_object)
+        else:
+            pass
+        if current_object.element_still_not_closed_list:#there is still something to close
+            pass
+        else:
+            current_close_last['state']='disabled'
+            
     def _start(self):
         if not self.model.get_option("license_accepted_and_read"):
             self.view_license(already_accepted=False)
@@ -230,9 +377,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
             m="for_save_no_warning"
         #change this with css
         for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):#we save all tabs or cancel
-            self.html_window.html_text_tabs.select(tab_not_closed_index)
+            self.html_text_tabs.select(tab_not_closed_index)
             self.model.selected_tab=tab_not_closed_index
-            close_all=self.html_window.close_tab((m))
+            close_all=self.close_tab((m))
             if close_all=="cancel":
                 return close_all
         return "no_cancel"
@@ -244,9 +391,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
             for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):#we close all tabs and save the location for the next time
                 if self.model.tabs_html[tab_not_closed_index].get_save_path():
                     path_list.insert(0,self.model.tabs_html[tab_not_closed_index].get_save_path())
-                self.html_window.html_text_tabs.select(tab_not_closed_index)
+                self.html_text_tabs.select(tab_not_closed_index)
                 self.model.selected_tab=tab_not_closed_index
-                self.html_window.close_tab(("already_saved"))
+                self.close_tab(("already_saved"))
             self.model.set_option("previous_files_opened",path_list)
             self._end()
     
@@ -284,6 +431,18 @@ class GraphicalUserInterfaceTk(tk.Tk):
             refuse_button=tk.Button(license_window,text=_("Refuser"),command=lambda:refuse(self))
             refuse_button.grid(column=0,row=2)
             
+    def switch_writing_place(self,*event):#todo redesign this old thing
+        tab_index=self.model.selected_tab
+        current_object=self.model.tabs_html[tab_index]
+        current_text_field=self.text_fields[tab_index][0]
+        if self.insertion_tk_var.get():
+            #line_before=current_text_field.get('insert'+'-1l', 'insert')
+            #CTabulations=line_before.count(indent_var_changed)
+            before_cursor_text=current_text_field.get('1.0', 'insert')
+            current_object.insertion=len(before_cursor_text)
+        else:
+            current_object.insertion=None
+            
     def change_size(self,event):
         #treeview is growing, even with control- fix it with something like that
         #self.elements_in_treeview['width']=25
@@ -302,8 +461,14 @@ class GraphicalUserInterfaceTk(tk.Tk):
         elif equivalent == 'minus':
             if self.current_font['size'] < -7:
                 self.current_font['size'] += 1
+                
     def lock_tutorial(self):
         #TODO when a tutorial starts, lock all tutorial.
         #to unlock you have to say yes to a cancelyes dialog
         #this fun is already linked correctly
         pass
+    
+    def change_mod(self):
+        for t_frame in self.t_frames:
+            t_frame.grid_forget()
+        self.t_frames[self.mode.get()].grid()

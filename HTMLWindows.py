@@ -1,11 +1,11 @@
 #!/usr/bin/python
 #-*-coding:utf-8*
 
-#GraphicalUserInterfaceTk.py
-#Role: define the class GraphicalUserInterfaceTk used for WebSpree
+#HTMLWindows.py
+#Role: Define the HTML specific tools in tkinter
 
 #Walle Cyril
-#20/03/2014
+#05/05/2014
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -53,34 +53,32 @@ from tks_styles import*
 ##LOG##
 #from log_writer import log_writer
 ##TOOLS##
-from tk_tools import*
-from tks_widgets_1 import DragDropFeedback, MainPlusHelp, HyperLink
+from tk_tools import* #def create_context_menu
+from tks_widgets_1 import DragDropFeedback, MainPlusHelp, HyperLink, next_gen, prev_gen
 
 def _(l_string):
     #print("local language: "+l_string)
     return l_string
 
 class HTMLWindows(tk.Frame):
-    """"""
+    """HTML  frame."""
 
     def __init__(self,parent,master_window,model):
-        tk.Frame.__init__(self)
+        tk.Frame.__init__(self,parent)
         self.model=model
         self.master_window=master_window
-
+        #self.master_window == model.graphical_user_interface_   (same object) use notation 1
         #short term solution:
         self.bind_all('<Control-Shift-T>',self.save_file_to_test_control)
         self.bind_all('<Control-Shift-S>',self._save_file_dialog)
         self.bind_all('<Control-s>',self.model.save_html_file)
         self.bind_all('<Control-o>',self.edit_file_dialog)
         self.bind_all('<Control-n>',self.new_file)
-        self.bind_all('<Control-w>',self.close_tab)
         #long term solution: bind the app and not this frame and then look which tab is selected to call the correct action 
         
         
         
         self.autoclose_element_check_variable=tk.BooleanVar(value=True)
-        self.insertion_tk_var=tk.BooleanVar(value=False)
 
         #elements 
         frame_element_master=tk.Frame(self,FRAME_STYLE_2,bg=COLOURS_A[0])
@@ -89,7 +87,11 @@ class HTMLWindows(tk.Frame):
         self.elements_in_treeview=ttk.Treeview(self.element_plus_help.main_frame,selectmode='browse',\
                                             columns=("element","local"),height=21,cursor="hand2",\
                                              yscrollcommand=self.elements_in_treeviews_lift.set,padding=0,takefocus=True,\
-                                             displaycolumns=(1,0),show='headings')#,show='tree'
+                                             displaycolumns=(1,0),show='headings')#,show='tree'.
+        
+        
+        self.element_plus_help.next_=next_gen(self.elements_in_treeview)
+        self.element_plus_help.previous=prev_gen(self.elements_in_treeview)
         self.elements_in_treeview.column("#0",width=20,stretch=False)
         self.elements_in_treeview.heading("local",text=_("Traduction"))
         self.elements_in_treeview.column("local",minwidth=100)
@@ -118,10 +120,13 @@ class HTMLWindows(tk.Frame):
 
         #attributes
         frame_attribute_master=tk.Frame(self,FRAME_STYLE_2,bg=COLOURS_A[1])#attributes
-        self.attribute_plus_help=MainPlusHelp(frame_attribute_master,_("Attributs"),_("Aide"))    
+        self.attribute_plus_help=MainPlusHelp(frame_attribute_master,_("Attributs"),_("Aide"))
         #_List of attributes:
         self.general_attributes_treeview=ttk.Treeview(self.attribute_plus_help.main_frame,selectmode='browse',\
                                         height=21,columns=("real","local"),displaycolumns=(1),show='headings')
+        
+        self.attribute_plus_help.next_=next_gen(self.general_attributes_treeview)
+        self.attribute_plus_help.previous=prev_gen(self.general_attributes_treeview)
         self.general_attributes_treeview.heading("local",text=_("Général"))
         self.general_attributes_treeview.grid(row=0,column=0,sticky='w')
         for general_attribute in GENERAL_ATTRIBUTES_LIST:
@@ -169,26 +174,7 @@ class HTMLWindows(tk.Frame):
         
 
         #HTML tabs
-        frame_3_html_box=tk.Frame(self, FRAME_STYLE_2,bg=COLOURS_A[3])
-        self.html_text_tabs=ttk.Notebook(frame_3_html_box)
-        self.html_text_tabs.grid(row=0,column=0,sticky='nsw')
-        self.html_text_tabs.bind('<<NotebookTabChanged>>',self.change_tab)#xxx#
         
-
-        frame_3_html_box_1=tk.LabelFrame(frame_3_html_box, text="Outils", relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)#
-        write_end_choice=ttk.Radiobutton(frame_3_html_box_1, text=_("Ecrire à la fin"),variable=self.insertion_tk_var, value=False, command=self.switch_writing_place )
-        write_end_choice.grid(row=0,column=0,sticky='nw')
-        write_cursor_choice=ttk.Radiobutton(frame_3_html_box_1, text=_("Insèrer au curseur"),variable=self.insertion_tk_var, value=True,command=self.switch_writing_place )
-        write_cursor_choice.grid(row=1,column=0,sticky='nw')
-
-        
-        frame_3_html_box_1.grid(row=1,column=0,sticky='e')
-        if self.model.get_option("developper_interface"):
-            leave_button=ttk.Button(frame_3_html_box, text="Quit(instantly)",command=self.master_window._end )
-            leave_button.grid(row=2,column=0,sticky='')
-            self.tutorial_button=ttk.Button(frame_3_html_box_1, text="Check exercice",command=lambda:verify(self.model))
-            self.tutorial_button.grid(row=3,column=0,sticky='')
-            self.tutorial_button['state']='disabled'
 
         self.master_window._treeviews=self.master_window._treeviews+[self.elements_in_treeview,self.general_attributes_treeview,self.specific_attributes_treeview]
         #keep this do work around a ttk bug: growing treeviews
@@ -199,8 +185,7 @@ class HTMLWindows(tk.Frame):
         frame_element_master.grid(row=0,column=0,sticky='nsw')
         frame_attribute_master.grid(row=0,column=1,sticky='nsw')
         frame_2_user_input.grid(row=1,column=0,columnspan=2,sticky='nsw')
-        frame_3_html_box.grid(row=0,column=2,sticky='nsw',rowspan=2)
-        self.grid(sticky='nswe')
+        
         #self.grid_columnconfigure(0,weight=0)
         
     def _prepare_new_session(self):#view
@@ -278,7 +263,7 @@ class HTMLWindows(tk.Frame):
         #this should be passe via start new session method-------
         tab_index=self.model.selected_tab
         current_object=self.model.tabs_html[tab_index]
-        current_close_last=self.text_fields[tab_index][1]
+        current_close_last=self.master_window.text_fields[tab_index][1]
         
         new_encoding_py , new_w3c_encoding = (self._which_encoding_var.get().split(";"))
         current_object.set_encoding(new_encoding_py)
@@ -291,92 +276,21 @@ class HTMLWindows(tk.Frame):
             current_close_last['state']='disabled'
         self.Contexte.destroy()
         
-    def new_html_tab(self,tab_index,title):
-        html_text_tab=tk.Frame(self.html_text_tabs)
-        main_scrollbar = ttk.Scrollbar(html_text_tab)
-        self.text_fields.append([tk.Text(html_text_tab,yscrollcommand=main_scrollbar.set,state='normal',height=35,undo=True),\
-                                             ttk.Button(html_text_tab, text=_("Fermer la dernière\nbalise ouverte"), command=self.confirm_close_element)])
 
-        #tab_index=self.model.selected_tab
-        #self.text_fields[tab_index][0]  Text
-        #self.text_fields[tab_index][1]  close_last_element_button
-        
-        
-        main_scrollbar.config(command=self.text_fields[tab_index][0].yview)
-        self.text_fields[tab_index][0].grid(row=0,column=0,sticky='nsw')
-        main_scrollbar.grid(row=0,column=1,sticky='ns')
-        self.text_fields[tab_index][0].bind('<KeyRelease>', self.so_you_decided_to_write_html_directly)
-        self.text_fields[tab_index][0].bind('<Button-3>',create_context_menu)#it doesn t change the real object !!!
-        self.text_fields[tab_index][0].bind('<ButtonRelease-1>',self.switch_writing_place)
-        self.text_fields[tab_index][1].grid(row=1,column=0,sticky='nsw')
-        self.text_fields[tab_index][1]['state']='disabled'
-        #Indicateur = InformationBubble(parent=main_text_field,texte=_("Vous pouvez éditer ici directement si vous ça vous chante"))
-        self.html_text_tabs.add(html_text_tab,text=title)
-        self.html_text_tabs.select(tab_index)
 
-    def change_tab(self,*event):#mysteriously non functional
-        self.html_text_tabs.update_idletasks()
-        self.model.selected_tab=self.html_text_tabs.index(self.html_text_tabs.select())
-        
-    def close_tab(self,*event):
-        def kill_tab(self,tab_index):
-            del self.model.tabs_html[tab_index]
-            del self.text_fields[tab_index]
-            self.html_text_tabs.forget(tab_index)
-            if len(self.model.tabs_html)>0:
-                self.html_text_tabs.select(0)
-                self.model.selected_tab=0
-            else:
-#here is the way to let open at least 1 tab instead of closing the app
-                self.model.start_mod=2
-                self.model._start_new_session()#open with a different name than last name used
-        
-        tab_index=self.model.selected_tab
-        current_object=self.model.tabs_html[tab_index]
-        if event[0]=="for_save":
-            if not current_object.is_saved():
-                answer=messagebox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer l'onglet %s?" % (self.html_text_tabs.tab(tab_index,option='text'))))#True False ou None 
-                if answer:                                                      # Yes
-                    if not self.model.save_html_file():
-                        return "cancel"
-                elif answer==None:                                      # Cancel or X pressed
-                    return "cancel"
-            return "no_cancel"
-        elif event[0]=="for_save_no_warning":
-            if not current_object.is_saved():
-                if not self.model.save_html_file():
-                    return "cancel"
-            return "no_cancel"
-        elif event[0]=="already_saved":
-            kill_tab(self,tab_index,)
-        else:#manual tab_closing
-            try:
-                if not current_object.is_saved():
-                    answer=messagebox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer cet onglet ?"))#True False ou None 
-                    if answer:                                                      # Yes
-                        if self.model.save_html_file():
-                            kill_tab(self,tab_index)
-                    elif answer==None: pass                                  # Cancel or X pressed
-                    else :
-                        kill_tab(self,tab_index)                             # Non
-                else:
-                    kill_tab(self,tab_index)
-            except Exception:#caused when the windows creation process was interrupted because the
-                #current_text_html.is_saved() attribute is created after the windows
-                #solution: just le the user close the windows since nothing can be lost
-                kill_tab(self,tab_index)
+    
                                 
     def update_attribute_selection(self,event):
         selected_item_id=event.widget.selection()[0]
         attribute=(event.widget.item(selected_item_id,'value'))[0]
         attribute_details=ATTRIBUTES[attribute]
         attribute_local_details=LOCAL_ATTRIBUTES[attribute]
-        if not attribute in self.attribute_area_form.get('1.0', 'end'+'-1c'):
+        if not attribute in self.attribute_area_form.get('1.0','end-1c'):
             self.attribute_area_form.insert('end',"{}=\"{}\"\n".format(attribute,attribute_details["default_value"]))
 
         minimum="{}\n{}\n{}".format(attribute_local_details["description"],attribute_local_details["role"],\
                                                            attribute_local_details["common usage"]).strip()
-        complete_help=(_("{} ({})\n{}\nAlternatives: {}\nValeur par défaut: {}\nValeur possibles: {}\nVersion: {}")\
+        complete_help=(_(u"{} ({})\n{}\nAlternatives: {}\nValeur par défaut: {}\nValeur possibles: {}\nVersion: {}")\
                                         .format(attribute,attribute_local_details["translation"],\
                                                     minimum,", ".join(attribute_details["alt(s)"]),\
                                                     attribute_details["default_value"],\
@@ -388,7 +302,6 @@ class HTMLWindows(tk.Frame):
     def update_element_selection(self,*event):
         index=self.model.selected_tab
         current_object=self.model.tabs_html[index]
-        current_widget=self.text_fields[index][0]
         selected_item_id=self.elements_in_treeview.selection()[0]
         if self.elements_in_treeview.get_children(selected_item_id):#folder of element
             self.elements_in_treeview.see(self.elements_in_treeview.get_children(selected_item_id)[0])
@@ -399,9 +312,9 @@ class HTMLWindows(tk.Frame):
 
             previous=self.content_area_form['state']
             self.content_area_form['state']='normal'
-            self.content_area_form.delete('1.0', 'end'+'-1c')#Mettre en option
+            self.content_area_form.delete('1.0','end-1c')#Mettre en option
             self.content_area_form['state']=previous
-            self.attribute_area_form.delete('1.0', 'end'+'-1c')
+            self.attribute_area_form.delete('1.0','end-1c')
             self.elements_in_treeview.heading("element",text=_("Code: ")+element_tag)
             
             
@@ -413,10 +326,10 @@ class HTMLWindows(tk.Frame):
                 for ele in couple[1]:
                     if ele==element_tag:
                         current_object.last_selected_element_is_void=couple[1][ele]["void"]
-                        minimum="{}\n{}\n{}".format(LOCAL_ELEMENTS[element_tag]["description"],LOCAL_ELEMENTS[element_tag]["role"],\
+                        minimum=u"{}\n{}\n{}".format(LOCAL_ELEMENTS[element_tag]["description"],LOCAL_ELEMENTS[element_tag]["role"],\
                                                            LOCAL_ELEMENTS[element_tag]["common usage"]).strip()
                         complete_help_element=\
-                            _("<{}> ({})\n{}\nAlternatives: {}\nAttributs obligatoires: {}\nAttributs spécifiques: {}\nDois avoir comme parent: {}\nVersion: {}\nElement vide: {}")\
+                            _(u"<{}> ({})\n{}\nAlternatives: {}\nAttributs obligatoires: {}\nAttributs spécifiques: {}\nDois avoir comme parent: {}\nVersion: {}\nElement vide: {}")\
                             .format(element_tag,LOCAL_ELEMENTS[element_tag]["translation"],\
                                         minimum,", ".join(couple[1][ele]["alt(s)"]),\
                                         ", ".join(couple[1][ele]["must_attributes"]),
@@ -444,11 +357,10 @@ class HTMLWindows(tk.Frame):
         #self.text_fields[tab_index][1]  close_last_element_button
         tab_index=self.model.selected_tab
         current_object=self.model.tabs_html[tab_index]
-        current_text_field=self.text_fields[tab_index][0]
-        current_close_last=self.text_fields[tab_index][1]
+        current_close_last=self.master_window.text_fields[tab_index][1]
         
         element_tag=current_object.last_selected_element
-        attributes_with_spaces=self.attribute_area_form.get('1.0', 'end'+'-1c').strip()
+        attributes_with_spaces=self.attribute_area_form.get('1.0', 'end-1c').strip()
         if attributes_with_spaces!="":
             attributes_with_spaces=" "+attributes_with_spaces.replace("\n"," ")
         
@@ -456,11 +368,11 @@ class HTMLWindows(tk.Frame):
             text_to_add=current_object.add_indent_and_line(current_object.open_close_void_element(element_tag,attributes_with_spaces))
         else:#if not void
             text_to_add=current_object.add_indent_and_line(current_object.open_element(element_tag, attributes_with_spaces))
-            text_to_add+=current_object.add_indent_and_line(self.content_area_form.get('1.0', 'end'+'-1c'))
+            text_to_add+=current_object.add_indent_and_line(self.content_area_form.get('1.0','end-1c'))
             if self.var_for_auto_close_checkbutton.get():
                 text_to_add+=current_object.add_indent_and_line(current_object.close_element())
         current_object.add_to_text(text_to_add)
-        self.tk_copy_text(current_object)
+        self.master_window.tk_copy_text(current_object)
 
         
         if not current_object.element_still_not_closed_list:
@@ -471,26 +383,9 @@ class HTMLWindows(tk.Frame):
 
     
             
-    def so_you_decided_to_write_html_directly(self,event):
-        tab_index=self.model.selected_tab
-        current_object=self.model.tabs_html[tab_index]
-        current_text_field=self.text_fields[tab_index][0]
-        self.switch_writing_place()
-        if current_object.text!=current_text_field.get('1.0', 'end'+'-1c'):
-            current_object.text=current_text_field.get('1.0', 'end'+'-1c')
+    
             
-    def switch_writing_place(self,*event):#todo redesign this old thing
-        tab_index=self.model.selected_tab
-        current_object=self.model.tabs_html[tab_index]
-        current_text_field=self.text_fields[tab_index][0]
-        if self.insertion_tk_var.get():
-            #line_before=current_text_field.get('insert'+'-1l', 'insert')
-            #CTabulations=line_before.count(indent_var_changed)
-            before_cursor_text=current_text_field.get('1.0', 'insert')
-            current_object.insertion=len(before_cursor_text)
-        else:
-            current_object.insertion=None
-        
+         
                    
 ##    def write_in_real_time(self,*event):#TODO
 ##        try:
@@ -498,21 +393,7 @@ class HTMLWindows(tk.Frame):
 ##        except IndexError:
 ##            pass
         
-    def confirm_close_element(self):
-        tab_index=self.model.selected_tab
-        current_object=self.model.tabs_html[tab_index]
-        current_close_last=self.text_fields[tab_index][1]
-        
-        if current_object.element_still_not_closed_list:#there is something to close
-            text_to_add=current_object.add_indent_and_line(current_object.close_element())
-            current_object.add_to_text(text_to_add)
-            self.tk_copy_text(current_object)
-        else:
-            pass
-        if current_object.element_still_not_closed_list:#there is still something to close
-            pass
-        else:
-            current_close_last['state']='disabled'
+    
         
 #Intern methods called by other or by changing an option --------------###############################
             
@@ -561,20 +442,7 @@ class HTMLWindows(tk.Frame):
         self.info.grid()
         
         
-    def tk_copy_text(self,text_to_copy,new=False):
-        index=self.model.selected_tab
-        if  new:
-            title=self.model.get_option("last_html_document_title")
-            self.new_html_tab(index,title)
-            
-
-        
-        current_widget=self.text_fields[index][0]
-        #self._mark_as_modified()
-        current_widget.delete('1.0', 'end'+'-1c')
-        current_widget.insert('end',text_to_copy)
-        current_widget.yview("moveto","1.0")
-        current_widget.edit_reset()
+    
         
     def set_translation(self):
         self.model.set_option("translate_html_level",self.translate_html_level_tk_var.get())
@@ -615,7 +483,7 @@ class HTMLWindows(tk.Frame):
             del self.info
             tab_index=self.model.selected_tab
             current_object=self.model.tabs_html[tab_index]
-            current_text_field=self.text_fields[tab_index][0]
+            current_text_field=self.master_window.text_fields[tab_index][0]
             if self.drag_element!="" and self.winfo_containing(event.x_root,event.y_root) is current_text_field:            
                 line_dot_char=current_text_field.index("@%s,%s" % (event.x, event.y))
                 current_object.insertion=len("\n".join(current_object.text.split("\n")[0:int(line_dot_char.split(".")[0])]))

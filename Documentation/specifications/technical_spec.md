@@ -32,4 +32,3 @@ each html file can have a verification. A verification is a dic.Each dic corresp
 
 
 
-essayer to premier tuto

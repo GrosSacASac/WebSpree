@@ -1,6 +1,6 @@
 tune_in_my_project.txt
 Last Update of this document:
-22/02/2014
+09/05/2014
 
 Main language for code:
 Python 3 in English
@@ -26,11 +26,22 @@ check the file in conventions to learn more
 docstrings:
 everything you can !(See file in Conventions for details.)
 
+strings:
+In Python you can use " " or ' ' or """ """ for strings
+* Use 'for python keywords'
+* Use u"for self decided strings and double quotes inside with antislash \"     "
+the u prefix forces unicode in Python<3.0
+* Use _(u"for locale strings, these are shown to the end user")
+* Use """ for Docstrings."""
+* Use the r prefix if you NEED raw strings (\n will not be transformed)
+
+
 indent:
 use 4 spaces ! Tip: If you are used to press TAB to indent then go into your text editor settings and enable the "automatically replace TAB by 4 spaces" There should be an option like that(if not throw away your text editor).
 
 Newline:
 \r\n or \n but who cares ? I think this can be interesting to reduce a little bit the the size of the project.
+I think that files on GitHub are normalized to use \n.
 
 GUI:
 tkinter
@@ -55,12 +66,14 @@ Check the To_do.html file in Documentation to find interesting and exciting task
 
 Builds:
 We need an easy freezing tool : freeze("WebSpree.py") --> WebSpree.exe
+coming
 
 Distributed Version control:
 GitHub !
 
 Bug-tracking:
-coming
+GitHub !
 
 Test driven developpement:
+We need to stabilize the product first
 coming

@@ -17,8 +17,10 @@ That s why it s a local copy with a different name.
 # data -- only char and entity references and end tags are special)
 # and CDATA (character data -- only end tags are special).
 
-
-import _markupbase
+try:
+    import _markupbase
+except ImportError:
+    import markupbase as _markupbase
 import re
 import warnings
 

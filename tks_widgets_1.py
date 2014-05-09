@@ -39,9 +39,15 @@ class MainPlusHelp(ttk.Notebook):
         more_help_button=ttk.Button(self.main_frame, text=_("Plus d'aide"))
         more_help_button.grid(row=2,column=0,sticky='nswe',columnspan=3)
         more_help_button.bind('<ButtonRelease-1>', self.switch_help)
-        
-        leave_help=ttk.Button(self.help_frame, text=_("Quitter l'aide"))
-        leave_help.grid(row=1,column=0,sticky='nswe')        
+
+        help_frame_bottom=tk.Frame(self.help_frame)#,FRAME_STYLE_2)
+        help_frame_bottom.grid(row=1,column=0)
+        self.previous_help=ttk.Button(help_frame_bottom, text=_("Précédent"),command=self.previous)
+        self.previous_help.grid(row=1,column=0,sticky='nswe')
+        self.next_help=ttk.Button(help_frame_bottom, text=_("Suivant"),command=self.next_)
+        self.next_help.grid(row=1,column=2,sticky='nswe')
+        leave_help=ttk.Button(help_frame_bottom, text=_("Quitter l'aide"))
+        leave_help.grid(row=1,column=1,sticky='nswe')        
         leave_help.bind('<ButtonRelease-1>', self.switch_help)
         self.grid(sticky='nswe')
         
@@ -50,9 +56,78 @@ class MainPlusHelp(ttk.Notebook):
             return int(not i)
         w=event.widget
         current_tab=w.nametowidget(w.winfo_parent())
-        not_current_tab_as_index=toogle_index(self.index(current_tab))
+        try:
+            not_current_tab_as_index=toogle_index(self.index(current_tab))
+        except tk.TclError:
+            not_current_tab_as_index=toogle_index(self.index(current_tab.nametowidget(current_tab.winfo_parent())))
         self.select(not_current_tab_as_index)
         #redirect to the correct help tab
+        
+    #overwrite those
+    def next_(self):
+        pass
+    def previous(self):
+        pass
+
+    #when those are overwritten the next and previous button will be updated to call the right function
+    @property
+    def next_(self,):
+        pass
+    
+    @next_.setter
+    def next_(self,function):
+        self.next_help['command']=function
+        
+    @property
+    def previous(self,):
+        pass
+    
+    @previous.setter
+    def previous(self,function):
+        self.previous_help['command']=function
+
+#external methods for main plus help with a treeview inside
+def next_gen(t):
+    def next_():
+        if t.selection()=="":
+            t.selection_set(t.get_children()[0])
+        if t.get_children(t.selection()[0]):#if folder of element
+            next_item=(t.get_children(t.selection()[0])[0])# we take the first child
+        else:
+            next_item=t.next(t.selection()[0])
+            if next_item=="":#if it was the last
+                #we take the parent's next,who is also a parent and then take the first child of it
+                next_item=t.next(t.parent(t.selection()[0]))
+                if next_item=="":#we re at the very end
+                    next_item=(t.get_children(next_item)[0])
+                try:#polyvalence
+                    next_item=(t.get_children(next_item)[0])
+                except IndexError:
+                    pass
+        t.selection_set(next_item)
+        t.see(next_item)
+        #elf.update_element_selection() # is called when selection changes
+    return next_
+def prev_gen(t):
+    def prev_():
+        if t.selection()=="":
+            t.selection_set(t.get_children()[0])
+        if t.get_children(t.selection()[0]):#if folder of element
+            prev_item=(t.get_children(t.prev(t.selection()[0]))[-1])# we take the last child of prev
+        else:
+            prev_item=t.prev(t.selection()[0])
+            if prev_item=="":#if it was the first
+                prev_item=t.prev(t.parent(t.selection()[0]))
+                if prev_item=="":
+                    prev_item=(t.get_children(prev_item)[-1])
+                try:#polyvalence
+                    prev_item=(t.get_children(prev_item)[-1])
+                except IndexError:
+                    pass
+        t.selection_set(prev_item)
+        t.see(prev_item)
+        #elf.update_element_selection() # is called when selection changes
+    return prev_
         
 class HyperLink(tk.Label):
     def __init__(self,parent,URL,text):
@@ -79,10 +154,10 @@ class DragDropFeedback(tk.Toplevel):
     def __init__(self,parent=None,text="no text given", x=0, y=0):
         tk.Toplevel.__init__(self,parent,bd=0,bg='#333300')
         self.reset_position(x,y)
-        tk.Label(self,text=text).grid()
+        tk.Label(self,text=text,anchor='center').pack(side='top')
         self.overrideredirect(1)#L'objet n as pas le contour d'une fenetre
     def reset_position(self,x,y):
-        self.geometry('200x20+%d+%d' % (0+x,0+y))
+        self.geometry('200x25+%d+%d' % (0+x,0+y))
 
 class InformationBubble(tk.Toplevel):#broken do not use
     def __init__(self,parent=None,texte="", DecalageX=20, DecalageY=0):
