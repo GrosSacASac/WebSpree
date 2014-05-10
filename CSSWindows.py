@@ -59,6 +59,8 @@ from tks_widgets_1 import DragDropFeedback, MainPlusHelp, HyperLink, next_gen, p
 def _(l_string):
     #print("local language: "+l_string)
     return l_string
+
+######this data will be exported in external json files soon
 SELECTOR_LIST=[
     ["CSS1",[
           [", "],
@@ -72,14 +74,57 @@ SELECTOR_LIST=[
           [">"],
           ["+"]]]
      ]
-GENERAL_PROPERTY_LIST=[
-    "color",
-    "font-size",
-    "margin",
-    "padding"]
-VALUES_LIST=["green",
-                       "blue",
-                       "red"]
+GENERAL_PROPERTY_LIST_2={
+    "color":[
+               ["color",["color"]]
+            ],
+    "font":[
+             ["font-size",["size"]],
+             ["font-family",["font-family"]],
+             ["font-weight",["font-weight","number"]]
+             ],
+    "margin":[
+           ["margin",["size","auto"]],
+           ["margin-top",["size","auto"]],
+           ["margin-right",["size","auto"]],
+           ["margin-bottom",["size","auto"]],
+           ["margin-left",["size","auto"]]
+           ],
+    "padding":[
+           ["padding",["size","auto"]],
+           ["padding-top",["size","auto"]],
+           ["padding-right",["size","auto"]],
+           ["padding-bottom",["size","auto"]],
+           ["padding-left",["size","auto"]],
+           ]
+    }
+
+
+VALUE_LIST_2={
+    "color":["green",
+       "blue",
+       "red"],
+    "font-family":["Arial",
+        "Verdana",
+        "Sylfaen"],
+    "font-weight":[
+        "lighter",
+        "normal",
+        "bold"
+        "bolder"],
+    "auto":[
+        "auto",
+        ],
+    "number":[
+        "0-999",
+        ],
+    "size":[
+        "em",
+        "px",
+        "%"]
+    }
+######this data will be exported in external json files soon
+
 class CSSWindows(tk.Frame):
     """CSS  frame."""
 
@@ -97,9 +142,9 @@ class CSSWindows(tk.Frame):
         self.select_plus_help=MainPlusHelp(frame_select,_(u"Sélécteur"),_(u"Aide"))
         self.select_treeview_lift = ttk.Scrollbar(self.select_plus_help.main_frame)
         self.select_treeview=ttk.Treeview(self.select_plus_help.main_frame,selectmode='browse',\
-                                            columns=("select","local"),height=21,cursor="hand2",\
+                                            columns=("local","select"),height=21,cursor="hand2",\
                                              yscrollcommand=self.select_treeview_lift.set,padding=0,takefocus=True,\
-                                             displaycolumns=(1,0),show='headings')
+                                             displaycolumns=(0,1),show='headings')
         self.select_plus_help.next_=next_gen(self.select_treeview)
         self.select_plus_help.previous=prev_gen(self.select_treeview)
         self.select_treeview.column("#0",width=20,stretch=False)
@@ -117,17 +162,17 @@ class CSSWindows(tk.Frame):
         
               
               
-        function=self.select_treeview.insert("",'end',values=("",_(u"Element")),tag=tags[0])
+        function=self.select_treeview.insert("",'end',values=(_(u"Element"),""),tag=tags[0])
         for couple in ELEMENTS:
             for ele in couple[1]:
                 self.select_treeview.insert(function,'end', \
-                                                 values=(ele,LOCAL_ELEMENTS[ele]["translation"]),tag="tag_3")
+                                                 values=(LOCAL_ELEMENTS[ele]["translation"],ele),tag="tag_3")
         for couple in SELECTOR_LIST:
-            function=self.select_treeview.insert("",'end',values=("",couple[0]),tag=tags[0])
+            function=self.select_treeview.insert("",'end',values=(couple[0],""),tag=tags[0])
             for _o in couple[1]:
                 o=_o[0]
                 self.select_treeview.insert(function,'end', \
-                                                 values=(o,o),tag="tag_3")
+                                                 values=("",o),tag="tag_3")
         
 
         self.select_treeview.grid(row=0,column=0,columnspan=2,sticky='nsw')
@@ -136,40 +181,38 @@ class CSSWindows(tk.Frame):
 
         
         frame_property_master=tk.Frame(self,FRAME_STYLE_2,bg=COLOURS_A[1])
+        frame_value_master=tk.Frame(self,FRAME_STYLE_2,bg=COLOURS_A[1])
         self.property_plus_help=MainPlusHelp(frame_property_master,_(u"Propriété"),_(u"Aide"))
         
         self.property_treeview=ttk.Treeview(self.property_plus_help.main_frame,selectmode='browse',\
-                                        height=21,columns=("property","local"),displaycolumns=(1,0),show='headings')
+                                        height=21,columns=("local","property"),displaycolumns=(0,1),show='headings')
         
         self.property_plus_help.next_=next_gen(self.property_treeview)
         self.property_plus_help.previous=prev_gen(self.property_treeview)
         self.property_treeview.heading("local",text=_(u"Traduction"))
+        self.property_treeview.heading("property",text=_(u"Propriété"))
         self.property_treeview.grid(row=0,column=0,sticky='w')
-        for general_property in GENERAL_PROPERTY_LIST:
-            self.property_treeview.insert("",'end',values=(general_property,general_property))
+        
+        self.property_treeview.tag_configure("tag_1", background='#cccfff')
+        self.property_treeview.tag_configure("tag_2", background='#cfffcc')
+        self.property_treeview.tag_configure("tag_3", background='#ffccbc')
+        
+        for group in GENERAL_PROPERTY_LIST_2:
+            #the first values should be a local
+            function=self.property_treeview.insert("",'end',values=("",group),tag="tag_1")
+            for prop in GENERAL_PROPERTY_LIST_2[group]:
+                #prop[1] is a list of valid value types for that property
+                self.property_treeview.insert(function,'end',values=("",prop[0]),tag="tag_3")
         self.property_treeview.bind('<<TreeviewSelect>>',self.update_property_selection,"")
         
         
-
-        
-
-        
-        #user input and more
-        frame_2_user_input=tk.Frame(self, FRAME_STYLE_2,bg=COLOURS_A[2])#Buttons et saisies
-        help_label_for_content=ttk.Label(frame_2_user_input,text=_(u"Ecrivez une règle ici"))
-        help_label_for_content.grid(row=0,column=0,sticky='nw')
-        chose_value_help=ttk.Label(frame_2_user_input,text=_(u""))
-        chose_value_help.grid(row=0,column=1,sticky='nw')
-
-        self.content_area_form=tk.Text(frame_2_user_input,ENTRY_STYLE,width=42,height=6)
-        self.content_area_form.grid(row=1,column=0,sticky='nw')
-        self.content_area_form.bind('<Button-3>',create_context_menu)
-        self.values_plus_help=MainPlusHelp(frame_2_user_input,_(u"Valeur"),_(u"Aide"))
+        height_b=13
+        self.values_plus_help=MainPlusHelp(frame_value_master,_(u"Valeur"),_(u"Aide"))
         self.value_treeview_lift = ttk.Scrollbar(self.values_plus_help.main_frame)
         self.value_treeview=ttk.Treeview(self.values_plus_help.main_frame,selectmode='browse',\
-                                            columns=("value","local"),height=5,cursor="hand2",\
+                                            columns=("local","value"),height=height_b,cursor="hand2",\
                                              yscrollcommand=self.value_treeview_lift.set,padding=0,takefocus=True,\
-                                             displaycolumns=(1,0),show='headings')#,show='tree'.
+                                             displaycolumns=(0,1),show='headings')#,show='tree'.
         
         
         
@@ -184,16 +227,38 @@ class CSSWindows(tk.Frame):
         self.value_treeview.grid(row=0,column=0)
         self.value_treeview.bind('<<TreeviewSelect>>',self.update_value_selection)        
         self.value_treeview_lift.grid(row=0,column=1)
-        for value in VALUES_LIST:
-            self.value_treeview.insert("",'end',values=(value,value))
-        #self.content_area_form.bind('<KeyRelease>',write_in_real_time)
+        
+        self.value_treeview.tag_configure("tag_1", background='#cccfff')
+        self.value_treeview.tag_configure("tag_2", background='#cfffcc')
+        self.value_treeview.tag_configure("tag_3", background='#ffccbc')
+        
+        for group in VALUE_LIST_2:
+            #the first values should be a local
+            function=self.value_treeview.insert("",'end',iid=group,values=("",group),tag="tag_1")
+            for value in VALUE_LIST_2[group]:
+                self.value_treeview.insert(function,'end',values=("",value),tag="tag_3")
+        
+
+        
+        #user input and more
+        frame_2_user_input=tk.Frame(self, FRAME_STYLE_2,bg=COLOURS_A[2])#Buttons et saisies
+        help_label_for_content=ttk.Label(frame_2_user_input,text=_(u"Ecrivez une règle ici"))
+        help_label_for_content.grid(row=0,column=0,sticky='nw')
+        
+
+        self.content_area_form=tk.Text(frame_2_user_input,ENTRY_STYLE,width=42,height=height_b)
+        self.content_area_form.grid(row=1,column=0,sticky='nw',columnspan=3)
+        self.content_area_form.bind('<Button-3>',create_context_menu)
+        
 
         self.confirm_add_button=ttk.Button(frame_2_user_input, text=_(u"Confirmer"),command=self.confirm_write)
         self.confirm_add_button.grid(row=2,column=0,sticky='nw')
+        self.delete_current_button=ttk.Button(frame_2_user_input, text=_(u"Effacer règle"),command=self.delete_current)
+        self.delete_current_button.grid(row=2,column=1,sticky='nw')
 
         self.var_for_auto_close_checkbutton=tk.BooleanVar(value=True)
         self.auto_close_checkbutton=ttk.Checkbutton(frame_2_user_input, text=_(u"Auto Fermeture"),variable=self.var_for_auto_close_checkbutton)
-        self.auto_close_checkbutton.grid(row=2,column=1,sticky='nw')
+        self.auto_close_checkbutton.grid(row=2,column=2,sticky='nw')
         
 
         #Help
@@ -211,31 +276,14 @@ class CSSWindows(tk.Frame):
         
         frame_select.grid(row=0,column=0,sticky='nsw')
         frame_property_master.grid(row=0,column=1,sticky='nsw')
-        frame_2_user_input.grid(row=1,column=0,columnspan=2,sticky='nsw')
+        frame_value_master.grid(row=1,column=1,sticky='nsw')
+        frame_2_user_input.grid(row=1,column=0,columnspan=1,sticky='nsw')
         
         #self.grid_columnconfigure(0,weight=0)
 
     
                                 
-    def update_attribute_selection(self,event):
-        selected_item_id=event.widget.selection()[0]
-        attribute=(event.widget.item(selected_item_id,'value'))[0]
-        attribute_details=ATTRIBUTES[attribute]
-        attribute_local_details=LOCAL_ATTRIBUTES[attribute]
-        if not attribute in self.attribute_area_form.get('1.0','end-1c'):
-            self.attribute_area_form.insert('end',"{}=\"{}\"\n".format(attribute,attribute_details["default_value"]))
-
-        minimum="{}\n{}\n{}".format(attribute_local_details["description"],attribute_local_details["role"],\
-                                                           attribute_local_details["common usage"]).strip()
-        complete_help=(_(u"{} ({})\n{}\nAlternatives: {}\nValeur par défaut: {}\nValeur possibles: {}\nVersion: {}")\
-                                        .format(attribute,attribute_local_details["translation"],\
-                                                    minimum,", ".join(attribute_details["alt(s)"]),\
-                                                    attribute_details["default_value"],\
-                                                    ", ".join(attribute_details["possible_values"]),\
-                                                    attribute_details["version"],)).strip()
-        self.property_plus_help.short_help['text']=minimum+"..."
-        self.complete_help_property['text']=complete_help
-        
+    
     def refresh_input(self):
         fresh_text="%s {\n" % (self.select_string)
         for property_, value in self.property_values:
@@ -251,6 +299,9 @@ class CSSWindows(tk.Frame):
 
     def display_help_property(self,property_):
         self.complete_help_property['text']="put help here for %s" % (property_)
+
+    def display_help_value(self,value):
+        self.complete_help_value['text']=value
         
     def update_select_selection(self,*event):
         tree=self.select_treeview#tree calling this method
@@ -258,51 +309,99 @@ class CSSWindows(tk.Frame):
         if tree.get_children(selected_item_id):#folder of element
             tree.see(tree.get_children(selected_item_id)[0])
         else:
-            e=(tree.item(selected_item_id,'value'))[0]
-            tree.heading("select",text=_(u"Code: %s")%(e))
+            e=(tree.item(selected_item_id,'value'))[1]
+            tree.heading("select",text=_(u"Sélecteur: %s")%(e))
+            self.select_string+=" "
             self.select_string+=e
             self.display_help_select(e)
             self.refresh_input()
             
-    def update_property_selection(self,*event):
+    def update_property_selection(self,*event):#click
         tree=self.property_treeview#tree calling this method
         selected_item_id=tree.selection()[0]
         if tree.get_children(selected_item_id):#folder of element
             tree.see(tree.get_children(selected_item_id)[0])
         else:
-            e=(tree.item(selected_item_id,'value'))[0]
-            tree.heading("property",text=_(u"Code: %s")%(e))
+            e=(tree.item(selected_item_id,'value'))[1]
+            tree.heading("property",text=_(u"Propriété: %s")%(e))
             if not (any(e == items[0] for items in self.property_values)):
                 #check if property is already there
                 self.property_values.append([e,""])
             self.display_help_property(e)
+            self.refresh_values()
             self.refresh_input()
 
+    def refresh_values(self):
+        tree=self.value_treeview
+        #hide all
+        top_level_items=tree.get_children()
+        for iid in top_level_items:
+            tree.detach(iid)
+
+        #find the important ones
+        only_properties=[]
+        for property_,value in self.property_values:
+            only_properties.append(property_)
+        self.types_of_possible_values=[]
+        for group in GENERAL_PROPERTY_LIST_2:
+            for prop in GENERAL_PROPERTY_LIST_2[group]:
+                #prop[1] is a list of valid value types for that property
+                if prop[0] in only_properties:
+                    self.types_of_possible_values.append(prop[1])
+        
+        #display them
+        for _l in self.types_of_possible_values:
+            for top_level_items in _l:
+                tree.move(top_level_items,"",0)
+            
     def update_value_selection(self,*event):
         tree=self.value_treeview#tree calling this method
         selected_item_id=tree.selection()[0]
         if tree.get_children(selected_item_id):#folder of element
             tree.see(tree.get_children(selected_item_id)[0])
         else:
-            e=(tree.item(selected_item_id,'value'))[0]
-            tree.heading("value",text=_(u"Code: %s")%(e))
-            #create menu of selection to choose to which property the value should apply
+            e=(tree.item(selected_item_id,'value'))[1]
+            parent=tree.parent(selected_item_id)
+            tree.heading("value",text=_(u"Valeur: %s")%(e))
+            #create menu of selection to choose property the value should apply
             if not (self.property_values):#no property
                 pass
+            elif len(self.property_values)==1:
+                self.property_values[0][1]=e
             else:
-                pass
-                #self.property_values.append([e,""])
-            #self.display_help_value(e)
-            self.refresh_input()
-
-
+                only_properties=[]
+                for property_,value in self.property_values:
+                    only_properties.append(property_)
+                for group in GENERAL_PROPERTY_LIST_2:
+                    for prop in GENERAL_PROPERTY_LIST_2[group]:
+                        #prop[1] is a list of valid value types for that property
+                        if prop[0] in only_properties:
+                            if parent in prop[1]:
+                                print("good for",prop[0])
                 
+                #self.property_values.append([e,""])
+            self.display_help_value(e)
+            self.refresh_input()
+    def for_which_property_dialog(self):
+        pass
+
+
+    def delete_current(self):
+        self.content_area_form.delete('1.0','end-1c')
+        self.select_string=""
+        self.property_values=[]
+        self.refresh_input()
+        self.refresh_values()
+        
     def confirm_write(self):
+        #add
         tab_index=self.model.selected_tab
         current_object=self.model.tabs_html[tab_index]
         text_to_add=(self.content_area_form.get('1.0','end-1c'))
-        current_object.add_to_text(text_to_add)
+        current_object.add_to_text(text_to_add+"\n")
         self.master_window.tk_copy_text(current_object)
+        #delete the added
+        self.delete_current()
 
     #todo here put the cursor at the end of what is just added
 
