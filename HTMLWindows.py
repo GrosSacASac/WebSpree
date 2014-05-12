@@ -53,8 +53,7 @@ from tks_styles import*
 ##LOG##
 #from log_writer import log_writer
 ##TOOLS##
-from tk_tools import* #def create_context_menu
-from tks_widgets_1 import DragDropFeedback, MainPlusHelp, HyperLink, next_gen, prev_gen
+from tks_widgets_1 import *
 
 def _(l_string):
     #print("local language: "+l_string)
@@ -63,17 +62,17 @@ def _(l_string):
 class HTMLWindows(tk.Frame):
     """HTML  frame."""
 
-    def __init__(self,parent,master_window,model):
-        tk.Frame.__init__(self,parent)
+    def __init__(self, parent, master_window, model):
+        tk.Frame.__init__(self, parent)
         self.model=model
         self.master_window=master_window
         #self.master_window == model.graphical_user_interface_   (same object) use notation 1
         #short term solution:
         self.bind_all('<Control-Shift-T>',self.save_file_to_test_control)
-        self.bind_all('<Control-Shift-S>',self._save_file_dialog)
-        self.bind_all('<Control-s>',self.model.save_html_file)
-        self.bind_all('<Control-o>',self.edit_file_dialog)
-        self.bind_all('<Control-n>',self.new_file)
+        self.bind_all('<Control-Shift-S>', self._save_file_dialog)
+        self.bind_all('<Control-s>', self.model.save_html_file)
+        self.bind_all('<Control-o>', self.edit_file_dialog)
+        self.bind_all('<Control-n>', self.new_file)
         #long term solution: bind the app and not this frame and then look which tab is selected to call the correct action 
         
         
@@ -81,25 +80,25 @@ class HTMLWindows(tk.Frame):
         self.autoclose_element_check_variable=tk.BooleanVar(value=True)
 
         #elements 
-        frame_element_master=tk.Frame(self,FRAME_STYLE_2,bg=COLOURS_A[0])
-        self.element_plus_help=MainPlusHelp(frame_element_master,_("Balises"),_("Aide"))
+        frame_element_master=tk.Frame(self, FRAME_STYLE_2, bg=COLOURS_A[0])
+        self.element_plus_help=MainPlusHelp(frame_element_master, _("Balises"), _("Aide"))
         self.elements_in_treeviews_lift = ttk.Scrollbar(self.element_plus_help.main_frame)
-        self.elements_in_treeview=ttk.Treeview(self.element_plus_help.main_frame,selectmode='browse',\
-                                            columns=("element","local"),height=21,cursor="hand2",\
-                                             yscrollcommand=self.elements_in_treeviews_lift.set,padding=0,takefocus=True,\
-                                             displaycolumns=(1,0),show='headings')#,show='tree'.
+        self.elements_in_treeview=ttk.Treeview(self.element_plus_help.main_frame, selectmode='browse',\
+                                            columns=("element", "local"), height=21, cursor="hand2",\
+                                             yscrollcommand=self.elements_in_treeviews_lift.set, padding=0, takefocus=True,\
+                                             displaycolumns=(1, 0), show='headings')#,show='tree'.
         
         
         self.element_plus_help.next_=next_gen(self.elements_in_treeview)
         self.element_plus_help.previous=prev_gen(self.elements_in_treeview)
-        self.elements_in_treeview.column("#0",width=20,stretch=False)
-        self.elements_in_treeview.heading("local",text=_("Traduction"))
-        self.elements_in_treeview.column("local",minwidth=100)
-        self.elements_in_treeview.heading("element",text=_("Code"))
-        self.elements_in_treeview.bind('<<TreeviewSelect>>',self.update_element_selection)
-        self.elements_in_treeview.bind('<Button-1>',self.drag_start,add='+')
-        self.elements_in_treeview.bind("<B1-Motion>",self.drag_and_drop_visual, add='+')
-        self.elements_in_treeview.bind('<ButtonRelease-1>',self.drop_end,add='+')
+        self.elements_in_treeview.column("#0", width=20, stretch=False)
+        self.elements_in_treeview.heading("local", text=_("Traduction"))
+        self.elements_in_treeview.column("local", minwidth=100)
+        self.elements_in_treeview.heading("element", text=_("Code"))
+        self.elements_in_treeview.bind('<<TreeviewSelect>>', self.update_element_selection)
+        self.elements_in_treeview.bind('<Button-1>', self.drag_start, add='+')
+        self.elements_in_treeview.bind("<B1-Motion>", self.drag_and_drop_visual,  add='+')
+        self.elements_in_treeview.bind('<ButtonRelease-1>', self.drop_end, add='+')
         self.elements_in_treeviews_lift.config(command=self.elements_in_treeview.yview)
         #_List of elements:
         i=0

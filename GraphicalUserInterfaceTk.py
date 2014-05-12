@@ -57,7 +57,7 @@ from log_writer import log_writer
 from HTMLWindows import HTMLWindows
 from CSSWindows import CSSWindows
 ##TOOLS##
-from tk_tools import* #def create_context_menu
+from tks_widgets_1 import *
 
 
 def _(l_string):
