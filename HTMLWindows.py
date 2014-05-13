@@ -197,7 +197,9 @@ class HTMLWindows(tk.Frame):
         
         frame_title=tk.LabelFrame(self.Contexte, FRAME_STYLE,text=_("Titre du document"))
         self.title_tk_var=tk.StringVar(value=self.model.get_option("last_html_document_title"))
-        tk.Entry(frame_title,ENTRY_STYLE,textvariable=self.title_tk_var).pack()
+        entry_1=tk.Entry(frame_title,ENTRY_STYLE,textvariable=self.title_tk_var)
+        entry_1.pack()
+        entry_1.focus()
 
         
         self.new_doc_radiobutton_var=tk.IntVar(value=0)
@@ -299,13 +301,15 @@ class HTMLWindows(tk.Frame):
         self.complete_help_attribute['text']=complete_help
         
     def update_element_selection(self,*event):
+        tree=self.elements_in_treeview
         index=self.model.selected_tab
         current_object=self.model.tabs_html[index]
-        selected_item_id=self.elements_in_treeview.selection()[0]
-        if self.elements_in_treeview.get_children(selected_item_id):#folder of element
-            self.elements_in_treeview.see(self.elements_in_treeview.get_children(selected_item_id)[0])
+        selected_item_id=tree.selection()[0]
+        if tree.get_children(selected_item_id):#folder of element
+            tree.item(selected_item_id, open=not(tree.item(selected_item_id, "open")))
+            
         else:#element
-            element_tag=(self.elements_in_treeview.item(selected_item_id,'value'))[0]
+            element_tag=(tree.item(selected_item_id,'value'))[0]
             current_object.last_selected_element=element_tag
             
 
@@ -314,7 +318,7 @@ class HTMLWindows(tk.Frame):
             self.content_area_form.delete('1.0','end-1c')#Mettre en option
             self.content_area_form['state']=previous
             self.attribute_area_form.delete('1.0','end-1c')
-            self.elements_in_treeview.heading("element",text=_("Code: ")+element_tag)
+            tree.heading("element",text=_("Code: ")+element_tag)
             
             
             

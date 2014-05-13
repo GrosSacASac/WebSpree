@@ -68,19 +68,17 @@ class WebSpree(InterfaceOptions):#Model
 creating a copy of this object starts the app."""
     def __init__(self):
         #options
-        self.options_file_object=Options(imported_default_values=DEFAULT_VALUES)#do not touch this directly use interface methods
+        self.options_file_object=Options(imported_default_values=DEFAULT_VALUES)
+        #do not touch this directly use interface methods
         
-        #start
         #we create 1 html tab. Each tab is an instance of Text_HTML class
         #each tab is represented by 1 element of this list
         
         #this is the variable to know which one the user is currently editing
         self.selected_tab=0
-        #use len(self.tabs_html) to count existing_tabs
         
         self.graphical_user_interface_tk=GraphicalUserInterfaceTk(self)
         self.tabs_html=[]
-        self.graphical_user_interface_tk.text_fields=[]#variable should be created in gui
         for path in self.get_option("previous_files_opened"):
             try:
                 self.edit_file(path)
@@ -89,8 +87,6 @@ creating a copy of this object starts the app."""
         if not self.tabs_html:#nothing opened so we provide a blank "new" file
             self.start_mod=2
             self._start_new_session()
-            
-            
         self.graphical_user_interface_tk._start()
         
     def _start_new_session(self):
@@ -179,18 +175,7 @@ creating a copy of this object starts the app."""
         
 
 
-        
-
-            
 if __name__=='__main__':
     log_writer("platform", platform.platform())
     log_writer("python_build", platform.python_build())
     WebSpreeInstance=WebSpree()
-
-##except Exception as E:
-##    log_writer("error",str(E))
-##    #os.chdir(path)to change cwd
-##    print(os.getcwd())
-##    print(E)
-##    a=input("erreur veuillez l'indiquer sur le site.\
-##    Vous retrouverez peut-être l'erreur dans Cache/journal.json")

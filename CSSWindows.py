@@ -43,7 +43,7 @@ except ImportError:#2.X
     import tkFont as tkfont
 
 import webbrowser
-
+import time
 
 from tutorial import*
 ##DATA##
@@ -58,6 +58,38 @@ from tks_widgets_1 import *
 def _(l_string):
     #print("local language: "+l_string)
     return l_string
+class memoized(object):
+    """Decorator. Caches a function's return value each time it is called.
+
+If called later with <0.25 second intervall, the cached value is returned instead."""
+    def __init__(self, func):
+        self.func = func
+        self.last_call=0
+        self.last_arg_0 = 0
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        d = self
+        # use a lambda to produce a bound method
+        mfactory = lambda self, *args: d(self, *args)
+        mfactory.__name__ = self.func.__name__
+        return mfactory.__get__(instance, owner)
+    def __call__(self,instance, *args):
+        now = time.time()
+        interval= now - self.last_call
+        self.last_call = now
+        if interval < 0.25 and self.last_arg_0 == args[0]:
+            return (self.a, self.b)
+        else:
+            self.last_arg_0=args[0]
+            def closure(*args):
+                return self.func(instance, *args)
+            self.a, self.b = closure(*args)
+            return (self.a, self.b)
+      
+    def __repr__(self):
+        """Return the function's docstring."""
+        return self.func.__doc__
 
 ######this data will be exported in external json files soon
 SELECTOR_LIST=[
@@ -183,15 +215,17 @@ class CSSWindows(tk.Frame):
         frame_property_master=tk.Frame(self,FRAME_STYLE_2,bg=COLOURS_A[1])
         frame_value_master=tk.Frame(self,FRAME_STYLE_2,bg=COLOURS_A[1])
         self.property_plus_help=MainPlusHelp(frame_property_master,_(u"Propriété"),_(u"Aide"))
-        
+        self.property_treeview_lift = ttk.Scrollbar(self.property_plus_help.main_frame)
         self.property_treeview=ttk.Treeview(self.property_plus_help.main_frame,selectmode='browse',\
-                                        height=21,columns=("local","property"),displaycolumns=(0,1),show='headings')
+                                        yscrollcommand=self.property_treeview_lift.set,height=21,columns=("local","property"),displaycolumns=(0,1),show='headings')
         
         self.property_plus_help.next_=next_gen(self.property_treeview)
         self.property_plus_help.previous=prev_gen(self.property_treeview)
         self.property_treeview.heading("local",text=_(u"Traduction"))
         self.property_treeview.heading("property",text=_(u"Propriété"))
+        self.property_treeview_lift.config(command=self.property_treeview.yview)
         self.property_treeview.grid(row=0,column=0,sticky='w')
+        self.property_treeview_lift.grid(row=0,column=1,sticky='nsw')
         
         self.property_treeview.tag_configure("tag_1", background='#cccfff')
         self.property_treeview.tag_configure("tag_2", background='#cfffcc')
@@ -224,11 +258,11 @@ class CSSWindows(tk.Frame):
         self.value_treeview.heading("local",text=_(u"Traduction"))
         self.value_treeview.column("local",minwidth=100)
         self.value_treeview.heading("value",text=_(u"Code"))
-        self.value_treeview_lift.config(command=self.select_treeview.yview)
+        self.value_treeview_lift.config(command=self.value_treeview.yview)
         self.value_treeview.grid(row=0,column=0)
         self.value_treeview.bind('<<TreeviewSelect>>',self.display_help_value)
         self.value_treeview.bind('<ButtonRelease-1>',self.update_value_click)
-        self.value_treeview_lift.grid(row=0,column=1)
+        self.value_treeview_lift.grid(row=0,column=1,sticky='nsw')
         
         self.value_treeview.tag_configure("tag_1", background='#cccfff')
         self.value_treeview.tag_configure("tag_2", background='#cfffcc')
@@ -296,20 +330,22 @@ class CSSWindows(tk.Frame):
             fresh_text+="\n}"
         self.content_area_form.delete('1.0','end-1c')
         self.content_area_form.insert('end',fresh_text)
+        
+    
 
+    @memoized
     def get_iid_and_value_1(self,tree):
         """Return the tuple (iid of selection in tree, second value).
 
 Returns (iid, None) if it a toplevel item was selected
 Swow the first child and destroys previous choices"""
-        
         try:
             self.value_confirm.destroy()
         except AttributeError:
             pass
         selected_item_id = tree.selection()[0]
         if tree.get_children(selected_item_id):#folder of element
-            tree.see(tree.get_children(selected_item_id)[0])
+            tree.item(selected_item_id, open=not(tree.item(selected_item_id, "open")))
             return (selected_item_id, None)
         else:
             value_1=(tree.item(selected_item_id,'value'))[1]
@@ -383,7 +419,10 @@ Swow the first child and destroys previous choices"""
                     self.property_values[index][1]=value_1
                     self.refresh_input()
                 else:
+                    x = tree.winfo_rootx()
+                    y = tree.winfo_rooty()
                     self.value_confirm=tk.Toplevel(self)
+                    self.value_confirm.geometry('+{x}+{y}'.format(x=x, y=y))
                     for prop in good_for:
                         index=only_properties.index(prop)
                         def handler_2(index=index):
