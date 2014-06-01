@@ -395,6 +395,22 @@
                 "version":"1+",
                 "void":false
             },
+            "sup":{
+                "alt(s)":[],
+                "must_attributes":[],
+                "parent":"body",
+                "specific_attributes":[],
+                "version":"1+",
+                "void":false
+            },
+            "sub":{
+                "alt(s)":[],
+                "must_attributes":[],
+                "parent":"body",
+                "specific_attributes":[],
+                "version":"1+",
+                "void":false
+            },
             "time":{
                 "alt(s)":[],
                 "must_attributes":[],

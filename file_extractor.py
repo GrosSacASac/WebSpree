@@ -39,50 +39,55 @@ DEFAULT_ENCODING_PY = DEFAULT_ENCODING_WEB = "utf-8"
 def table_with_textfile(NomDuDocument,NbColonnes,Tableau=None):
     if Tableau is None:
         Tableau = []
-    ManqueAide="Il n'y a pas encore d'aide ici"
-    LigneS=codecs.open(NomDuDocument,'r',"utf-8").readlines()
-    Ligne=LigneS.pop(0).strip("\ufeff")#enlever éventuellement la signature utf-8
-    i=-1
+    ManqueAide = "Il n'y a pas encore d'aide ici"
+    LigneS = codecs.open(NomDuDocument,'r',"utf-8").readlines()
+    Ligne = LigneS.pop(0).strip("\ufeff")#enlever éventuellement la signature utf-8
+    i = -1
     while True:
         #print(Ligne.strip())
-        if Ligne[0]!="#":
+        if Ligne[0] != "#":
             Tableau.append([])
-            i=i+1
+            i = i+1
             for cols in range(NbColonnes):
                 try:
-                    TexteCol=((Ligne.split(";"))[cols]).strip()
+                    TexteCol = ((Ligne.split(";"))[cols]).strip()
                 except IndexError:
-                    TexteCol=ManqueAide
+                    TexteCol = ManqueAide
                 finally:
                     if not(TexteCol):
-                        TexteCol=ManqueAide
+                        TexteCol = ManqueAide
                     Tableau[i].append(TexteCol)
         try:
-            Ligne=LigneS.pop(0)
+            Ligne = LigneS.pop(0)
         except IndexError:
             break
     return Tableau
 
 
 
-
+staticf = "Constantes/"
 #New extractors:s
 def json_file_to_object(directory_name="", file_name=""):
-    file_path=os.path.normpath(os.path.join(directory_name,file_name))
+    file_path = os.path.normpath(os.path.join(directory_name,file_name))
     return json.loads(codecs.open(file_path,'r',"utf-8").read())
 
 def load_local_strings(lang="fr"):
-    return (json_file_to_object("Constantes/"+lang, lang+"_html5_elements.json"),\
-            json_file_to_object("Constantes/"+lang, lang+"_html5_attributes.json"))
+    return (json_file_to_object(staticf+lang, lang+"_html5_elements.json"),
+            json_file_to_object(staticf+lang, lang+"_html5_attributes.json"),
+            json_file_to_object(staticf+lang, lang+"_css_selectors.json")
+            )
 
-ENCODINGS=table_with_textfile(os.path.normpath(os.path.join("Constantes","encodings.txt")),3)
+ENCODINGS = table_with_textfile(os.path.normpath(os.path.join("Constantes","encodings.txt")),3)
 
-#NEW
-ELEMENTS=json_file_to_object("Constantes","html5_elements.json")
-ATTRIBUTES=json_file_to_object("Constantes","html5_attributes.json")
-GENERAL_ATTRIBUTES_LIST=json_file_to_object("Constantes","html5_general_attributes.json")
 
-LOCAL_ELEMENTS, LOCAL_ATTRIBUTES=load_local_strings("fr")
+ELEMENTS = json_file_to_object(staticf,"html5_elements.json")
+ATTRIBUTES = json_file_to_object(staticf,"html5_attributes.json")
+GENERAL_ATTRIBUTES_LIST = json_file_to_object(staticf,"html5_general_attributes.json")
+
+CSS_SELECTORS = json_file_to_object(staticf,"css_selectors.json")
+
+(LOCAL_ELEMENTS, LOCAL_ATTRIBUTES,
+ LOCAL_CSS_SELECTORS)               = load_local_strings("fr")
 
 
 #-------------------------------------------------------------------------------------

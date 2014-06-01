@@ -491,6 +491,18 @@
         "role":"",
         "translation":"Important"
     },
+    "sub":{
+        "common usage":"Utilisé quand on peut se passer de <math> dans de courtes formules. Utilisé aussi pour faire une anchre vers des explications détaillés",
+        "description":"texte en indice",
+        "role":"met en indice le texte",
+        "translation":"indice"
+    },
+    "sup":{
+        "common usage":"",
+        "description":"texte en exposant",
+        "role":"",
+        "translation":"exposant"
+    },
     "summary":{
         "common usage":"",
         "description":"Enfant de details",

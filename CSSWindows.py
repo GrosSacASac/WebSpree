@@ -92,19 +92,6 @@ If called later with <0.25 second intervall, the cached value is returned instea
         return self.func.__doc__
 
 ######this data will be exported in external json files soon
-SELECTOR_LIST=[
-    ["CSS1",[
-          [", "],
-          [" "],
-          ["#id"],
-          [".class"],
-          [":link"],
-          [":visited"]]],
-     ["CSS2",[
-          ["*"],
-          [">"],
-          ["+"]]]
-     ]
 GENERAL_PROPERTY_LIST_2={
     "color":[
                ["color",["color"]]
@@ -199,12 +186,9 @@ class CSSWindows(tk.Frame):
             for ele in couple[1]:
                 self.select_treeview.insert(function,'end', \
                                                  values=(LOCAL_ELEMENTS[ele]["translation"],ele),tag="tag_3")
-        for couple in SELECTOR_LIST:
-            function=self.select_treeview.insert("",'end',values=(couple[0],""),tag=tags[0])
-            for _o in couple[1]:
-                o=_o[0]
-                self.select_treeview.insert(function,'end', \
-                                                 values=("",o),tag="tag_3")
+        for selector in CSS_SELECTORS:
+            self.select_treeview.insert("",'end', values=("",selector),tag="tag_3")
+        
         
 
         self.select_treeview.grid(row=0,column=0,columnspan=2,sticky='nsw')

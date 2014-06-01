@@ -319,7 +319,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
     def new_html_tab(self,tab_index,title):
         html_text_tab=tk.Frame(self.html_text_tabs)
         main_scrollbar = ttk.Scrollbar(html_text_tab)
-        self.text_fields.append([tk.Text(html_text_tab,yscrollcommand=main_scrollbar.set,state='normal',height=35,undo=True),\
+        
+        self.adaptedwidth=int(float(self.winfo_screenwidth())/25.0)
+        self.text_fields.append([tk.Text(html_text_tab,yscrollcommand=main_scrollbar.set,state='normal',width=self.adaptedwidth,height=35,undo=True),\
                                              ttk.Button(html_text_tab, text=_("Fermer la dernière\nbalise ouverte"), command=self.confirm_close_element)])
 
         main_scrollbar.config(command=self.text_fields[tab_index][0].yview)
@@ -362,6 +364,8 @@ class GraphicalUserInterfaceTk(tk.Tk):
             self.view_license(already_accepted=False)
             log_writer("width",self.winfo_screenwidth())
             log_writer("height",self.winfo_screenheight())
+        
+        
         self.mainloop()
         
     def _end(self):
