@@ -168,7 +168,7 @@ class HTMLWindows(tk.Frame):
         self.confirm_add_button.grid(row=2,column=0,sticky='nw')
 
         self.var_for_auto_close_checkbutton=tk.BooleanVar(value=True)
-        self.auto_close_checkbutton=ttk.Checkbutton(frame_2_user_input, text=_("Auto Fermeture"),variable=self.var_for_auto_close_checkbutton)
+        self.auto_close_checkbutton=ttk.Checkbutton(frame_2_user_input, text=_("Fermer la balise"),variable=self.var_for_auto_close_checkbutton)
         self.auto_close_checkbutton.grid(row=2,column=1,sticky='nw')
         
 
@@ -297,7 +297,7 @@ class HTMLWindows(tk.Frame):
                                                     attribute_details["default_value"],\
                                                     ", ".join(attribute_details["possible_values"]),\
                                                     attribute_details["version"],)).strip()
-        self.attribute_plus_help.short_help['text']=minimum+"..."
+        self.attribute_plus_help.short_help['text']=minimum
         self.complete_help_attribute['text']=complete_help
         
     def update_element_selection(self,*event):
@@ -339,7 +339,7 @@ class HTMLWindows(tk.Frame):
                                         ", ".join(couple[1][ele]["specific_attributes"]),\
                                         couple[1][ele]["parent"],couple[1][ele]["version"],str(couple[1][ele]["void"])).strip()
                         
-                        self.element_plus_help.short_help['text']=minimum+"..."
+                        self.element_plus_help.short_help['text']=minimum
                         self.complete_help_element['text']=complete_help_element
                         
                         self.content_area_form['state']='normal'
@@ -428,8 +428,7 @@ class HTMLWindows(tk.Frame):
         
     
 
-    def prepare_verification(self):
-        self.tutorial_button['state']='normal'
+    
         
 
     def feedback_verification(self,messages,links,finished):

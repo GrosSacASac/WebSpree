@@ -47,7 +47,7 @@ import codecs
 import os
 
 ##DATA##
-from tutorial import detect_existing_tutorials,start_tutorial
+from tutorial import detect_existing_tutorials,start_tutorial,verify
 #from file_extractor import*
 ##STYLES##
 from tks_styles import*
@@ -111,7 +111,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.js_window=tk.Frame(self.special_frame)#js frame
         self.t_frames=[self.html_window, self.css_window, self.js_window]
         
-        self.html_window.grid()#only 1 technology visible
+    
 
 
         tk.Label(self.js_window,text="coming pretty soon . really.").grid()
@@ -126,29 +126,35 @@ class GraphicalUserInterfaceTk(tk.Tk):
         
         
         self.mode=tk.IntVar(value=0)
-        mode=tk.LabelFrame(content_frame, text=_("Mode d'édition"), relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)
+        mode=tk.LabelFrame(self.special_frame, text=_("Mode d'édition"), relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)
         texts=["HTML","CSS","JS"]
         for i in range(3):
             radiobutton_i=ttk.Radiobutton(mode,text=texts[i],image=self.images[i],compound='left',command=self.change_mod,variable=self.mode,value=i)
             radiobutton_i.grid(row=0,column=i)
         
-        mode.grid(row=1,column=0,sticky='w')
-
+        mode.grid(row=0,column=0,sticky='w')
+        
+        self.change_mod()
+        
         self.insertion_tk_var=tk.BooleanVar(value=False)
         tools=tk.LabelFrame(content_frame, text=_("Outils"), relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)
         write_end_choice=ttk.Radiobutton(tools, text=_("Ecrire à la fin"),variable=self.insertion_tk_var, value=False, command=self.switch_writing_place)
         write_end_choice.grid(row=0,column=0,sticky='nw')
-        write_cursor_choice=ttk.Radiobutton(tools, text=_("Insèrer au curseur"),variable=self.insertion_tk_var, value=True,command=self.switch_writing_place )
-        write_cursor_choice.grid(row=1,column=0,sticky='nw')
+        write_cursor_choice=ttk.Radiobutton(tools, text=_("Insérer au curseur"),variable=self.insertion_tk_var, value=True,command=self.switch_writing_place )
+        write_cursor_choice.grid(row=0,column=1,sticky='nw')
         tools.grid(row=1,column=1,sticky='e')
         
         content_frame.grid(row=0,column=2,sticky='nsw',columnspan=1)
+        self.tutorial_button=ttk.Button(tools, text="Check exercice",command=lambda:verify(self.model))
+        self.tutorial_button.grid(row=0,column=2,sticky='')
+        self.tutorial_button['state']='disabled'
         if self.model.get_option("developper_interface"):
+            future_search=tk.StringVar()
+            search_global=ttk.Entry(self.special_frame,textvariable=future_search)
+            future_search.set("Recherche pas encore possible")
+            search_global.grid(row=0,column=1,sticky='ew')
             leave_button=ttk.Button(tools, text="Quit(instantly)",command=self._end )
-            leave_button.grid(row=4,column=0,sticky='')
-            self.tutorial_button=ttk.Button(tools, text="Check exercice",command=lambda:verify(self.model))
-            self.tutorial_button.grid(row=3,column=0,sticky='')
-            self.tutorial_button['state']='disabled'
+            leave_button.grid(row=1,column=0,sticky='')
         
         ######----Menus-----######
         FILEMENU={}
@@ -322,7 +328,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         
         self.adaptedwidth=int(float(self.winfo_screenwidth())/25.0)
         self.text_fields.append([tk.Text(html_text_tab,yscrollcommand=main_scrollbar.set,state='normal',width=self.adaptedwidth,height=35,undo=True),\
-                                             ttk.Button(html_text_tab, text=_("Fermer la dernière\nbalise ouverte"), command=self.confirm_close_element)])
+                                             ttk.Button(html_text_tab, text=_("Fermer la dernière balise ouverte"), command=self.confirm_close_element)])
 
         main_scrollbar.config(command=self.text_fields[tab_index][0].yview)
         self.text_fields[tab_index][0].grid(row=0,column=0,sticky='nsw')
@@ -458,6 +464,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
             if self.current_font['size'] < -7:
                 self.current_font['size'] += 1
                 
+    def prepare_verification(self):
+        self.tutorial_button['state']='normal'
+        
     def lock_tutorial(self):
         #TODO when a tutorial starts, lock all tutorial.
         #to unlock you have to say yes to a cancelyes dialog
@@ -467,4 +476,4 @@ class GraphicalUserInterfaceTk(tk.Tk):
     def change_mod(self):
         for t_frame in self.t_frames:
             t_frame.grid_forget()
-        self.t_frames[self.mode.get()].grid()
+        self.t_frames[self.mode.get()].grid(row=1,column=0,sticky='we',columnspan=2)

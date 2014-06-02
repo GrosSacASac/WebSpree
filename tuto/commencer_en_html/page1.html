@@ -2,13 +2,53 @@
 <html lang="fr">
     <head>
         <meta charset="utf-8"/>
-        <link rel="stylesheet" href="coming_style.css"/>
+        <link rel="stylesheet" href="../tuto.css"/>
         <title>
-            page1
+            Commencer en HTML ! - 1
         </title>
     </head>
     <body>
-        <p>Commencez un nouveau document standard en allant dans Fichier puis Nouveau et enfin confirmez</p><p>écrivez "bonjour" dans un paragraphe. Utilisez &lt;p&gt; pour faire un paragraphe. yo
-        </p>
+        <main>
+            <h1>Commencer en HTML, partie 1</h1>
+            <progress value="1" max="100">1%</progress>
+            
+            <section class="information">
+            <h2>Présentation</h2>
+                <h3>Le HTML, c'est quoi ?</h3>
+                <p>HTML pour <em lang="en">HyperText Markup Language</em> est le langage standard pour créer des pages web. En HTML vous pourrez structurez vos données de manière sémantique , les organiser de façon logique et même créer des documents interactifs. Vous aurez la possiblilité d'intégrer directement des éléments multimédias</p>
+                <h3>Changements</h3>
+                <p>Le HTML est défini par le <a href="http://w3.org/" target="_blank" >World Wide Web Consortium</a>. En ce moment la version vivante est le HTML5 toujours en cours de définition. Le w3c est la réfèrence ultime pour le HTML. Le w3c s'occupe de la création des spécification, et de la recommandation des bonnes pratiques.</p>
+                <figure>
+                    <a href="http://www.w3.org/html/logo/" target="_blank"><img src="http://www.w3.org/html/logo/badge/html5-badge-h-solo.png" width="63" height="64" alt="HTML5" title="HTML5"></a>
+                    <caption>Identité visuelle pour HTML5</caption>
+                </figure>
+                <h3>Et comment je fais pour créer du HTML moi ?</h3>
+                <p>Le HTML est d'abord un language du web, il faut donc déjà commencer par indiquer que c'est un document HTML en écrivant <code>&lt;!DOCTYPE html&gt;</code>. Ensuite il faut mettre tout le reste entre <code>&lt;html&gt;</code> et <code>&lt;/html&gt;</code>. Et de la même manière il faudra toujours mettre votre <strong>contenu entre la balise ouvrante et fermante</strong> qui correspond à la sémantique du contenu. La balise ouvrante s'écrit <code>&lt;nom de la balise&gt;</code> et la balise fermante <code>&lt;/nom de la balise&gt;</code>. Il existe aussi des balises autofermantes qui n'ont pas de contenu qui s'écrivent <code>&lt;nom attibut1=valeur1 attibut2=valeur2 &gt;</code>. Les attributs permettent de mieux décrire l'élément. Il faut aussi impérativement déclarer l'encodage.</p>
+                <h3>Au final ça ressemble à quoi ?</h3>
+                <figure><caption>Début d'un document HTML</caption>
+                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="fr"&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8"&gt;
+        &lt;link rel="stylesheet" href="coming_style.css"&gt;
+        &lt;title&gt;
+            Titre de la page
+        &lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;</code></pre></figure>
+                <p>Dans WebSpree vous pouvez insérer tout cela en faisant Fichier Nouveau |Entrée|</p>
+            </section>
+            
+            <section class="exercices">
+                <h2>Exercice 1</h2>
+                <ol>
+                    <li>Commencez un nouveau document standard en allant dans Fichier puis Nouveau et enfin confirmez</li>
+                    <li>&Eacute;crivez "bonjour" dans un paragraphe. Utilisez &lt;p&gt; pour commencer un paragraphe.</li>
+                    <li>Valider l'exercice en cliquant sur [Check exercice]</li>
+                    
+                </ol>
+            </section>
+        </main>
+        
     </body>
 </html>

@@ -4,7 +4,9 @@
         "this":"page1.html",
         "show_solution":false,
         "verification":[
-            "bonjour"
+            "{ro}<!DOCTYPE html>",
+            "{tc:1}html,head,meta,title,body,p",
+            "{do:p:1}bonjour"
         ],
         "showlink":false
     },
@@ -13,11 +15,11 @@
         "this":"page2.html",
         "show_solution":false,
         "verification":[
-            "patatemann",
+            "Le tutoriel n'est pas encore terminé",
             "{tc:3}li",
             "{t:4}li",
             "{a:href:1}a:",
-            "{d:any}[0-9]{7}"
+            "{d:any}[0-9]{1000}"
         ],
         "showlink":false
     }

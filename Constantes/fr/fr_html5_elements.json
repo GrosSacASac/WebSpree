@@ -60,10 +60,10 @@
         "translation":"Citation externe"
     },
     "body":{
-        "common usage":"",
+        "common usage":"On utilise une balise unique body pour mettre tout le contenu de son document dedans",
         "description":"Mettez ici le contenu de votre page",
-        "role":"",
-        "translation":"corps"
+        "role":"Délimiteur de contenu",
+        "translation":"Corps"
     },
     "button":{
         "common usage":"",
@@ -228,10 +228,10 @@
         "translation":"Titre 6"
     },
     "head":{
-        "common usage":"",
+        "common usage":"On utilise une balise unique head pour mettre tout le méta-contenu de son document dedans",
         "description":"Mettez ici les informations qui concernent le document lui m\u00eame. Ces informations sont appel\u00e9s m\u00e9tadonn\u00e9es et incluent le plus souvent des liens ou des d\u00e9finitions sur les scripts, feuilles de style,langues et encodages",
-        "role":"",
-        "translation":"en-t\u00eate"
+        "role":"Conteneur de méta-informations",
+        "translation":"En-t\u00eate"
     },
     "header":{
         "common usage":"",

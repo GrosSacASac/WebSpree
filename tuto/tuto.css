@@ -1,0 +1,59 @@
+* {
+	transition:color 1s;
+}
+
+body{
+	background-color:#e2f0ea;
+	font-family:Sylfaen;
+	
+}
+
+main{
+	font-size:1.2em;
+	background-color:#f9f9f9;
+	color:#212125;
+}
+
+main p::first-letter {
+	font-size:1.6em;
+}
+
+section {
+    margin-left:1em;
+}
+
+section.exercices {
+    padding-top:2em;
+    border-top: 2px black dashed;
+}
+
+aside {
+	margin-top:1em;
+	font-size:1em;
+	background-color:#e3e5fa;
+	color:#333;
+	border-radius:1em;
+}
+
+p{
+	margin-left:1em;
+    text-align: justify;
+    max-width:60%;
+}
+p.tip:before{
+	content:"TIP: ";
+}
+
+a{
+	text-decoration:underline;
+	color:#6644e1;
+}
+
+a:hover{
+	font-weight:bolder;
+	color:#e11272;
+}
+
+progress {
+    width:100%;
+}

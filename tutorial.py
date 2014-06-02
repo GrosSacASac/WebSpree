@@ -56,7 +56,7 @@ def start_tutorial(folder,GUItk):
     verification_path=os.path.normpath(os.path.join("tuto",folder,"verification.json"))
     webbrowser.open_new_tab(index_path)
     verification=json.loads(codecs.open(verification_path,'r',"utf-8").read())
-    GUItk.html_window.prepare_verification()#enable "check" button
+    GUItk.prepare_verification()#enable "check" button
     GUItk.lock_tutorial()
     GUItk.model.current_verification=verification
     GUItk.model.index_path=index_path
@@ -82,8 +82,8 @@ def do_verification(html,expressions):
             
             if search_what=="t":#tag
                 """{t:x}tag1,tag2,...,tagn"""
-                m1=_("balise ouvrante %s manquante.(Voulu: %d. Trouvé: %d")
-                m2=_("balise fermante %s manquante.(Voulu: %d. Trouvé: %d")
+                m1=_("balise ouvrante %s manquante.(Voulu: %d. Trouvé: %d)")
+                m2=_("balise fermante %s manquante.(Voulu: %d. Trouvé: %d)")
                 if len(search_type_format)>1:
                     x=int(search_type_format[1])
                 close_strict=False

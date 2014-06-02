@@ -225,7 +225,7 @@ class CSSWindows(tk.Frame):
         self.property_treeview.bind('<ButtonRelease-1>',self.update_property_click)
         
         
-        height_b=13
+        height_b=10
         self.values_plus_help=MainPlusHelp(frame_value_master,_(u"Valeur"),_(u"Aide"))
         self.value_treeview_lift = ttk.Scrollbar(self.values_plus_help.main_frame)
         self.value_treeview=ttk.Treeview(self.values_plus_help.main_frame,selectmode='browse',\
@@ -277,8 +277,9 @@ class CSSWindows(tk.Frame):
         self.delete_current_button.grid(row=2,column=1,sticky='nw')
 
         self.var_for_auto_close_checkbutton=tk.BooleanVar(value=True)
-        self.auto_close_checkbutton=ttk.Checkbutton(frame_2_user_input, text=_(u"Auto Fermeture"),variable=self.var_for_auto_close_checkbutton)
-        self.auto_close_checkbutton.grid(row=2,column=2,sticky='nw')
+        self.auto_close_checkbutton=ttk.Checkbutton(frame_2_user_input, text=_(u"Fermer Fermeture"),variable=self.var_for_auto_close_checkbutton)
+        #no display is better
+        #self.auto_close_checkbutton.grid(row=2,column=2,sticky='nw')
         
 
         #Help
@@ -345,10 +346,11 @@ Swow the first child and destroys previous choices"""
         
     def update_select_click(self,*event):
         tree=self.select_treeview#tree calling this method
-        selected_item_id, value_1 = self.get_iid_and_value_1(tree)
-        if value_1 is not None:
-            self.select_string=u"{} {}".format(self.select_string, value_1)
-            self.refresh_input()
+        if not(tree.focus()==""):
+            selected_item_id, value_1 = self.get_iid_and_value_1(tree)
+            if value_1 is not None:
+                self.select_string=u"{} {}".format(self.select_string, value_1)
+                self.refresh_input()
 
     def display_help_property(self,*event):
         tree=self.property_treeview#tree calling this method
@@ -359,13 +361,14 @@ Swow the first child and destroys previous choices"""
         
     def update_property_click(self,*event):#click
         tree=self.property_treeview#tree calling this method
-        selected_item_id, value_1 = self.get_iid_and_value_1(tree)
-        if value_1 is not None:
-            if not (any(value_1 == items[0] for items in self.property_values)):
-                #check if property is already there
-                self.property_values.append([value_1,""])
-            self.refresh_values()
-            self.refresh_input()
+        if not(tree.focus()==""):
+            selected_item_id, value_1 = self.get_iid_and_value_1(tree)
+            if value_1 is not None:
+                if not (any(value_1 == items[0] for items in self.property_values)):
+                    #check if property is already there
+                    self.property_values.append([value_1,""])
+                self.refresh_values()
+                self.refresh_input()
 
     def display_help_value(self,*event):
         tree=self.value_treeview#tree calling this method
@@ -376,43 +379,44 @@ Swow the first child and destroys previous choices"""
         
     def update_value_click(self,*event):
         tree=self.value_treeview#tree calling this method
-        selected_item_id, value_1 = self.get_iid_and_value_1(tree)
-        if value_1 is not None:
-            parent=tree.parent(selected_item_id)
-            #create menu of selection to choose property the value should apply
-            if not (self.property_values):#no property
-                pass
-            elif len(self.property_values)==1:
-                self.property_values[0][1]=value_1
-                self.refresh_input()
-            else:
-                only_properties=[]
-                good_for=[]
-                for property_, value in self.property_values:
-                    only_properties.append(property_)
-                for group in GENERAL_PROPERTY_LIST_2:
-                    for prop in GENERAL_PROPERTY_LIST_2[group]:
-                        #prop[1] is a list of valid value types for that property
-                        if prop[0] in only_properties:
-                            if parent in prop[1]:
-                                good_for.append(prop[0])
-                
-                if len(good_for)==1:
-                    #apply directly
-                    index=only_properties.index(good_for[0])
-                    self.property_values[index][1]=value_1
+        if not(tree.focus()==""):
+            selected_item_id, value_1 = self.get_iid_and_value_1(tree)
+            if value_1 is not None:
+                parent=tree.parent(selected_item_id)
+                #create menu of selection to choose property the value should apply
+                if not (self.property_values):#no property
+                    pass
+                elif len(self.property_values)==1:
+                    self.property_values[0][1]=value_1
                     self.refresh_input()
                 else:
-                    x = tree.winfo_rootx()
-                    y = tree.winfo_rooty()
-                    self.value_confirm=tk.Toplevel(self)
-                    self.value_confirm.geometry('+{x}+{y}'.format(x=x, y=y))
-                    for prop in good_for:
-                        index=only_properties.index(prop)
-                        def handler_2(index=index):
-                            return self.apply_for(index,value_1)
-                        b=tk.Button(self.value_confirm,text=_(u"Appliquer {} pour {}").format(value_1,prop), command=handler_2)
-                        b.grid()
+                    only_properties=[]
+                    good_for=[]
+                    for property_, value in self.property_values:
+                        only_properties.append(property_)
+                    for group in GENERAL_PROPERTY_LIST_2:
+                        for prop in GENERAL_PROPERTY_LIST_2[group]:
+                            #prop[1] is a list of valid value types for that property
+                            if prop[0] in only_properties:
+                                if parent in prop[1]:
+                                    good_for.append(prop[0])
+                    
+                    if len(good_for)==1:
+                        #apply directly
+                        index=only_properties.index(good_for[0])
+                        self.property_values[index][1]=value_1
+                        self.refresh_input()
+                    else:
+                        x = tree.winfo_rootx()
+                        y = tree.winfo_rooty()
+                        self.value_confirm=tk.Toplevel(self)
+                        self.value_confirm.geometry('+{x}+{y}'.format(x=x, y=y))
+                        for prop in good_for:
+                            index=only_properties.index(prop)
+                            def handler_2(index=index):
+                                return self.apply_for(index,value_1)
+                            b=tk.Button(self.value_confirm,text=_(u"Appliquer {} pour {}").format(value_1,prop), command=handler_2)
+                            b.grid()
           
     def apply_for(self,index,value_1):
         self.property_values[index][1]=value_1
