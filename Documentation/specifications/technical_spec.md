@@ -1,6 +1,6 @@
 technical_spec.md
 Last Update of this document:
-18/03/2014
+2014-06-03
 
 ##Tutorials to create web pages with verification
 
@@ -25,7 +25,7 @@ each html file can have a verification. A verification is a dic.Each dic corresp
     * "{a:attribute_name:x}tag1,tag2,...,tagn:value or nothing" a means attribute Will look x times for attribute name with the value value in any tags or in tags if tags is there.you must put ":" for no value
     * "{r}" will search in raw mode (without parsing html)
     * "{ro}" search in raw mode without compiling as regular expression
-    * "{do:tag:x}expression" d for data will look if expression  matches x times in tags.d only uses regular expressions and do without regular expression
+    * "{do:tag:x}expression" d for data will look if expression  matches x times in tags.d only uses regular expressions and do without regular expression this will only look if expression is ddirectly in tag !
     * No prefix will be searched as data as non regular expression (same as {do::1}expre)
     
 * "showlink" boolean show link to next even if false

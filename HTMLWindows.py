@@ -62,13 +62,13 @@ def _(l_string):
 class HTMLWindows(tk.Frame):
     """HTML  frame."""
 
-    def __init__(self, parent, master_window, model):
+    def __init__(self, parent, master_window, model, adapted_height):
         tk.Frame.__init__(self, parent)
-        self.model=model
-        self.master_window=master_window
+        self.model = model
+        self.master_window = master_window
         #self.master_window == model.graphical_user_interface_   (same object) use notation 1
         #short term solution:
-        self.bind_all('<Control-Shift-T>',self.save_file_to_test_control)
+        self.bind_all('<Control-Shift-T>', self.save_file_to_test_control)
         self.bind_all('<Control-Shift-S>', self._save_file_dialog)
         self.bind_all('<Control-s>', self.model.save_html_file)
         self.bind_all('<Control-o>', self.edit_file_dialog)
@@ -84,7 +84,7 @@ class HTMLWindows(tk.Frame):
         self.element_plus_help=MainPlusHelp(frame_element_master, _("Balises"), _("Aide"))
         self.elements_in_treeviews_lift = ttk.Scrollbar(self.element_plus_help.main_frame)
         self.elements_in_treeview=ttk.Treeview(self.element_plus_help.main_frame, selectmode='browse',\
-                                            columns=("element", "local"), height=21, cursor="hand2",\
+                                            columns=("element", "local"), height=adapted_height, cursor="hand2",\
                                              yscrollcommand=self.elements_in_treeviews_lift.set, padding=0, takefocus=True,\
                                              displaycolumns=(1, 0), show='headings')#,show='tree'.
         
@@ -122,7 +122,7 @@ class HTMLWindows(tk.Frame):
         self.attribute_plus_help=MainPlusHelp(frame_attribute_master,_("Attributs"),_("Aide"))
         #_List of attributes:
         self.general_attributes_treeview=ttk.Treeview(self.attribute_plus_help.main_frame,selectmode='browse',\
-                                        height=21,columns=("real","local"),displaycolumns=(1),show='headings')
+                                        height=adapted_height,columns=("real","local"),displaycolumns=(1),show='headings')
         
         self.attribute_plus_help.next_=next_gen(self.general_attributes_treeview)
         self.attribute_plus_help.previous=prev_gen(self.general_attributes_treeview)
@@ -133,7 +133,7 @@ class HTMLWindows(tk.Frame):
         self.general_attributes_treeview.bind('<<TreeviewSelect>>',self.update_attribute_selection,"")
         
         self.specific_attributes_treeview=ttk.Treeview(self.attribute_plus_help.main_frame,\
-            selectmode='browse',height=21,columns=("real","local"),displaycolumns=(1),show='headings')
+            selectmode='browse',height=adapted_height,columns=("real","local"),displaycolumns=(1),show='headings')
         self.specific_attributes_treeview.heading("local",text=_("Spécifique"))
         #self.specific_attributes_treeview.tag_configure("specific_attribute")not here later make tag ofr must and specifiq in different colours
         self.specific_attributes_treeview.grid(row=0,column=1,sticky='w')
@@ -156,10 +156,11 @@ class HTMLWindows(tk.Frame):
         help_label_for_attribute=ttk.Label(frame_2_user_input, text=_("Placez les attributs"))
         help_label_for_attribute.grid(row=0,column=1,sticky='nw')
 
-        self.content_area_form=tk.Text(frame_2_user_input,ENTRY_STYLE,width=42,height=6)
+        height_c = int(float(adapted_height)/4.0)
+        self.content_area_form=tk.Text(frame_2_user_input,ENTRY_STYLE,width=42,height = height_c)
         self.content_area_form.grid(row=1,column=0,sticky='nw')
         self.content_area_form.bind('<Button-3>',create_context_menu)
-        self.attribute_area_form=tk.Text(frame_2_user_input,ENTRY_STYLE,width=40,height=6)
+        self.attribute_area_form=tk.Text(frame_2_user_input,ENTRY_STYLE,width=40,height = height_c)
         self.attribute_area_form.grid(row=1,column=1,sticky='nw')
         self.attribute_area_form.bind('<Button-3>',create_context_menu)
         #self.content_area_form.bind('<KeyRelease>',write_in_real_time)
@@ -325,32 +326,30 @@ class HTMLWindows(tk.Frame):
             _i=self.specific_attributes_treeview.get_children()
             for item in _i:
                 self.specific_attributes_treeview.delete(item)#delete all items in specific_attributes_treeview before
-            for couple in ELEMENTS:
-                for ele in couple[1]:
-                    if ele==element_tag:
-                        current_object.last_selected_element_is_void=couple[1][ele]["void"]
-                        minimum=u"{}\n{}\n{}".format(LOCAL_ELEMENTS[element_tag]["description"],LOCAL_ELEMENTS[element_tag]["role"],\
-                                                           LOCAL_ELEMENTS[element_tag]["common usage"]).strip()
-                        complete_help_element=\
-                            _(u"<{}> ({})\n{}\nAlternatives: {}\nAttributs obligatoires: {}\nAttributs spécifiques: {}\nDois avoir comme parent: {}\nVersion: {}\nElement vide: {}")\
-                            .format(element_tag,LOCAL_ELEMENTS[element_tag]["translation"],\
-                                        minimum,", ".join(couple[1][ele]["alt(s)"]),\
-                                        ", ".join(couple[1][ele]["must_attributes"]),
-                                        ", ".join(couple[1][ele]["specific_attributes"]),\
-                                        couple[1][ele]["parent"],couple[1][ele]["version"],str(couple[1][ele]["void"])).strip()
-                        
-                        self.element_plus_help.short_help['text']=minimum
-                        self.complete_help_element['text']=complete_help_element
-                        
-                        self.content_area_form['state']='normal'
-                        if current_object.last_selected_element_is_void:
-                            self.content_area_form.insert('end',_("Les éléments vides n'ont pas de contenu"))
-                            self.content_area_form['state']='disabled'
-                        #todo add must attributes somewhere
-                        for attribute in couple[1][ele]["specific_attributes"]:
-                                self.specific_attributes_treeview.insert("",'end',values=(attribute,LOCAL_ATTRIBUTES[attribute]["translation"]))#,tags="specific_attribute")
+            
+            html_element = html_element_from_name(element_tag)
+            current_object.last_selected_element_is_void=html_element["void"]
+            minimum=u"{}\n{}\n{}".format(LOCAL_ELEMENTS[element_tag]["description"],LOCAL_ELEMENTS[element_tag]["role"],\
+                                               LOCAL_ELEMENTS[element_tag]["common usage"]).strip()
+            complete_help_element=\
+                _(u"<{}> ({})\n{}\nAlternatives: {}\nAttributs obligatoires: {}\nAttributs spécifiques: {}\nDois avoir comme parent: {}\nVersion: {}\nElement vide: {}")\
+                .format(element_tag,LOCAL_ELEMENTS[element_tag]["translation"],\
+                            minimum,", ".join(html_element["alt(s)"]),\
+                            ", ".join(html_element["must_attributes"]),
+                            ", ".join(html_element["specific_attributes"]),\
+                            html_element["parent"],html_element["version"],str(html_element["void"])).strip()
+            
+            self.element_plus_help.short_help['text']=minimum
+            self.complete_help_element['text']=complete_help_element
+            
+            self.content_area_form['state']='normal'
+            if current_object.last_selected_element_is_void:
+                self.content_area_form.insert('end',_("Les éléments vides n'ont pas de contenu"))
+                self.content_area_form['state']='disabled'
+            #todo add must attributes somewhere
+            for attribute in html_element["specific_attributes"]:
+                    self.specific_attributes_treeview.insert("",'end',values=(attribute,LOCAL_ATTRIBUTES[attribute]["translation"]))#,tags="specific_attribute")
                                 
-                        break
 
 
                 

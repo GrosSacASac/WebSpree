@@ -1,14 +1,35 @@
-r"""A parser for HTML and XHTML.
+#!/usr/bin/python
+#-*-coding:utf-8*
 
+#html_parser.py
+#Role:HTML parser (for turorials)
+
+#Walle Cyril
+#2014-06-03
+
+##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+##WebSpree
+##Copyright (C) 2014 Walle Cyril
+##
+##WebSpree is free software: you can redistribute it and/or modify
+##it under the terms of the GNU General Public License as published by
+##the Free Software Foundation, either version 3 of the License, or
+##(at your option) any later version.
+##
+##WebSpree is distributed in the hope that it will be useful,
+##but WITHOUT ANY WARRANTY; without even the implied warranty of
+##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+##GNU General Public License for more details.
+##
+##You should have received a copy of the GNU General Public License
+##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
+##
+##If you have questions concerning this license you may contact via email Walle Cyril
+##by sending an email to the following adress:capocyril@hotmail.com
+##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+r"""
 Original file:C:\Python33\Lib\html\parser.py
-The problem whith import parser you get another module with the same name.
-Plus I dont know if this module is available with Python 2.X
-I also want an consistent parser over the years. For instance,
-If a new version of this parser comes in Python 3.6, it may broke my app.
-(eventually make another local copy with lot's of testing to profit)
-That s why it s a local copy with a different name.
 """
-
 
 # This file is based on sgmllib.py, but the API is slightly different.
 
@@ -23,6 +44,9 @@ except ImportError:
     import markupbase as _markupbase
 import re
 import warnings
+
+##DATA##
+from file_extractor import *
 
 # Regular expressions used for parsing
 
@@ -107,11 +131,7 @@ class HTMLParseError(Exception):
 class HTMLParser(_markupbase.ParserBase):
     """Find tags and other markup and call handler functions.
 
-    Usage:
-        p = HTMLParser()
-        p.feed(data)
-        ...
-        p.close()
+        p = HTMLParser();p.feed(data);p.close()
 
     Start tags are handled by calling self.handle_starttag() or
     self.handle_startendtag(); end tags by self.handle_endtag().  The
@@ -123,7 +143,11 @@ class HTMLParser(_markupbase.ParserBase):
     passed to self.handle_charref() with the string containing the
     reference as the argument.
     """
-
+    VOID_ELEMENTS_5 = ("br", "hr", "img", "input", "link",
+                       "meta","area", "base", "col", "command",
+                       "embed", "keygen", "param", "source",
+                       "track", "wbr")
+    
     CDATA_CONTENT_ELEMENTS = ("script", "style")
 
     def __init__(self, strict=False):
@@ -133,6 +157,19 @@ class HTMLParser(_markupbase.ParserBase):
         markup, otherwise it will raise an error.  Note that the strict mode
         is deprecated.
         """
+        self.doctype_first = True
+        self.declaration = ""
+        self.start_list = []
+        self.end_list = []
+        self.content_list = []
+        self.key_attribute_list = []
+        self.value_attribute_list = []
+        #dynamic_start_list contains opened tags at the moment you look it
+        #if the document is valid it should be empty at the end
+        self.dynamic_start_list = []
+        self.close_before_error_list = []
+        self.must_parent_errors = []
+        
         if strict:
             warnings.warn("The strict mode is deprecated.",
                           DeprecationWarning, stacklevel=2)
@@ -286,6 +323,9 @@ class HTMLParser(_markupbase.ParserBase):
     # See w3.org/TR/html5/tokenization.html#markup-declaration-open-state
     # See also parse_declaration in _markupbase
     def parse_html_declaration(self, i):
+        if i>2:
+            #Doctype declaration at the wrong place
+            self.doctype_first = False
         rawdata = self.rawdata
         assert rawdata[i:i+2] == '<!', ('unexpected call to '
                                         'parse_html_declaration()')
@@ -376,9 +416,12 @@ class HTMLParser(_markupbase.ParserBase):
                            % (rawdata[k:endpos][:20],))
             self.handle_data(rawdata[i:endpos])
             return endpos
-        if end.endswith('/>'):
+        
+        if (end.endswith('>') and tag in self.VOID_ELEMENTS_5) or end.endswith('/>'):
             # XHTML-style empty tag: <span attr="value" />
+            
             self.handle_startendtag(tag, attrs)
+            
         else:
             self.handle_starttag(tag, attrs)
             if tag in self.CDATA_CONTENT_ELEMENTS:
@@ -475,14 +518,44 @@ class HTMLParser(_markupbase.ParserBase):
     def handle_startendtag(self, tag, attrs):
         self.handle_starttag(tag, attrs)
         self.handle_endtag(tag)
+        
 
     # Overridable -- handle start tag
     def handle_starttag(self, tag, attrs):
-        pass
+         #if attrs:
+            #attrs.insert(0,tag)
+        if attrs:
+            i1=len(self.key_attribute_list)
+            i2=len(self.value_attribute_list)
+            self.key_attribute_list.append([])
+            self.value_attribute_list.append([])
+            for attr in attrs:
+                self.key_attribute_list[i1].append(attr[0])
+                self.value_attribute_list[i2].append(attr[1])
+        else:
+            self.key_attribute_list.append(None)
+            self.value_attribute_list.append(None)
+        must_parent = html_element_from_name(tag)["parent"]#in file extractor
+        must_parents = must_parent.split(",")
+        for parent in must_parents:
+            if parent in self.dynamic_start_list or must_parent == "root":
+                break
+        else :
+            #the must parent is not open or missing (<li> needs <ul> or <ol> open before)
+            self.must_parent_errors.append([",".join(must_parents), tag])
+        self.start_list.append(tag)
+        self.dynamic_start_list.append(tag)
 
     # Overridable -- handle end tag
     def handle_endtag(self, tag):
-        pass
+        if self.dynamic_start_list[-1] != tag:
+            #nested noeuds
+            self.close_before_error_list.append([self.dynamic_start_list[-1],tag])
+            if tag in self.dynamic_start_list:
+                self.dynamic_start_list.remove(tag)
+        else:
+            self.dynamic_start_list.pop(-1)
+        self.end_list.append(tag)
 
     # Overridable -- handle character reference
     def handle_charref(self, name):
@@ -494,7 +567,21 @@ class HTMLParser(_markupbase.ParserBase):
 
     # Overridable -- handle data
     def handle_data(self, data):
-        pass
+        #print(data.strip(),end="")
+        #print(type(data))
+        stripped_data=data.strip()
+        if stripped_data:
+            try:
+                i = j = 0
+                while self.start_list[-i-1] == self.end_list[-j-1]:
+                    i = i + 1
+                    j = j + 1
+                container = self.start_list[-i-1]
+            except IndexError:
+                container = ""
+            self.content_list.append([container, stripped_data])
+        else:
+           pass#self.content_list.append("") 
 
     # Overridable -- handle comment
     def handle_comment(self, data):
@@ -502,7 +589,7 @@ class HTMLParser(_markupbase.ParserBase):
 
     # Overridable -- handle declaration
     def handle_decl(self, decl):
-        pass
+        self.declaration = decl
 
     # Overridable -- handle processing instruction
     def handle_pi(self, data):
@@ -544,3 +631,69 @@ class HTMLParser(_markupbase.ParserBase):
                       replaceEntities, s, flags=re.ASCII)
 
 
+
+
+
+if __name__=='__main__':
+    a=r"""
+
+<html lang="fr"><!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <title>index exos C</title>
+    </head>
+    <body hey>
+        <p>bonjour</p>
+        <footer>
+            <p>lol</p>
+            dans footer
+            <a target="here" href="https://www.b.com/">b</a>
+        </footer>
+    </body>
+</html>
+"""
+    p = HTMLParser()
+    p.feed(a)
+    p.close()
+    print("Declaration at the right place:",p.doctype_first and p.declaration)
+    print("Document:", p.declaration + "\n")
+    print("start", p.start_list)
+##    p.start_list.sort()
+##    print(p.start_list)
+    print("end", p.end_list)
+    print("\nattribute list",p.key_attribute_list)
+    print("value list", p.value_attribute_list)
+    print("\ndata",p.content_list)
+    print("\n\n")
+    start = p.start_list[:]
+    end = p.end_list[:]
+    i = 0
+    j = 0
+    finished = False
+    import time
+    print(start,"\n")
+    print(end,"\n")
+    print("close before: ",p.close_before_error_list)
+    if len(start) != len(end):
+        print("Some not closed or not opened")
+##    while not finished:
+##        #time.sleep(1.5)
+##        print("start[{}] = ".format(i) + start[i]+"  =?= "+ end[len(end)-1-j]+ " = end[{}]".format(len(end)-1-j) )
+##        if start[i] == end[len(end)-1-j]:
+##            start.pop(i)
+##            end.pop(len(end)-1-j)
+##            if start == [] or end == []:
+##                finished = True
+##            i = 0
+##            j = 0
+##        else:
+##            if j < len(end) - 1:
+##                j += 1
+##            else:
+##                if i < len(start) -1:
+##                    i += 1
+##                    j = 0
+##                else:
+##                    finished = True
+##                    print("non matching")
+##                            

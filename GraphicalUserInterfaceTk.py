@@ -106,8 +106,10 @@ class GraphicalUserInterfaceTk(tk.Tk):
 
         #keep this do work around a ttk bug: growing treeviews
         self._treeviews=[]
-        self.html_window=HTMLWindows(self.special_frame,self,model)#html frame
-        self.css_window=CSSWindows(self.special_frame,self,model)#css frame
+        self.adaptedwidth=int(float(self.winfo_screenwidth())/25.0)
+        self.adapted_height=int(float(self.winfo_screenheight())/50.0)
+        self.html_window=HTMLWindows(self.special_frame,self,model,self.adapted_height)#html frame
+        self.css_window=CSSWindows(self.special_frame,self,model,self.adapted_height)#css frame
         self.js_window=tk.Frame(self.special_frame)#js frame
         self.t_frames=[self.html_window, self.css_window, self.js_window]
         
@@ -326,8 +328,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
         html_text_tab=tk.Frame(self.html_text_tabs)
         main_scrollbar = ttk.Scrollbar(html_text_tab)
         
-        self.adaptedwidth=int(float(self.winfo_screenwidth())/25.0)
-        self.text_fields.append([tk.Text(html_text_tab,yscrollcommand=main_scrollbar.set,state='normal',width=self.adaptedwidth,height=35,undo=True),\
+        
+        
+        self.text_fields.append([tk.Text(html_text_tab,yscrollcommand=main_scrollbar.set,state='normal',width = self.adaptedwidth, height=((self.adapted_height * 2) - 3),undo=True),\
                                              ttk.Button(html_text_tab, text=_("Fermer la dernière balise ouverte"), command=self.confirm_close_element)])
 
         main_scrollbar.config(command=self.text_fields[tab_index][0].yview)

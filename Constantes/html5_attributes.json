@@ -115,14 +115,14 @@
     },
     "href":{
         "alt(s)":[],
-        "default_value":"http://www.w3.org",
-        "possible_values":[],
+        "default_value":"",
+        "possible_values":["URL"],
         "version":"1+"
     },
     "id":{
         "alt(s)":[],
-        "default_value":"unique_id",
-        "possible_values":[],
+        "default_value":"",
+        "possible_values":["string"],
         "version":"1+"
     },
     "inert":{

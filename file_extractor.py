@@ -89,6 +89,12 @@ CSS_SELECTORS = json_file_to_object(staticf,"css_selectors.json")
 (LOCAL_ELEMENTS, LOCAL_ATTRIBUTES,
  LOCAL_CSS_SELECTORS)               = load_local_strings("fr")
 
+def html_element_from_name(element_tag):
+    for couple in ELEMENTS:
+        for element in couple[1]:
+            if element == element_tag:
+                return couple[1][element]
+                
 
 #-------------------------------------------------------------------------------------
 if __name__ == '__main__':#essay

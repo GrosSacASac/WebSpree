@@ -5,7 +5,7 @@
 #Role:Manage,open and close tutorials
 
 #Walle Cyril
-#14/03/2014
+#2014-06-04
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -34,7 +34,7 @@ import json
 import re
 import webbrowser
 
-from custom_parser import*
+from html_parser import*
 
 def _(l_string):
     #print("local language: "+l_string)
@@ -46,8 +46,7 @@ def detect_existing_tutorials():
     tutorials=json.loads(codecs.open(file_path,'r',"utf-8").read())
     name_and_foldername=[]
     for tutorial in tutorials:
-        name_and_foldername.append([tutorial["name"],\
-                                                        tutorial["folder"]])
+        name_and_foldername.append([tutorial["name"], tutorial["folder"]])
     return name_and_foldername#a list with doubles
 
 def start_tutorial(folder,GUItk):
@@ -57,120 +56,133 @@ def start_tutorial(folder,GUItk):
     webbrowser.open_new_tab(index_path)
     verification=json.loads(codecs.open(verification_path,'r',"utf-8").read())
     GUItk.prepare_verification()#enable "check" button
-    GUItk.lock_tutorial()
+    GUItk.lock_tutorial()#blocks accidental start of another
     GUItk.model.current_verification=verification
     GUItk.model.index_path=index_path
     GUItk.model.tfolder=os.path.normpath(os.path.join("tuto",folder))
     GUItk.model.tfolderw=folder
     GUItk.model.current_step=0
 
-def do_verification(html,expressions):
-    parsed_html = HTMLParser2()
+def do_verification(document,expressions):
+    html = document.text
+    parsed_html = HTMLParser()
     parsed_html.feed(html)
     parsed_html.close()
-    fail_messages=[]
-    for expression in expressions:
-        x=1#default we search at least one time
-        search_reg_expr=True
-        d=False#see d
-        
-        if expression[0]=="{":#prefix
-            end_format=expression.find("}")
-            search_type_format=expression[1:end_format].split(":")
-            search_what=search_type_format[0][0]
-            search_content=expression[end_format+1:]
+    fail_messages = document.validate(parsed_html)# [] if valid html
+    #Document must be valid html
+    if not fail_messages:
+        for expression in expressions:
+            x = 1#default we search at least one time
+            search_reg_expr = True
             
-            if search_what=="t":#tag
-                """{t:x}tag1,tag2,...,tagn"""
-                m1=_("balise ouvrante %s manquante.(Voulu: %d. Trouvé: %d)")
-                m2=_("balise fermante %s manquante.(Voulu: %d. Trouvé: %d)")
-                if len(search_type_format)>1:
-                    x=int(search_type_format[1])
-                close_strict=False
-                if len(search_type_format[0])>1 and search_type_format[0][1]=="c":#must be closed
-                    close_strict=True
-                tags=search_content.split(",")
-                for tag in tags:
-                    if not (parsed_html.start_list.count(tag)>=x):
-                        fail_messages.append(m1 % (tag,x,parsed_html.start_list.count(tag)))
-                    if close_strict and not(parsed_html.end_list.count(tag)>=x):
-                        fail_messages.append(m2 % (tag,x,parsed_html.start_list.count(tag)))
-                        
-            elif search_what=="a":#attribute
-                """{a:attribute_name:x}tag1,tag2,...,tagn:value or None"""
-                tags=search_content.split(":")[0].split(",")
-                value=search_content.split(":")[1]
-                attribute_name=search_type_format[1]
-                if len(search_type_format)>1:
-                    x=int(search_type_format[2])
-                count=0
-                value_missed=0
-                #impossible to count directly because there is no direct access
-                #for each set of attribute, if there are any , if name in this list
-                for i,keylist in enumerate(parsed_html.key_attribute_list):
-                    if isinstance(keylist,list):#and not None
-                        if attribute_name in keylist:
-                            if not tags[0] or parsed_html.start_list[i] in tags:
-                                if (not (value)) or (value and value in parsed_html.value_attribute_list):
-                                    count+=1
-                                elif value:
-                                    value_missed+=1
-                if not(count>=x):
-                    fail_messages.append(_("attribut %s manquant. Voulus: %d Trouvés: %d") % (attribute_name,x,count))
-                    if value_missed>0:
-                        fail_messages.append(_("    valeur attendu:%s ") % (value))
-                        
-            elif search_what=="r":#raw (without parsing)
-                """"{r}" will search in raw mode (without parsing html)"""
-                if len(search_type_format[0])>1 and search_type_format[0][1]=="o":
-                    search_reg_expr=False
-                    if html.find(search_content)==-1:
-                        fail_messages.append(_("contenu %s non trouvé") % (search_content))
-                else:
-                    if re.search(search_content, html) is None:
-                        fail_messages.append(_("expression régulière %s n'a pas connecté avec le document") % (search_content))
-            
-            elif search_what=="d":#data
-                """{d:tag:x}expression        d for data tag is ignored for now"""
+            if expression[0]=="{":#prefix
+                end_format=expression.find("}")
+                search_type_format=expression[1:end_format].split(":")
+                search_what=search_type_format[0][0]
+                search_content=expression[end_format+1:]
                 
-                tag=search_type_format[1]
-                if tag=="any":
-                    pass
-                if len(search_type_format)>2:
-                    x=int(search_type_format[2])
-                if len(search_type_format[0])>1 and search_type_format[0][1]=="o":
-                    search_reg_expr=False
-                if search_reg_expr:
-                    found=False
-                    for content in parsed_html.content_list:
-                        if re.search(search_content, content):
-                            found=True
-                            break
-                    if not found:
-                        fail_messages.append(_("%s expression régulière n'a pas connecté") % (search_content))
-                else:
-                    if not search_content in parsed_html.content_list:
-                        fail_messages.append(_("%s pas trouvé") % (search_content))
-                #d=True#link to the next, take d away when elif search_what=="d": is ready
+                if search_what=="t":#tag
+                    """{t:x}tag1,tag2,...,tagn"""
+                    m1=_("balise ouvrante %s manquante.(Voulu: %d. Trouvé: %d)")
+                    m2=_("balise fermante %s manquante.(Voulu: %d. Trouvé: %d)")
+                    if len(search_type_format)>1:
+                        x=int(search_type_format[1])
+                    close_strict=False
+                    if len(search_type_format[0])>1 and search_type_format[0][1]=="c":#must be closed
+                        close_strict=True
+                    tags=search_content.split(",")
+                    for tag in tags:
+                        if not (parsed_html.start_list.count(tag)>=x):
+                            fail_messages.append(m1 % (tag,x,parsed_html.start_list.count(tag)))
+                        if close_strict and not(parsed_html.end_list.count(tag)>=x):
+                            fail_messages.append(m2 % (tag,x,parsed_html.end_list.count(tag)))
+                            
+                elif search_what=="a":#attribute
+                    """{a:attribute_name:x}tag1,tag2,...,tagn:value or None"""
+                    tags=search_content.split(":")[0].split(",")
+                    value="".join(search_content.split(":")[1:])
+                    attribute_name = search_type_format[1]
+                    if len(search_type_format)>1:
+                        x=int(search_type_format[2])
+                    count=0
+                    value_missed=0
+                    #impossible to count directly because there is no direct access
+                    #for each set of attribute, if there are any , if name in this list
+                    for i,keylist in enumerate(parsed_html.key_attribute_list):
+                        if isinstance(keylist,list):#and not None
+                            if attribute_name in keylist:
+                                print(parsed_html.start_list[i])
+                                print(tags)
+                                if not tags[0] or parsed_html.start_list[i] in tags:
+                                    print("in")
+                                    print(not (value))
+                                    print(value)
+                                    print("in ?", parsed_html.value_attribute_list[i])
+                                    if (not (value)) or (value in parsed_html.value_attribute_list[i]):
+                                        count+=1
+                                    elif value:
+                                        value_missed+=1
+                    if not(count>=x):
+                        fail_messages.append(_("attribut %s manquant. Voulus: %d Trouvés: %d") % (attribute_name,x,count))
+                        if value_missed>0:
+                            fail_messages.append(_("valeur attendu:%s ") % (value))
+                            
+                elif search_what=="r":#raw (without parsing)
+                    """"{r}" will search in raw mode (without parsing html)"""
+                    if len(search_type_format[0])>1 and search_type_format[0][1]=="o":
+                        search_reg_expr=False
+                        if html.find(search_content)==-1:
+                            fail_messages.append(_("contenu %s non trouvé") % (search_content))
+                    else:
+                        if re.search(search_content, html) is None:
+                            fail_messages.append(_("expression régulière %s n'a pas connecté avec le document") % (search_content))
+                
+                elif search_what=="d":#data
+                    """{d:tag:x}expression  """
+                    found=0
+                    tag=search_type_format[1]                
+                    if len(search_type_format)>2:
+                        x=int(search_type_format[2])
+                    if len(search_type_format[0])>1 and search_type_format[0][1]=="o":
+                        search_reg_expr=False
+                    if search_reg_expr:
+                        for pair in parsed_html.content_list:
+                            if tag=="any" or pair[0]==tag:
+                                if re.search(search_content, pair[1]):
+                                    found += 1
                                 
+                        if found < x:
+                            fail_messages.append(_(u"{} expression régulière n'a pas connecté\
+     dans l'élément {} (Voulu {};Trouvés {})").format(search_content,tag,x,found))
+                    else:
+                        for pair in parsed_html.content_list:
+                            if tag=="any" or pair[0]==tag:
+                                if search_content in pair[1]:
+                                    found += 1
+                        if found < x:
+                            fail_messages.append(_(u"{}  n'a pas été trouvé\
+ dans l'élément {} (Voulu {};Trouvés {})").format(search_content,tag,x,found))
+                        
 
-            
-        if expression[0]!="{" or d:#
-            """No prefix will be searched as data as non regular expression same as {do:any:1}expression"""
-            if expression in parsed_html.content_list:
-                pass
-            else:
-                fail_messages.append(_("%s pas trouvé") % (expression))
-    #do stuff
+                                    
+
+                
+            if expression[0]!="{":#
+                """No prefix will be searched as data as non regular expression same as {do:any:1}expression"""
+                if expression in parsed_html.content_list:
+                    pass
+                else:
+                    fail_messages.append(_("%s pas trouvé") % (expression))
+        #do stuff
     del parsed_html#maybe useless
     return fail_messages
 
 def verify(model):
     self=model
-    fail_messages=do_verification(self.tabs_html[self.selected_tab].text,\
+    fail_messages=do_verification(self.tabs_html[self.selected_tab],\
                     self.current_verification[self.current_step]["verification"])
 
-    success= not (fail_messages)
+    success = not (fail_messages)
     finished=False
     messages=[""]
     links=[("","")]
@@ -198,7 +210,7 @@ def verify(model):
             links.append((os.path.join(self.tfolder,"solution_"+self.current_verification[self.current_step]["this"]),_("solution")))
         else:
             pass
-            
+        
                   
     self.graphical_user_interface_tk.html_window.feedback_verification(messages,links,finished)
 #-------------------------------------------------------------------------------------

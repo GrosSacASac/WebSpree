@@ -146,21 +146,21 @@ VALUE_LIST_2={
 class CSSWindows(tk.Frame):
     """CSS  frame."""
 
-    def __init__(self,parent,master_window,model):
+    def __init__(self, parent, master_window, model, adapted_height):
         tk.Frame.__init__(self,parent)
-        self.model=model
-        self.master_window=master_window
+        self.model = model
+        self.master_window = master_window
         
-        self.select_string=""
-        self.property_values=[]
-        self.autoclose_bracket=tk.BooleanVar(value=True)
+        self.select_string = ""
+        self.property_values = []
+        self.autoclose_bracket = tk.BooleanVar(value=True)
         
         #select
-        frame_select=tk.Frame(self,FRAME_STYLE_2,bg=COLOURS_A[0])
-        self.select_plus_help=MainPlusHelp(frame_select,_(u"Sélécteur"),_(u"Aide"))
+        frame_select=tk.Frame(self, FRAME_STYLE_2, bg=COLOURS_A[0])
+        self.select_plus_help=MainPlusHelp(frame_select, _(u"Sélécteur"),_(u"Aide"))
         self.select_treeview_lift = ttk.Scrollbar(self.select_plus_help.main_frame)
         self.select_treeview=ttk.Treeview(self.select_plus_help.main_frame,selectmode='browse',\
-                                            columns=("local","select"),height=21,cursor="hand2",\
+                                            columns=("local","select"),height=adapted_height,cursor="hand2",\
                                              yscrollcommand=self.select_treeview_lift.set,padding=0,takefocus=True,\
                                              displaycolumns=(0,1),show='headings')
         self.select_plus_help.next_=next_gen(self.select_treeview)
@@ -173,7 +173,7 @@ class CSSWindows(tk.Frame):
         self.select_treeview.bind('<ButtonRelease-1>',self.update_select_click)
         self.select_treeview_lift.config(command=self.select_treeview.yview)
         #_List of elements:
-        i=0
+        i = 0
         tags=["tag_1","tag_2"]
         self.select_treeview.tag_configure("tag_1", background='#cccfff')
         self.select_treeview.tag_configure("tag_2", background='#cfffcc')
@@ -201,7 +201,7 @@ class CSSWindows(tk.Frame):
         self.property_plus_help=MainPlusHelp(frame_property_master,_(u"Propriété"),_(u"Aide"))
         self.property_treeview_lift = ttk.Scrollbar(self.property_plus_help.main_frame)
         self.property_treeview=ttk.Treeview(self.property_plus_help.main_frame,selectmode='browse',\
-                                        yscrollcommand=self.property_treeview_lift.set,height=21,columns=("local","property"),displaycolumns=(0,1),show='headings')
+                                        yscrollcommand=self.property_treeview_lift.set,height=adapted_height,columns=("local","property"),displaycolumns=(0,1),show='headings')
         
         self.property_plus_help.next_=next_gen(self.property_treeview)
         self.property_plus_help.previous=prev_gen(self.property_treeview)
@@ -225,7 +225,7 @@ class CSSWindows(tk.Frame):
         self.property_treeview.bind('<ButtonRelease-1>',self.update_property_click)
         
         
-        height_b=10
+        height_b = int(float(adapted_height) / 2.0) - 1 
         self.values_plus_help=MainPlusHelp(frame_value_master,_(u"Valeur"),_(u"Aide"))
         self.value_treeview_lift = ttk.Scrollbar(self.values_plus_help.main_frame)
         self.value_treeview=ttk.Treeview(self.values_plus_help.main_frame,selectmode='browse',\

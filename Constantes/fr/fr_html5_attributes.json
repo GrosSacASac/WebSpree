@@ -114,9 +114,9 @@
         "translation":"cach\u00e9"
     },
     "href":{
-        "common usage":"",
+        "common usage":"Mettez une URL relative ou absolue",
         "description":"Vous pouvez utiliser href pour indiquer l'adresse vers laquelle votre objet doit pointer",
-        "role":"",
+        "role":"adresse du lien",
         "translation":"Adresse"
     },
     "id":{
@@ -294,10 +294,10 @@
         "translation":"Ordre de focus"
     },
     "target":{
-        "common usage":"",
-        "description":"Remplissez les Constantes!",
-        "role":"",
-        "translation":"_blank"
+        "common usage":"Mettez rien pour des liens internes et _blank pour des liens qui font sortir de votre site",
+        "description":"Target vous permet de faire en sorte que votre lien s'ouvrira dans un nouvel onglet, dans l'onglet actif ou dans une iframe particulière",
+        "role":"Controler la navigation",
+        "translation":"Cible"
     },
     "title":{
         "common usage":"",

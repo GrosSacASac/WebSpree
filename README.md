@@ -15,5 +15,5 @@ Learn Web-related technologies
 ##How to join and contribute ?
   Look for interesting missions in To_do.html in the Documentation folder
 
-#More
+##More
 You want to know more ? Read files in Documenation

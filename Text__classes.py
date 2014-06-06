@@ -33,9 +33,13 @@ import os
 import webbrowser
 #import json
 
-
+from html_parser import *
 from character_translator import html5, html5reci,minimum_translation
 from Options_class import *
+
+def _(l_string):
+    #print("local language: "+l_string)
+    return l_string
 
 class Text_(InterfaceOptions):
     """base Text_ class
@@ -148,11 +152,11 @@ class Text_HTML(Text_):
             normal_char=html_conversion
         return normal_char
 
-    def normal_char_to_html(self,normal_char):
-        level=self.get_option("translate_html_level")
-        if level==1:
+    def normal_char_to_html(self,normal_char,tr_level):
+        
+        if tr_level==1:
             translator=minimum_translation
-        elif level==10:
+        elif tr_level==10:
             translator=html5reci
             
         if normal_char in translator:
@@ -162,7 +166,7 @@ class Text_HTML(Text_):
             if html_conversion[-1] !=';':
                 html_conversion += ';'
             if html_conversion=="&<br />;":
-                html_conversion="<br />"
+                html_conversion="<br>"
             return html_conversion
         else:
             return normal_char
@@ -171,20 +175,22 @@ class Text_HTML(Text_):
         if text=="":
             return ""
         else:
+            tr_level=self.get_option("translate_html_level")
             indented_text="\n"
             if first:
                 indented_text=""
-            for _ in range(self.instant_indenting_level+self.current_direction):
+            for i in range(self.instant_indenting_level+self.current_direction):
                 indented_text+=(self.get_option("indent_size") * self.get_option("indent_style"))
                 
-            if not(self.current_translation_needed) or self.get_option("translate_html_level")==0:
+            if not(self.current_translation_needed) or tr_level==0:
                 indented_text+=text
             else:
-                for chars in text:
-                    indented_text+=self.normal_char_to_html(chars)
-                    if self.normal_char_to_html(chars)=="<br />":#Ce if rend la prévisualisation plus lisible
+                for character in text:
+                    new=self.normal_char_to_html(character,tr_level)
+                    indented_text+=new
+                    if new=="<br />":#Ce if rend la prévisualisation plus lisible
                         indented_text+="\n"
-                        for _ in range(self.instant_indenting_level+self.current_direction):
+                        for i in range(self.instant_indenting_level+self.current_direction):
                             indented_text+=(self.get_option("indent_size") * self.get_option("indent_style"))
             self.current_direction=0
             self.current_translation_needed=True
@@ -193,7 +199,7 @@ class Text_HTML(Text_):
 #editing macros with border effect
     def open_close_void_element(self,lone_element,attributes=""):
         self.current_translation_needed=False
-        return "<"+lone_element+attributes+"/>"
+        return "<"+lone_element+attributes+">"
 
     def open_element(self,lone_element,attributes=""):
         opening_tag="<"+lone_element+attributes+">"
@@ -274,6 +280,30 @@ class Text_HTML(Text_):
     #testing
     def test_file_with_browser(self):
         webbrowser.open(self.save_in_file_to_test(),new=2)#new=2 to open in a new tab if possible
+        
+    def validate(self,parsed_html=None):
+        fail_messages = []
+        if parsed_html is None:
+            parsed_html = HTMLParser()
+            parsed_html.feed(self.read())
+            parsed_html.close()
+            
+        
+        if not parsed_html.declaration:
+            fail_messages.append(_(u"Déclaration du type de document introuvable, insérez <!DOCTYPE html>"))
+        if not parsed_html.doctype_first:
+            fail_messages.append(_(u"La déclaration du type de document doit se trouver en haut du document"))
+        for should,closed in parsed_html.close_before_error_list:
+            fail_messages.append(_(u"Vous devez fermer {} avant {}").format(should,closed))
+        if len(parsed_html.start_list) > len(parsed_html.end_list):
+            fail_messages.append(_(u"Il faut fermer les toutes les balises !"))
+        for parent,child in parsed_html.must_parent_errors:
+            fail_messages.append(_(u"Les balises {} doivent êtres contenus dans des balises {}").format(child,parent))
+            
+            
+        
+                        
+        return fail_messages
 
 
 class Text_CSS(Text_):

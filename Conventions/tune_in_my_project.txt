@@ -55,8 +55,9 @@ http://www.utf8everywhere.org/
 
 Documentation format:
 raw txt for text
+Markdown 
 HTML for anything that requires more than just text or that should serve the end-user
-jpg for images
+jpg,svg,gif for images
 mp3, flac for sound
 mp4 ,[insert other open format for videos here] for videos
 try to not use other formats, HTML is very easy and with the app it s easier. If you can't then you should make a folder with text files and images and later do html with it.

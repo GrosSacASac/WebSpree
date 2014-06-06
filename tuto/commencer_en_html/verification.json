@@ -11,15 +11,12 @@
         "showlink":false
     },
     {
-        "afterthis":"END",
+        "afterthis":"page3.html",
         "this":"page2.html",
         "show_solution":false,
         "verification":[
-            "Le tutoriel n'est pas encore terminé",
-            "{tc:3}li",
-            "{t:4}li",
-            "{a:href:1}a:",
-            "{d:any}[0-9]{1000}"
+            "{tc:1}html,head,meta,title,body,p,h1,a,img",
+            "{a:href:1}a:https://github.com/GrosSacASac/WebSpree"
         ],
         "showlink":false
     }
