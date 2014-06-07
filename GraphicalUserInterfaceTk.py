@@ -138,13 +138,17 @@ class GraphicalUserInterfaceTk(tk.Tk):
         
         self.change_mod()
         
-        self.insertion_tk_var=tk.BooleanVar(value=False)
+        self.insertion_tk_var=tk.BooleanVar(value=True)
         tools=tk.LabelFrame(content_frame, text=_("Outils"), relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)
-        write_end_choice=ttk.Radiobutton(tools, text=_("Ecrire à la fin"),variable=self.insertion_tk_var, value=False, command=self.switch_writing_place)
-        write_end_choice.grid(row=0,column=0,sticky='nw')
+        
         write_cursor_choice=ttk.Radiobutton(tools, text=_("Insérer au curseur"),variable=self.insertion_tk_var, value=True,command=self.switch_writing_place )
-        write_cursor_choice.grid(row=0,column=1,sticky='nw')
+        write_cursor_choice.grid(row=0,column=0,sticky='nw')
+        write_end_choice=ttk.Radiobutton(tools, text=_("Ecrire à la fin"),variable=self.insertion_tk_var, value=False, command=self.switch_writing_place)
+        write_end_choice.grid(row=0,column=1,sticky='nw')
+        report=HyperLink(tools,URL="https://github.com/GrosSacASac/WebSpree/issues/new",text="Feedback")
+        report.grid(row=0,column=3,sticky='nw')
         tools.grid(row=1,column=1,sticky='e')
+        
         
         content_frame.grid(row=0,column=2,sticky='nsw',columnspan=1)
         self.tutorial_button=ttk.Button(tools, text="Check exercice",command=lambda:verify(self.model))
@@ -283,16 +287,14 @@ class GraphicalUserInterfaceTk(tk.Tk):
         if event[0]=="for_save":
             if not current_object.is_saved():
                 answer=messagebox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer l'onglet %s?" % (self.html_text_tabs.tab(tab_index,option='text'))))#True False ou None 
-                if answer:                                                      # Yes
-                    if not self.model.save_html_file():
+                if answer and not self.model.save_html_file():
                         return "cancel"
-                elif answer==None:                                      # Cancel or X pressed
+                elif answer is None:                                      # Cancel or X pressed
                     return "cancel"
             return "no_cancel"
         elif event[0]=="for_save_no_warning":
-            if not current_object.is_saved():
-                if not self.model.save_html_file():
-                    return "cancel"
+            if not current_object.is_saved() and not self.model.save_html_file():
+                return "cancel"
             return "no_cancel"
         elif event[0]=="already_saved":
             kill_tab(self,tab_index,)
@@ -303,7 +305,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
                     if answer:                                                      # Yes
                         if self.model.save_html_file():
                             kill_tab(self,tab_index)
-                    elif answer==None: pass                                  # Cancel or X pressed
+                    elif answer is None: pass                                  # Cancel or X pressed
                     else :
                         kill_tab(self,tab_index)                             # Non
                 else:

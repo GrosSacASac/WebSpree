@@ -424,10 +424,7 @@ class HTMLWindows(tk.Frame):
     
     def save_file_to_test_control(self,*event):#Try with CTRL+Shift+T
         self.model.save_file_totest()
-        
-    
-
-    
+            
         
 
     def feedback_verification(self,messages,links,finished):

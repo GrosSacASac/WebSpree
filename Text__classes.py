@@ -279,7 +279,7 @@ class Text_HTML(Text_):
         
     #testing
     def test_file_with_browser(self):
-        webbrowser.open(self.save_in_file_to_test(),new=2)#new=2 to open in a new tab if possible
+        webbrowser.open(self.get_save_path(),new=2)#new=2 to open in a new tab if possible
         
     def validate(self,parsed_html=None):
         fail_messages = []

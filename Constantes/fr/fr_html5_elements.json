@@ -420,14 +420,14 @@
         "translation":"Param\u00e8tres d'objet"
     },
     "pre":{
-        "common usage":"",
-        "description":"Indique que le contenu est d\u00e9j\u00e0 format\u00e9. Les sauts de lignes , espace et indentations qui sont normalement tronsform\u00e9s en un unique \u00e9spacement seront ici pr\u00e9s\u00e8rv\u00e9s",
-        "role":"",
+        "common usage":"utilisé pour afficher du code ou des déssins à base de caractères",
+        "description":"Indique que le contenu est d\u00e9j\u00e0 format\u00e9. Les sauts de lignes , espace et indentations qui sont normalement tronsform\u00e9s en un unique espacement seront ici pr\u00e9s\u00e8rv\u00e9s",
+        "role":"garder avec le même espacement que dans la source",
         "translation":"Pr\u00e9format\u00e9"
     },
     "progress":{
         "common usage":"",
-        "description":"Il n'y a pas encore d'aide ici",
+        "description":"Barre de progression",
         "role":"",
         "translation":"Progression"
     },

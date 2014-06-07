@@ -157,13 +157,13 @@ creating a copy of this object starts the app."""
             current_text_html.save_in_file()
             return True
         else:#ask for a new path
-            if self.graphical_user_interface_tk.html_window._save_file_dialog():
-                return True
+            return self.graphical_user_interface_tk.html_window._save_file_dialog()
             
         
     def save_file_totest(self):#Try with CTRL+Shift+T
         current_text_html=self.tabs_html[self.selected_tab]
-        current_text_html.test_file_with_browser()
+        if current_text_html.is_saved() or self.save_html_file():
+            current_text_html.test_file_with_browser()
         
     def guess_dir(self):
         current_text_html=self.tabs_html[self.selected_tab]
