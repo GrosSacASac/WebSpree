@@ -1,5 +1,5 @@
-WebSpree
-========
+#WebSpree
+
 
 Learn Web-related technologies
 
@@ -8,7 +8,9 @@ Learn Web-related technologies
 * Download the entire repository.
 * Dowload Python 3
 * Run WebSpree.py or WebSpree_beta.py
+* If you use a Mac [click here](https://github.com/GrosSacASac/WebSpree/wiki/Installation-for-Mac)
   
+
 ##Updates
   You can see the complete patch notes in the Documentation in Patch_Notes.html
   
@@ -16,4 +18,4 @@ Learn Web-related technologies
   Look for interesting missions in To_do.html in the Documentation folder
 
 ##More
-You want to know more ? Read files in Documenation
+  You want to know more ? Read files in Documenation
