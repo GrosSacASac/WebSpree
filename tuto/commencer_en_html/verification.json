@@ -19,6 +19,24 @@
             "{a:href:1}a:https://github.com/GrosSacASac/WebSpree"
         ],
         "showlink":false
+    },
+    {
+        "afterthis":"page4.html",
+        "this":"page3.html",
+        "show_solution":false,
+        "verification":[
+            "{tc:1}html,head,meta,title,body,p,h1,a,img",
+            "{a:href:1}a:https://github.com/GrosSacASac/WebSpree"
+        ],
+        "showlink":false
+    },
+    {
+        "afterthis":"end",
+        "this":"page4.html",
+        "show_solution":false,
+        "verification":[
+            
+        ],
+        "showlink":false
     }
-
 ]

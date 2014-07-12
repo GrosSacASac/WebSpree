@@ -173,7 +173,7 @@ DEFAULT_VALUES={\
     "app_language":"fr",\
     "developper_interface":False,\
 #tutorials
-    "tutorial_finished":[]\
+    "tutorial_progress":{}\
     }
 #demo
 if __name__ == '__main__':

@@ -5,7 +5,7 @@
 #Role: main file
 
 #Walle Cyril
-#11/03/2014
+#2014-07-12
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -173,9 +173,13 @@ creating a copy of this object starts the app."""
         else:
             return ""
         
+    def validate_document(self):
+        return self.tabs_html[self.selected_tab].validate()
+
+        
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     log_writer("platform", platform.platform())
     log_writer("python_build", platform.python_build())
     WebSpreeInstance=WebSpree()

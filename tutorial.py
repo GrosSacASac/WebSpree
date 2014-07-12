@@ -42,26 +42,42 @@ def _(l_string):
 
 def detect_existing_tutorials():
     """reads tuto/tuto.json to return a list of installed tutorials."""
-    file_path=os.path.normpath(os.path.join("tuto","tuto.json"))
-    tutorials=json.loads(codecs.open(file_path,'r',"utf-8").read())
-    name_and_foldername=[]
-    for tutorial in tutorials:
-        name_and_foldername.append([tutorial["name"], tutorial["folder"]])
-    return name_and_foldername#a list with doubles
+    info_and_foldername = []
+    #os.chdir()
+    
+    for folder in os.listdir("tuto"):
+        if os.path.isdir(os.path.join("tuto", folder)):
+            file_path = os.path.join("tuto", folder, "tuto.json")
+            if os.path.isfile(file_path):
+                infos = json.loads(codecs.open(file_path,'r',"utf-8").read())
+                info_and_foldername.append([infos, folder])
+                
+
+    return info_and_foldername#a list with doubles
 
 def start_tutorial(folder,GUItk):
     """Opens home page of the tutorial + returns the verification."""
-    index_path=os.path.normpath(os.path.join("tuto",folder,"index.html"))
-    verification_path=os.path.normpath(os.path.join("tuto",folder,"verification.json"))
-    webbrowser.open_new_tab(index_path)
-    verification=json.loads(codecs.open(verification_path,'r',"utf-8").read())
-    GUItk.prepare_verification()#enable "check" button
+    model = GUItk.model
+    model.index_path = os.path.normpath(os.path.join("tuto",folder,"index.html"))
+    verification_path = os.path.normpath(os.path.join("tuto",folder,"verification.json"))
+    verification = json.loads(codecs.open(verification_path,'r',"utf-8").read())
     GUItk.lock_tutorial()#blocks accidental start of another
-    GUItk.model.current_verification=verification
-    GUItk.model.index_path=index_path
-    GUItk.model.tfolder=os.path.normpath(os.path.join("tuto",folder))
-    GUItk.model.tfolderw=folder
-    GUItk.model.current_step=0
+    model.current_verification = verification
+    model.tutorial_path = os.path.normpath(os.path.join("tuto",folder))
+    model.tutorial_folder_name = folder
+    
+    tutorial_progress = model.get_option("tutorial_progress")
+    if folder in tutorial_progress:
+        model.current_step = tutorial_progress[folder]["current"]
+        if model.current_step !=0:
+            webbrowser.open_new_tab(os.path.normpath(os.path.join(
+                "tuto",folder,model.current_verification[model.current_step]["this"])))
+    else:
+        model.current_step = 0
+    if model.current_step == 0:
+        webbrowser.open_new_tab(model.index_path)
+        
+    
 
 def do_verification(document,expressions):
     html = document.text
@@ -75,49 +91,43 @@ def do_verification(document,expressions):
             x = 1#default we search at least one time
             search_reg_expr = True
             
-            if expression[0]=="{":#prefix
-                end_format=expression.find("}")
-                search_type_format=expression[1:end_format].split(":")
-                search_what=search_type_format[0][0]
-                search_content=expression[end_format+1:]
+            if expression[0] == "{":#prefix
+                end_format = expression.find("}")
+                search_type_format = expression[1:end_format].split(":")
+                search_what = search_type_format[0][0]
+                search_content = expression[end_format+1:]
                 
-                if search_what=="t":#tag
+                if search_what == "t":#tag
                     """{t:x}tag1,tag2,...,tagn"""
-                    m1=_("balise ouvrante %s manquante.(Voulu: %d. Trouvé: %d)")
-                    m2=_("balise fermante %s manquante.(Voulu: %d. Trouvé: %d)")
+                    m1 = _("balise ouvrante %s manquante.(Voulu: %d. Trouvé: %d)")
+                    m2 = _("balise fermante %s manquante.(Voulu: %d. Trouvé: %d)")
                     if len(search_type_format)>1:
-                        x=int(search_type_format[1])
-                    close_strict=False
+                        x = int(search_type_format[1])
+                    close_strict = False
                     if len(search_type_format[0])>1 and search_type_format[0][1]=="c":#must be closed
-                        close_strict=True
-                    tags=search_content.split(",")
+                        close_strict = True
+                    tags = search_content.split(",")
                     for tag in tags:
-                        if not (parsed_html.start_list.count(tag)>=x):
+                        if not (parsed_html.start_list.count(tag) >= x):
                             fail_messages.append(m1 % (tag,x,parsed_html.start_list.count(tag)))
                         if close_strict and not(parsed_html.end_list.count(tag)>=x):
                             fail_messages.append(m2 % (tag,x,parsed_html.end_list.count(tag)))
                             
-                elif search_what=="a":#attribute
+                elif search_what == "a":#attribute
                     """{a:attribute_name:x}tag1,tag2,...,tagn:value or None"""
-                    tags=search_content.split(":")[0].split(",")
-                    value="".join(search_content.split(":")[1:])
+                    tags = search_content.split(":")[0].split(",")
+                    value = "".join(search_content.split(":")[1:])
                     attribute_name = search_type_format[1]
                     if len(search_type_format)>1:
-                        x=int(search_type_format[2])
-                    count=0
-                    value_missed=0
+                        x = int(search_type_format[2])
+                    count = 0
+                    value_missed = 0
                     #impossible to count directly because there is no direct access
                     #for each set of attribute, if there are any , if name in this list
                     for i,keylist in enumerate(parsed_html.key_attribute_list):
                         if isinstance(keylist,list):#and not None
                             if attribute_name in keylist:
-                                print(parsed_html.start_list[i])
-                                print(tags)
                                 if not tags[0] or parsed_html.start_list[i] in tags:
-                                    print("in")
-                                    print(not (value))
-                                    print(value)
-                                    print("in ?", parsed_html.value_attribute_list[i])
                                     if (not (value)) or (value in parsed_html.value_attribute_list[i]):
                                         count+=1
                                     elif value:
@@ -129,22 +139,22 @@ def do_verification(document,expressions):
                             
                 elif search_what=="r":#raw (without parsing)
                     """"{r}" will search in raw mode (without parsing html)"""
-                    if len(search_type_format[0])>1 and search_type_format[0][1]=="o":
-                        search_reg_expr=False
-                        if html.find(search_content)==-1:
+                    if len(search_type_format[0])>1 and search_type_format[0][1] == "o":
+                        search_reg_expr = False
+                        if html.find(search_content) == -1:
                             fail_messages.append(_("contenu %s non trouvé") % (search_content))
                     else:
                         if re.search(search_content, html) is None:
                             fail_messages.append(_("expression régulière %s n'a pas connecté avec le document") % (search_content))
                 
-                elif search_what=="d":#data
+                elif search_what == "d":#data
                     """{d:tag:x}expression  """
-                    found=0
-                    tag=search_type_format[1]                
+                    found = 0
+                    tag = search_type_format[1]                
                     if len(search_type_format)>2:
-                        x=int(search_type_format[2])
-                    if len(search_type_format[0])>1 and search_type_format[0][1]=="o":
-                        search_reg_expr=False
+                        x = int(search_type_format[2])
+                    if len(search_type_format[0])>1 and search_type_format[0][1] == "o":
+                        search_reg_expr = False
                     if search_reg_expr:
                         for pair in parsed_html.content_list:
                             if tag=="any" or pair[0]==tag:
@@ -156,7 +166,7 @@ def do_verification(document,expressions):
      dans l'élément {} (Voulu {};Trouvés {})").format(search_content,tag,x,found))
                     else:
                         for pair in parsed_html.content_list:
-                            if tag=="any" or pair[0]==tag:
+                            if tag == "any" or pair[0] == tag:
                                 if search_content in pair[1]:
                                     found += 1
                         if found < x:
@@ -166,53 +176,55 @@ def do_verification(document,expressions):
 
                                     
 
-                
-            if expression[0]!="{":#
+            if expression[0] != "{":#
                 """No prefix will be searched as data as non regular expression same as {do:any:1}expression"""
                 if expression in parsed_html.content_list:
                     pass
                 else:
                     fail_messages.append(_("%s pas trouvé") % (expression))
-        #do stuff
-    del parsed_html#maybe useless
     return fail_messages
 
 def verify(model):
-    self=model
-    fail_messages=do_verification(self.tabs_html[self.selected_tab],\
+    self = model
+    fail_messages = do_verification(self.tabs_html[self.selected_tab],\
                     self.current_verification[self.current_step]["verification"])
 
     success = not (fail_messages)
-    finished=False
-    messages=[""]
-    links=[("","")]
+    finished = False
+    messages = [""]
+    links = [("","")]
     if success:
-        after=self.current_verification[self.current_step]["afterthis"]
-        if not(after=="END"):
+        after = self.current_verification[self.current_step]["afterthis"]
+        tutorial_progress = self.get_option("tutorial_progress")
+        if not(after.lower() == "end"):
             self.current_step += 1
-            messages=["Bravo, vous pouvez aller à la prochaine étape (étape #%d)" % (self.current_step+1)]
-            links=[(os.path.join(self.tfolder,after),_("prochaine étape"))]
+            messages = ["Bravo, vous pouvez aller à la prochaine étape (étape #%d)" % (self.current_step+1)]
+            links = [(os.path.join(self.tutorial_path,after),_("prochaine étape"))]
+            if not self.tutorial_folder_name in tutorial_progress:
+                tutorial_progress[self.tutorial_folder_name] = {"current":self.current_step, "finished":finished}
+                
+            else:
+                tutorial_progress[self.tutorial_folder_name]["current"] = self.current_step
+                
         else:
-            messages=[_("Bravo,vous avez terminé ce tutoriel")]
-            finished=True
-            links=[(self.index_path,_("revenir au départ"))]
-            tutorial_finished=self.get_option("tutorial_finished")
-            if not self.tfolderw in tutorial_finished:
-                tutorial_finished.append(self.tfolderw)
-                self.set_option("tutorial_finished",tutorial_finished)
+            messages = [_("Bravo,vous avez terminé ce tutoriel")]
+            finished = True
+            links = [(self.index_path,_("revenir au départ"))]
+            tutorial_progress[self.tutorial_folder_name] = {"current":0, "finished":finished}
+        self.set_option("tutorial_progress", tutorial_progress)
             
             
     else:
-        current=self.current_verification[self.current_step]["this"]
-        links=[(os.path.join(self.tfolder,current),_("étape courante"))]
-        messages=[_("Des erreurs (%d) ont été trouvés lors de la verification:") % (len (fail_messages))]+fail_messages
+        current = self.current_verification[self.current_step]["this"]
+        links = [(os.path.join(self.tutorial_path,current),_("étape courante"))]
+        messages = [_("Des erreurs (%d) ont été trouvés lors de la verification:") % (len (fail_messages))]+fail_messages
         if self.current_verification[self.current_step]["show_solution"]:
-            links.append((os.path.join(self.tfolder,"solution_"+self.current_verification[self.current_step]["this"]),_("solution")))
+            links.append((os.path.join(self.tutorial_path,"solution_"+self.current_verification[self.current_step]["this"]),_("solution")))
         else:
             pass
         
                   
-    self.graphical_user_interface_tk.html_window.feedback_verification(messages,links,finished)
+    self.graphical_user_interface_tk.feedback_verification(messages,links,finished)
 #-------------------------------------------------------------------------------------
 if __name__ == '__main__':
     print(detect_existing_tutorials())

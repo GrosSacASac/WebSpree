@@ -2,10 +2,10 @@
 #-*-coding:utf-8*
 
 #html_parser.py
-#Role:HTML parser (for turorials)
+#Role:HTML parser (for turorials and validate menu)
 
 #Walle Cyril
-#2014-06-03
+#2014-07-12
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -658,8 +658,6 @@ if __name__=='__main__':
     print("Declaration at the right place:",p.doctype_first and p.declaration)
     print("Document:", p.declaration + "\n")
     print("start", p.start_list)
-##    p.start_list.sort()
-##    print(p.start_list)
     print("end", p.end_list)
     print("\nattribute list",p.key_attribute_list)
     print("value list", p.value_attribute_list)
@@ -667,33 +665,9 @@ if __name__=='__main__':
     print("\n\n")
     start = p.start_list[:]
     end = p.end_list[:]
-    i = 0
-    j = 0
     finished = False
-    import time
     print(start,"\n")
     print(end,"\n")
     print("close before: ",p.close_before_error_list)
     if len(start) != len(end):
         print("Some not closed or not opened")
-##    while not finished:
-##        #time.sleep(1.5)
-##        print("start[{}] = ".format(i) + start[i]+"  =?= "+ end[len(end)-1-j]+ " = end[{}]".format(len(end)-1-j) )
-##        if start[i] == end[len(end)-1-j]:
-##            start.pop(i)
-##            end.pop(len(end)-1-j)
-##            if start == [] or end == []:
-##                finished = True
-##            i = 0
-##            j = 0
-##        else:
-##            if j < len(end) - 1:
-##                j += 1
-##            else:
-##                if i < len(start) -1:
-##                    i += 1
-##                    j = 0
-##                else:
-##                    finished = True
-##                    print("non matching")
-##                            

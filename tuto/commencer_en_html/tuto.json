@@ -1,0 +1,22 @@
+{
+    "name":"Commencer en HTML !",
+    "dates":[
+        "2014-05-01",
+        "2014-07-08",
+        "2014-07-15"
+    ],
+    "steps":[
+        "page2.html",
+        "page3.html",
+        "page4.html",
+        "page5.html"
+    ],        
+    "level":1,
+    "authors":[
+        "Me !"
+    ],
+    "languages":[
+        "fr"
+    ],
+    "reward":25
+}

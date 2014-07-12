@@ -4,7 +4,6 @@
         <meta charset="utf-8" />
         <link rel="stylesheet" href="styledoc.css" />
         <link rel="icon" href="../Images/icos/HTML5_Badge_32.gif" type="image/gif">
-        <script type="text/javascript" src="1.js"></script>
         <title>Patch_Notes</title>
     </head>
     <body>
@@ -14,38 +13,12 @@
             <div>
                 <h1>Liens internes</h1>
                 <ul>
-                <li><a href="Lisez_moi.html">
-                    Lisez_moi
-                </a></li>
-                <li><a href="Version.html">
-                    Version
-                </a></li>
-                <li><a href="Patch_Notes.html">
-                    Notes de mise à jour
-                </a></li>
-                <li><a href="To_do.html">
-                    To-do
-                </a></li>
+                <li><a href="Lisez_moi.html">Lisez_moi</a></li>
+                <li><a href="Version.html">Version</a></li>
+                <li><a href="Patch_Notes.html">Notes de mise à jour</a></li>
+                <li><a href="To_do.html">To-do</a></li>
                 </ul>
             </div>
-            <hr /><!-- This kind of thing should be made with CSS after selector-->
-            <form method="POST" action="http://api.formspree.com/capocyril@hotmail.com">
-                <label for="TextArea">Send me your feedback</label>
-                <div>
-                    <label for="InputName">Name</label>
-                    <input name="name" type="text" id="InputName" placeholder="Enter name">
-                </div>
-                <div>
-                    <label for="InputEmail1">Email address</label>
-                    <input name="_replyto" type="email" id="InputEmail1" placeholder="Enter email">
-                </div>
-                <div>
-                    <label for="TextArea">Your message</label>
-                    <textarea name="message" required="required" rows="3" id="TextArea" placeholder="email me directly it s better"></textarea>    
-                </div>
-                <input type="hidden" name="_next" value="message_sent.html" />
-                <button type="submit">Submit</button>
-            </form>
         </nav>
         <main>
             <article id="patchnotes" contenteditable="false" lang="en-us">
@@ -75,6 +48,7 @@
                     <li>Test file now prompts to save</li>
                     <li>GUI now does adapt to screen size (For real !)</li>
                     <li>new hyperlink to report issues directly (Feedback)</li>
+                    <li>The selected element is now the same for all tabs</li>
                 </ul></li>
                 <li><h2>1.2.4.0</h2>
                 <ul>

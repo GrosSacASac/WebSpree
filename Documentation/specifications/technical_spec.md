@@ -4,18 +4,21 @@ Last Update of this document:
 
 ##Tutorials to create web pages with verification
 
-a tutorial is a set of html documents in the tuto/*name you want*/ folder where index.html is the beginning/home of the tutorial. it s also an element in tuto/tuto.json file.
+a tutorial is a set of html documents in the tuto/tut_folder_name/ folder where index.html is the beginning/home of the tutorial. For a tutorial (folder) to be valid
+it must contain index.html and a valid tuto.json file. 
+In tuto.json you find a collection {} with:
 
-Each element is a dic(key+value)
-* "name" stringName of tutorial (display in WebSpree)
-* "folder" string Folder path to open the folder './tuto/' is normalized and excluded.this should be a unique and static value
-* "authors" list strings Authors. this can be empty
-* "languages" list strings language use the same letters as for the HTML attribute lang="en".
-* "dates" list of TODECIDE
-* "level" int between 1-10 to indicate the difficulty (1 for absolute beginners  and 10 for webmasters(vague definition)
-* more ?
 
-each html file can have a verification. A verification is a dic.Each dic correspond to 1 file
+* "name" string Name of tutorial (display in WebSpree)
+* "authors" list strings Authors. can be empty
+* "languages" list strings language use the same letters as for the HTML attribute lang="".
+* "dates" list strings of important dates in the creation process of the tutorial e.g. when created, updated, published
+* "level" int between 1-10 to indicate the difficulty (1 for absolute beginners and 10 for experienced webmasters
+* "steps" list strings of all steps in the tutorial. A step should be a html file with exercices
+* "reward" int reward
+
+
+There may also be a verification.json file there. A verification is a dic. Each dic correspond to 1 file
 * "afterthis" the next html file
 * "this" the current html file
 * "show_solution" boolean,show or not show solution link if fail, if true there must be a file solution file "solution_%s" % (this)
