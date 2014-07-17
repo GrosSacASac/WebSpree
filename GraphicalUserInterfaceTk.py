@@ -63,6 +63,7 @@ from tks_widgets_1 import *
 def _(l_string):
     #print("local language: "+l_string)
     return l_string
+    
 
 class GraphicalUserInterfaceTk(tk.Tk):
     """tkinter interface for WebSpree.
@@ -81,16 +82,22 @@ class GraphicalUserInterfaceTk(tk.Tk):
         #self.geometry('1700x600+0+0')#static size is bad, it doesn t adapt
         self.configure(bd=1,bg=WINDOW_BACK_COLOR)
         self.iconbitmap(os.path.normpath(LOGO1_PATH))#problems here, icon should be insert when freezing the app not here
-        self.bind_all('<Control-plus>',self.change_size)
-        self.bind_all('<Control-minus>',self.change_size)
-        self.bind_all('<Control-0>',self.change_size)
-        self.bind_all('<Control-Shift-A>',self.save_all)
-        self.bind_all('<Control-w>',self.close_tab)
-        self.bind_all('<Control-n>', self.prepare_new_file)
-        self.bind_all('<Control-s>', self.model.save_html_file)
-        self.bind_all('<Control-Shift-T>', self.save_file_to_test_control)
-        self.bind_all('<Control-Shift-S>', self._save_file_dialog)
-        self.bind_all('<Control-o>', self.edit_file_dialog)
+        bind_(self, all_=True, modifier="Control-plus", letter="", callback=self.change_size)
+        bind_(self, all_=True, modifier="Control-minus", letter="", callback=self.change_size)
+        bind_(self, all_=True, modifier="Control-0", letter="", callback=self.change_size)
+        bind_(self, all_=True, modifier="Control", letter="w", callback=self.close_tab)
+        bind_(self, all_=True, modifier="Control", letter="n", callback= self.prepare_new_file)
+        bind_(self, all_=True, modifier="Control", letter="s", callback=self.model.save_html_file)
+        bind_(self, all_=True, modifier="Control", letter="o", callback=self.edit_file_dialog)
+        bind_(self, all_=True, modifier="Control", letter="f", callback=self.prepare_find_dialog)
+        bind_(self, all_=True, modifier="Control", letter="g", callback=self.find_next)
+        bind_(self, all_=True, modifier="Control", letter="h", callback=self.prepare_replace_dialog)
+        bind_(self, all_=True, modifier="F3", letter="", callback=self.find_next)
+        bind_(self, all_=True, modifier="Control-Shift", letter="t", callback=self.save_file_to_test_control)
+        bind_(self, all_=True, modifier="Control-Shift", letter="s", callback=self._save_file_dialog)
+        bind_(self, all_=True, modifier="Control-Shift", letter="a", callback=self.save_all)
+        self.bind("<FocusIn>", self.app_got_focus)
+        
         
         #image is ready for tkinter
         self.HTML5_PHOTO_ICO = tk.PhotoImage(file=os.path.normpath("images/icos/HTML5_Badge_32.gif"))
@@ -172,6 +179,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
             test_button = ttk.Button(tools, text="Test",command=None )
             test_button.grid(row=1,column=1,sticky='')
 
+        self.search_what = tk.StringVar(value="")
+        self.replace_with = tk.StringVar(value="")
+        self.find_or = tk.BooleanVar(value=True)
         self.paint_menus()
         
         #self.columnconfigure(0,weight=1)
@@ -181,9 +191,6 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.Contexte = tk.Toplevel(self, bd=1, bg=WINDOW_BACK_COLOR)
         self.Contexte.title(_("Commencer"))
         self.Contexte.geometry('700x600+200+200')
-        self.Contexte.grab_set()
-        self.Contexte.focus_set()
-        self.Contexte.focus_force()
         
         frame_title = tk.LabelFrame(self.Contexte, FRAME_STYLE,text=_("Titre du document"))
         self.title_tk_var = tk.StringVar(value=self.model.get_option("last_html_document_title"))
@@ -204,7 +211,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         
         #to do change this barbar method to control encoding properlyindex=self.model.selected_tab
         self._which_encoding_var = tk.StringVar(value="utf-8;utf-8")
-        #self._which_encoding_var=StringVar(value=self.model.current_text_html.get_encoding()+";"+self.model.current_text_html.get_w3c_encoding())
+        #value=self.model.current_text_html.get_encoding()+";"+self.model.current_text_html.get_w3c_encoding())
         frame_which_encoding=tk.LabelFrame(self.Contexte, FRAME_STYLE,text=_("Encodage(beta)"))
         for encotext,pyencodings,standardenco in ENCODINGS:
             encoding_radiobutton = ttk.Radiobutton(frame_which_encoding, text=encotext,value=pyencodings+";"+standardenco,variable=self._which_encoding_var)
@@ -234,8 +241,8 @@ class GraphicalUserInterfaceTk(tk.Tk):
         frame_indentation.grid(row=2,column=0,sticky='nswe')
         frame_submit.grid(row=2,column=1,sticky='nswe')
 
-        self.Contexte.bind('<Escape>',lambda e:self.Contexte.destroy())
-        self.Contexte.bind('<Return>',self.confirm_new_file)
+        
+        soft_destruction(self,self.Contexte)
 
         
     def confirm_new_file(self,*event):#controller
@@ -305,8 +312,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.text_fields[tab_index][0].grid(row=0,column=0,sticky='nsw')
         main_scrollbar.grid(row=0,column=1,sticky='ns')
         self.text_fields[tab_index][0].bind('<KeyRelease>', self.so_you_decided_to_write_html_directly)
-        self.text_fields[tab_index][0].bind('<Button-3>',create_context_menu)#it doesn t change the real object !!!
+        self.text_fields[tab_index][0].bind('<Button-3>',create_context_menu)
         self.text_fields[tab_index][0].bind('<ButtonRelease-1>',self.switch_writing_place)
+        #self.text_fields[tab_index][0].bind('<Control-f>',lambda e:"break") this blocks what we want
         self.text_fields[tab_index][1].grid(row=1,column=0,sticky='nsw')
         self.text_fields[tab_index][1]['state']='disabled'
         #I = InformationBubble(parent=main_text_field,texte=_(u"éditer directement "))
@@ -470,8 +478,6 @@ class GraphicalUserInterfaceTk(tk.Tk):
         current_object = self.model.tabs_html[tab_index]
         current_text_field = self.text_fields[tab_index][0]
         if self.insertion_tk_var.get():
-            #line_before=current_text_field.get('insert'+'-1l', 'insert')
-            #CTabulations=line_before.count(indent_var_changed)
             before_cursor_text = current_text_field.get('1.0', 'insert')
             current_object.insertion = len(before_cursor_text)
         else:
@@ -479,9 +485,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
             
     def change_size(self,event):
         try:
-            equivalent = event.keysym#when someone zooms with keyboard
+            equivalent = event.keysym#when zooms with keyboard
         except AttributeError:
-            equivalent = event#zoom with something else (menu old-style)
+            equivalent = event#zoom with something else (menu)
 
         for treeview in self._treeviews:
             treeview.column("local",width=200)
@@ -501,9 +507,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         for link in links:
             HyperLink(self.info,link[0],link[1]).grid(sticky='w')
         ttk.Button(self.info,text = _("Ok"),command=self.info.destroy).grid()
-        self.info.focus_set()
-        self.info.bind('<Escape>',self.info.destroy)
-        self.info.bind('<Return>',self.info.destroy)
+        soft_destruction(self,self.info)
         self.info.grid()
                 
     def feedback_verification(self,messages,links,finished):
@@ -532,7 +536,90 @@ class GraphicalUserInterfaceTk(tk.Tk):
         else:
             self.model.set_option("indent_size",self.indent_size_tk_var.get())
             self.model.set_option("indent_style"," ")
-            
+
+    def app_got_focus(self, event):
+        pass
+    
+    def tk_index_from_plain(self,text, plain_index):
+        if plain_index == -1:
+            return "1.0"
+        else:
+            before = text[0:plain_index]
+            lines = before.count("\n")
+            columns = len(before.split("\n")[-1])
+            tk_index = str(1 + lines) + "." + str(columns)
+            return tk_index
+    
+    def prepare_find_dialog(self, *event):
+        self.find_or.set(True)
+        self.find_dialog('disabled')
+    def prepare_replace_dialog(self, *event):
+        self.find_or.set(False)
+        self.find_dialog('normal')
+    def find_dialog(self,state):
+        self.search_dialog = tk.Toplevel(self, bd=1, bg=WINDOW_BACK_COLOR)
+        
+        search_string = _("Rechercher")
+        replace_string = _("Remplacer")
+        replace_radio = ttk.Radiobutton(self.search_dialog, text=replace_string,variable=self.find_or,value=False)
+        find_radio = ttk.Radiobutton(self.search_dialog, text=search_string,variable=self.find_or,value=True)
+        replace_entry = ttk.Entry(self.search_dialog, textvariable=self.replace_with,state=state)
+        
+        replace_radio.grid(column=1,row=0)
+        find_radio.grid(column=0,row=0)
+        
+        label = ttk.Label(self.search_dialog, text=search_string)
+        label.grid(column=0,row=1)
+        label_2 = ttk.Label(self.search_dialog, text=replace_string)
+        label_2.grid(column=0,row=2)
+        replace_entry.grid(column=1,row=2)
+        entry = ttk.Entry(self.search_dialog, textvariable=self.search_what)
+        entry.focus()
+        entry.select_range(0, tk.END)#Select All
+        entry.grid(column=1,row=1)
+        self.search_message = ttk.Label(self.search_dialog, text="")
+        self.search_message.grid(column=0,row=3)
+
+        soft_destruction(self,self.search_dialog)
+        self.search_dialog.bind('<Return>', self.find_next)
+        self.search_dialog.grid()
+        return 'break'
+
+    def find_next(self, *event):
+        search_what = self.search_what.get()
+        if search_what == "":
+            return None
+        tab_index = self.model.selected_tab
+        current_object = self.model.tabs_html[tab_index]
+        current_text_field = self.text_fields[tab_index][0]
+
+        if self.find_or.get():
+            where = current_object.find(search_what)
+            print_message = ""
+            if where == -1:
+                #bottom reached
+                print_message += _(u"Bas de page dépassé, recommence au début\n")
+                where = current_object.find(search_what, start = 0)
+                if where == -1:#still not found
+                    print_message += _(u"Non trouvé !")
+            if where != -1:
+                tk_index = self.tk_index_from_plain(current_object.text, where)
+                current_text_field.see(tk_index)
+                current_text_field.mark_set(tk.INSERT, tk_index)
+                #unselect all, then select the research pattern
+                current_text_field.tag_remove(tk.SEL, "1.0", tk.END)
+                current_text_field.tag_add(tk.SEL,
+                    tk_index,
+                    tk_index + "+{}c".format(len(search_what)))
+                current_text_field.focus()
+            else:
+                if self.search_message.winfo_viewable():
+                    self.search_message['text'] = print_message
+        else:
+            current_object.replace(search_what,self.replace_with.get(),1)
+            self.tk_copy_text(current_object)
+        
+        
     def paint_menus(self):
         ######----Menus-----######
         FILEMENU = {}
@@ -551,7 +638,11 @@ class GraphicalUserInterfaceTk(tk.Tk):
 
         EDITMENU = {}
         EDITMENU["name"] = _("Edition")
-        EDITMENU["command"] = []
+        EDITMENU["command"] = [
+            {'label':_("Recherche [Ctrl+F]"),'command':self.prepare_find_dialog},
+            {'label':_("Recherche prochain [Ctrl+G]"),'command':self.find_next},
+            {'label':_("Remplacer [Ctrl+H]"),'command':self.prepare_replace_dialog}
+        ]
         EDITMENU["radiobutton"] = []
         
         VALIDATEMENU = {}

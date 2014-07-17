@@ -107,7 +107,7 @@ creating a copy of this object starts the app."""
             self.tabs_html.append(current_text_html)
             self.graphical_user_interface_tk.tk_copy_text(current_text_html,new=True)
         elif self.start_mod==1:
-            self.graphical_user_interface_tk.html_window.edit_file_dialog()
+            self.graphical_user_interface_tk.edit_file_dialog()
             #perhaps check if correctly opened here and update some data
             #but then Ctrl+N hotkey misses something
         elif self.start_mod==2:
@@ -157,7 +157,7 @@ creating a copy of this object starts the app."""
             current_text_html.save_in_file()
             return True
         else:#ask for a new path
-            return self.graphical_user_interface_tk.html_window._save_file_dialog()
+            return self.graphical_user_interface_tk._save_file_dialog()
             
         
     def save_file_totest(self):#Try with CTRL+Shift+T

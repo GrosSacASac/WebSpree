@@ -51,7 +51,8 @@ with InterfaceOptions
         self.__saved = saved
         self.__path = path
         self.__encoding_py = encoding_py
-        
+
+        self.last_find_index = 0
         #Parent data
         self.options_file_object = options_file_object#do not touch this directly use interface methods
 
@@ -116,6 +117,16 @@ with InterfaceOptions
     def __len__(self):
         return len(self.read())
 
+    def find(self, string, start=-1):
+        if start == -1:
+            start = self.last_find_index + 1
+        self.last_find_index = self.read().find(string, start)
+        return self.last_find_index
+
+    def replace(self,old, new, count=-1):
+        self.__overwrite_content(self.read().replace(old, new, count))
+        
+                                 
 class Text_HTML(Text_):
     def __init__(self,options_file_object,content="",saved=True,path="",encoding_py="utf-8",w3c_encoding="utf-8",version=5.0,document_language="fr"):
         Text_.__init__(self,options_file_object,content,saved,path,encoding_py)

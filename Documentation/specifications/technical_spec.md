@@ -1,6 +1,6 @@
 technical_spec.md
 Last Update of this document:
-2014-06-03
+2014-07-14
 
 ##Tutorials to create web pages with verification
 

@@ -179,11 +179,6 @@ class HTMLWindows(tk.Frame):
         frame_attribute_master.grid(row=0,column=1,sticky='nsw')
         frame_2_user_input.grid(row=1,column=0,columnspan=2,sticky='nsw')
         
-        #self.grid_columnconfigure(0,weight=0)
-        
-    
-        
-
 
     
                                 
@@ -303,9 +298,6 @@ class HTMLWindows(tk.Frame):
         
     
 
-    
-        
-
 #Mostly visual and not important --------------###############################
             
 
@@ -317,11 +309,9 @@ class HTMLWindows(tk.Frame):
             try:
                 self.info.reset_position(event.x_root,event.y_root)
             except AttributeError:
-                self.info = DragDropFeedback(parent=None,text="<%s>" % self.drag_element, x=event.x_root, y=event.y_root)
+                self.info = DragDropFeedback(parent=None,text="<{}>".format(self.drag_element), x=event.x_root, y=event.y_root)
                 
-##            self.drop_menu = Menu(event.widget, tearoff=0, takefocus=0)
-##            self.drop_menu.add_command(label=self.drag_element)
-##            self.drop_menu.tk_popup(event.x_root+42, event.y_root+10,entry="0")
+
         
     def drop_end(self,event):
         try:

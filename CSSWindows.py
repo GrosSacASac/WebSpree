@@ -324,10 +324,10 @@ class CSSWindows(tk.Frame):
 
 Returns (iid, None) if it a toplevel item was selected
 Swow the first child and destroys previous choices"""
-        try:
-            self.value_confirm.destroy()
-        except AttributeError:
-            pass
+##        try:
+##            self.value_confirm.destroy()
+##        except AttributeError:
+##            pass
         selected_item_id = tree.selection()[0]
         if tree.get_children(selected_item_id):#folder of element
             tree.item(selected_item_id, open=not(tree.item(selected_item_id, "open")))
@@ -415,8 +415,13 @@ Swow the first child and destroys previous choices"""
                             index=only_properties.index(prop)
                             def handler_2(index=index):
                                 return self.apply_for(index,value_1)
-                            b=tk.Button(self.value_confirm,text=_(u"Appliquer {} pour {}").format(value_1,prop), command=handler_2)
+                            b=tk.Button(
+                                self.value_confirm,
+                                text=_(u"Appliquer {} pour {}").format(value_1,prop),
+                                command=handler_2)
                             b.grid()
+                        soft_destruction(self,self.value_confirm)
+                        self.value_confirm.grid()
           
     def apply_for(self,index,value_1):
         self.property_values[index][1]=value_1

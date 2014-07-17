@@ -189,6 +189,7 @@ class DragDropFeedback(tk.Toplevel):
         self.overrideredirect(1)#L'objet n as pas le contour d'une fenetre
     def reset_position(self,x,y):
         self.geometry('200x25+%d+%d' % (0+x,0+y))
+        
 def cut(event):
     event.widget.event_generate('<Control-x>')
     event.widget.event_generate('<KeyRelease>')
@@ -217,13 +218,27 @@ def create_context_menu(event):
         context_menu.add_command(label=text, command=action)
     context_menu.tk_popup(event.x_root+42, event.y_root+10,entry="0")
     event.widget.focus()
+    
+#bind event and handler for both caps lock and without caps lock
+def bind_(widget, all_=False, modifier="", letter="", callback=None, add='',):
+    if modifier and letter:
+        letter = "-" + letter
+    if all_:
+        widget.bind_all('<{}{}>'.format(modifier,letter.upper()), callback, add)
+        widget.bind_all('<{}{}>'.format(modifier,letter.lower()), callback, add)
+    else:
+        widget.bind('<{}{}>'.format(modifier,letter.upper()), callback, add)
+        widget.bind('<{}{}>'.format(modifier,letter.lower()), callback, add)
 
+#soft toplevel self destruction
+def soft_destruction(root,window):
+    def destroy(event):
+        window.destroy()
+    window.focus_set()
+    window.bind('<Escape>',destroy)
+    root.bind('<FocusIn>',destroy,add='+')
+    window.bind('<Return>',destroy)
 
-class InformationBubble(tk.Toplevel):#broken do not use
-    def __init__(self,parent=None,texte="", DecalageX=20, DecalageY=0):
-        #I deleted this becuase it was full of bugs and impolite
-        pass
-        
 if __name__ == '__main__':#essay
     root=tk.Tk()
     F1=tk.LabelFrame(root, FRAME_STYLE,text="links")
@@ -233,7 +248,6 @@ if __name__ == '__main__':#essay
 
     H=HyperLink(F1,URL="www.python.org",text="PYTHON");H.grid()
     H2=HyperLink(F1,URL="www.wikipedia.org",text="wikipedia !!!");H2.grid()
-    #AideLien = InformationBubble(parent=H2,texte="Lien sans texte particulier",DecalageX=0, DecalageY=-50)
 
 
     YOLO=tk.Label(F1,text="YOLO",font='10');YOLO.grid()
@@ -241,7 +255,6 @@ if __name__ == '__main__':#essay
     help_and=MainPlusHelp(F4,"data","help about data")
     main_c=tk.Label(help_and.main_frame,text="Main content This can be anything",font='10');main_c.grid(row=0,column=0)
     help_c=tk.Label(help_and.help_frame,text="help_details This can be anything",font='10');help_c.grid(row=0,column=0)
-    #test2 = InformationBubble(parent=YOLO,texte="You Only Live Online",DecalageX=-15, DecalageY=35)
 
     A=tk.Listbox(F2,LISTBOX_STYLE);A.grid()
     A.insert('end', 'element 1');A.insert('end', 'element 2')
