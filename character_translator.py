@@ -5,7 +5,7 @@
 #Role: create dics to tranlate chars to html enities
 
 #Walle Cyril
-#20/02/2014
+#2014-11-09
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -25,7 +25,7 @@
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
 ##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril@hotmail.com
+##by sending an email to the following adress:capocyril [ (a ] hotmail.com
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 from entities import html5
 
@@ -36,4 +36,3 @@ for (codeh5, normal) in html5.items():
 minimum_translation={"<":"&lt;",">":"&gt;","&":"&amp;"}
 
 del codeh5, normal
-# returns html5 and html5reci (type 'dict')

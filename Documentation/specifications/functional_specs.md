@@ -25,7 +25,7 @@ Features summary:
 * Macros
 * Launch document directly in a browser
 * Preview CSS with templates
-* Validation tool
+* Validation tools
 * Works off-line - No connection required
 
 Details

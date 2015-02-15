@@ -2,10 +2,10 @@
 #-*-coding:utf-8*
 
 #html_parser.py
-#Role:HTML parser (for turorials and validate menu)
+#Role:HTML and CSS parser 
 
 #Walle Cyril
-#2014-07-12
+#2015-12-02
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -25,7 +25,7 @@
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
 ##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril@hotmail.com
+##by sending an email to the following adress:capocyril [ (a ] hotmail.com
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 r"""
 Original file:C:\Python33\Lib\html\parser.py
@@ -37,7 +37,8 @@ Original file:C:\Python33\Lib\html\parser.py
 # character data -- the normal case), RCDATA (replaceable character
 # data -- only char and entity references and end tags are special)
 # and CDATA (character data -- only end tags are special).
-
+def do_nothing(a,b,c):
+                pass
 try:
     import _markupbase
 except ImportError:
@@ -45,8 +46,10 @@ except ImportError:
 import re
 import warnings
 
+
 ##DATA##
 from file_extractor import *
+from Text__classes import *
 
 # Regular expressions used for parsing
 
@@ -150,7 +153,7 @@ class HTMLParser(_markupbase.ParserBase):
     
     CDATA_CONTENT_ELEMENTS = ("script", "style")
 
-    def __init__(self, strict=False):
+    def __init__(self, strict=False, for_color=None):
         """Initialize and reset this instance.
 
         If strict is set to False (the default) the parser will parse invalid
@@ -169,7 +172,12 @@ class HTMLParser(_markupbase.ParserBase):
         self.dynamic_start_list = []
         self.close_before_error_list = []
         self.must_parent_errors = []
-        
+
+        if for_color:
+            self.painter = for_color#function
+        else:
+            #most elegant way to do it ?
+            self.painter = do_nothing        
         if strict:
             warnings.warn("The strict mode is deprecated.",
                           DeprecationWarning, stacklevel=2)
@@ -208,7 +216,7 @@ class HTMLParser(_markupbase.ParserBase):
 
     def set_cdata_mode(self, elem):
         self.cdata_elem = elem.lower()
-        self.interesting = re.compile(r'</\s*%s\s*>' % self.cdata_elem, re.I)
+        self.interesting = re.compile(r'</\s*{}\s*>'.format(self.cdata_elem), re.IGNORECASE)
 
     def clear_cdata_mode(self):
         self.interesting = interesting_normal
@@ -219,130 +227,136 @@ class HTMLParser(_markupbase.ParserBase):
     # true, force handling all data as if followed by EOF marker.
     def goahead(self, end):
         rawdata = self.rawdata
-        i = 0
+        self.i = 0
         n = len(rawdata)
-        while i < n:
-            match = self.interesting.search(rawdata, i) # < or &
+        while self.i < n:
+            match = self.interesting.search(rawdata, self.i) # < or &
             if match:
                 j = match.start()
             else:
                 if self.cdata_elem:
                     break
                 j = n
-            if i < j: self.handle_data(rawdata[i:j])
-            i = self.updatepos(i, j)
-            if i == n: break
+            if self.i < j:
+                self.handle_data(rawdata[self.i:j])
+            self.i = self.updatepos(self.i, j)
+            if self.i == n: break
             startswith = rawdata.startswith
-            if startswith('<', i):
-                if starttagopen.match(rawdata, i): # < + letter
-                    k = self.parse_starttag(i)
-                elif startswith("</", i):
-                    k = self.parse_endtag(i)
-                elif startswith("<!--", i):
-                    k = self.parse_comment(i)
-                elif startswith("<?", i):
-                    k = self.parse_pi(i)
-                elif startswith("<!", i):
+            if startswith('<', self.i):
+                if starttagopen.match(rawdata, self.i): # < + letter
+                    end_i = self.parse_starttag()
+                    # future use len(self.dynamic_start_list) to add coulour itensity for more nested stuff
+                    self.painter(self.i,end_i, "element")
+                elif startswith("</", self.i):
+                    end_i = self.parse_endtag()
+                    self.painter(self.i,end_i, "element")
+                elif startswith("<!--", self.i):
+                    end_i = self.parse_comment(self.i)
+                    self.painter(self.i,end_i, "comment")
+                elif startswith("<?", self.i):
+                    end_i = self.parse_pi(self.i)
+                elif startswith("<!", self.i):
                     if self.strict:
-                        k = self.parse_declaration(i)
+                        end_i = self.parse_declaration(self.i)#! method not found !!!
                     else:
-                        k = self.parse_html_declaration(i)
-                elif (i + 1) < n:
+                        end_i = self.parse_html_declaration()
+                        self.painter(self.i,end_i, "html_declaration")
+                elif (self.i + 1) < n:
                     self.handle_data("<")
-                    k = i + 1
+                    end_i = self.i + 1
                 else:
                     break
-                if k < 0:
+                if end_i < 0:
                     if not end:
                         break
                     if self.strict:
                         self.error("EOF in middle of construct")
-                    k = rawdata.find('>', i + 1)
-                    if k < 0:
-                        k = rawdata.find('<', i + 1)
-                        if k < 0:
-                            k = i + 1
+                    end_i = rawdata.find('>', self.i + 1)
+                    if end_i < 0:
+                        end_i = rawdata.find('<', self.i + 1)
+                        if end_i < 0:
+                            end_i = self.i + 1
                     else:
-                        k += 1
-                    self.handle_data(rawdata[i:k])
-                i = self.updatepos(i, k)
-            elif startswith("&#", i):
-                match = charref.match(rawdata, i)
+                        end_i += 1
+                    self.handle_data(rawdata[self.i:end_i])
+                self.i = self.updatepos(self.i, end_i)
+            elif startswith("&#", self.i):
+                match = charref.match(rawdata, self.i)
                 if match:
                     name = match.group()[2:-1]
                     self.handle_charref(name)
-                    k = match.end()
-                    if not startswith(';', k-1):
-                        k = k - 1
-                    i = self.updatepos(i, k)
+                    end_i = match.end()
+                    if not startswith(';', end_i-1):
+                        end_i = end_i - 1
+                    self.i = self.updatepos(self.i, end_i)
                     continue
                 else:
-                    if ";" in rawdata[i:]: #bail by consuming &#
+                    if ";" in rawdata[self.i:]: #bail by consuming &#
                         self.handle_data(rawdata[0:2])
-                        i = self.updatepos(i, 2)
+                        self.i = self.updatepos(self.i, 2)
                     break
-            elif startswith('&', i):
-                match = entityref.match(rawdata, i)
+            elif startswith('&', self.i):
+                match = entityref.match(rawdata, self.i)
                 if match:
                     name = match.group(1)
                     self.handle_entityref(name)
-                    k = match.end()
-                    if not startswith(';', k-1):
-                        k = k - 1
-                    i = self.updatepos(i, k)
+                    end_i = match.end()
+                    if not startswith(';', end_i-1):
+                        end_i = end_i - 1
+                    self.i = self.updatepos(self.i, end_i)
                     continue
-                match = incomplete.match(rawdata, i)
+                match = incomplete.match(rawdata, self.i)
                 if match:
                     # match.group() will contain at least 2 chars
                     if end and match.group() == rawdata[i:]:
                         if self.strict:
                             self.error("EOF in middle of entity or char ref")
                         else:
-                            k = match.end()
-                            if k <= i:
-                                k = n
-                            i = self.updatepos(i, i + 1)
+                            end_i = match.end()
+                            if end_i <= self.i:
+                                end_i = n
+                            self.i = self.updatepos(self.i, self.i + 1)
                     # incomplete
                     break
-                elif (i + 1) < n:
+                elif (self.i + 1) < n:
                     # not the end of the buffer, and can't be confused
                     # with some other construct
                     self.handle_data("&")
-                    i = self.updatepos(i, i + 1)
+                    self.i = self.updatepos(self.i, self.i + 1)
                 else:
                     break
             else:
                 assert 0, "interesting.search() lied"
         # end while
-        if end and i < n and not self.cdata_elem:
-            self.handle_data(rawdata[i:n])
-            i = self.updatepos(i, n)
-        self.rawdata = rawdata[i:]
+        if end and self.i < n and not self.cdata_elem:
+            self.handle_data(rawdata[self.i:n])
+            self.i = self.updatepos(self.i, n)
+        self.rawdata = rawdata[self.i:]
 
     # Internal -- parse html declarations, return length or -1 if not terminated
     # See w3.org/TR/html5/tokenization.html#markup-declaration-open-state
     # See also parse_declaration in _markupbase
-    def parse_html_declaration(self, i):
-        if i>2:
+    def parse_html_declaration(self):
+        if self.i > 2:
             #Doctype declaration at the wrong place
             self.doctype_first = False
         rawdata = self.rawdata
-        assert rawdata[i:i+2] == '<!', ('unexpected call to '
+        assert rawdata[self.i : self.i+2] == '<!', ('unexpected call to '
                                         'parse_html_declaration()')
-        if rawdata[i:i+4] == '<!--':
+        if rawdata[self.i:self.i+4] == '<!--':
             # this case is actually already handled in goahead()
-            return self.parse_comment(i)
-        elif rawdata[i:i+3] == '<![':
-            return self.parse_marked_section(i)
-        elif rawdata[i:i+9].lower() == '<!doctype':
+            return self.parse_comment(self.i)
+        elif rawdata[self.i:self.i+3] == '<![':
+            return self.parse_marked_section(self.i)
+        elif rawdata[self.i:self.i+9].lower() == '<!doctype':
             # find the closing >
-            gtpos = rawdata.find('>', i+9)
+            gtpos = rawdata.find('>', self.i+9)
             if gtpos == -1:
                 return -1
-            self.handle_decl(rawdata[i+2:gtpos])
+            self.handle_decl(rawdata[self.i+2:gtpos])
             return gtpos+1
         else:
-            return self.parse_bogus_comment(i)
+            return self.parse_bogus_comment(self.i)
 
     # Internal -- parse bogus comment, return length or -1 if not terminated
     # see http://www.w3.org/TR/html5/tokenization.html#bogus-comment-state
@@ -358,37 +372,37 @@ class HTMLParser(_markupbase.ParserBase):
         return pos + 1
 
     # Internal -- parse processing instr, return end or -1 if not terminated
-    def parse_pi(self, i):
+    def parse_pi(self):
         rawdata = self.rawdata
-        assert rawdata[i:i+2] == '<?', 'unexpected call to parse_pi()'
-        match = piclose.search(rawdata, i+2) # >
+        assert rawdata[self.i:self.i+2] == '<?', 'unexpected call to parse_pi()'
+        match = piclose.search(rawdata, self.i+2) # >
         if not match:
             return -1
         j = match.start()
-        self.handle_pi(rawdata[i+2: j])
+        self.handle_pi(rawdata[self.i+2: j])
         j = match.end()
         return j
 
     # Internal -- handle starttag, return end or -1 if not terminated
-    def parse_starttag(self, i):
+    def parse_starttag(self):
         self.__starttag_text = None
-        endpos = self.check_for_whole_start_tag(i)
+        endpos = self.check_for_whole_start_tag(self.i)
         if endpos < 0:
             return endpos
         rawdata = self.rawdata
-        self.__starttag_text = rawdata[i:endpos]
+        self.__starttag_text = rawdata[self.i:endpos]
 
         # Now parse the data between i+1 and j into a tag and attrs
         attrs = []
-        match = tagfind.match(rawdata, i+1)
+        match = tagfind.match(rawdata, self.i+1)
         assert match, 'unexpected call to parse_starttag()'
-        k = match.end()
+        end_i = match.end()
         self.lasttag = tag = match.group(1).lower()
-        while k < endpos:
+        while end_i < endpos:
             if self.strict:
-                m = attrfind.match(rawdata, k)
+                m = attrfind.match(rawdata, end_i)
             else:
-                m = attrfind_tolerant.match(rawdata, k)
+                m = attrfind_tolerant.match(rawdata, end_i)
             if not m:
                 break
             attrname, rest, attrvalue = m.group(1, 2, 3)
@@ -400,9 +414,12 @@ class HTMLParser(_markupbase.ParserBase):
             if attrvalue:
                 attrvalue = self.unescape(attrvalue)
             attrs.append((attrname.lower(), attrvalue))
-            k = m.end()
+            between = end_i + len(attrname)
+            self.painter(end_i, between,"attribute")
+            self.painter(between, m.end(), "attribute_value")
+            end_i = m.end()
 
-        end = rawdata[k:endpos].strip()
+        end = rawdata[end_i:endpos].strip()
         if end not in (">", "/>"):
             lineno, offset = self.getpos()
             if "\n" in self.__starttag_text:
@@ -413,8 +430,9 @@ class HTMLParser(_markupbase.ParserBase):
                 offset = offset + len(self.__starttag_text)
             if self.strict:
                 self.error("junk characters in start tag: %r"
-                           % (rawdata[k:endpos][:20],))
-            self.handle_data(rawdata[i:endpos])
+                           % (rawdata[end_i:endpos][:20],))
+            self.handle_data(rawdata[self.i:endpos])
+            
             return endpos
         
         if (end.endswith('>') and tag in self.VOID_ELEMENTS_5) or end.endswith('/>'):
@@ -438,10 +456,10 @@ class HTMLParser(_markupbase.ParserBase):
             m = locatestarttagend_tolerant.match(rawdata, i)
         if m:
             j = m.end()
-            next = rawdata[j:j+1]
-            if next == ">":
+            next_ = rawdata[j:j+1]
+            if next_ == ">":
                 return j + 1
-            if next == "/":
+            if next_ == "/":
                 if rawdata.startswith("/>", j):
                     return j + 2
                 if rawdata.startswith("/", j):
@@ -455,11 +473,10 @@ class HTMLParser(_markupbase.ParserBase):
                     return j
                 else:
                     return i + 1
-            if next == "":
+            if next_ == "":
                 # end of input
                 return -1
-            if next in ("abcdefghijklmnopqrstuvwxyz=/"
-                        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
+            if next_.isalpha() or next_ in "=/":
                 # end of input in or before attribute value, or we have the
                 # '/' from a '/>' ending
                 return -1
@@ -473,32 +490,32 @@ class HTMLParser(_markupbase.ParserBase):
         raise AssertionError("we should not get here!")
 
     # Internal -- parse endtag, return end or -1 if incomplete
-    def parse_endtag(self, i):
+    def parse_endtag(self):
         rawdata = self.rawdata
-        assert rawdata[i:i+2] == "</", "unexpected call to parse_endtag"
-        match = endendtag.search(rawdata, i+1) # >
+        assert rawdata[self.i:self.i+2] == "</", "unexpected call to parse_endtag"
+        match = endendtag.search(rawdata, self.i+1) # >
         if not match:
             return -1
         gtpos = match.end()
-        match = endtagfind.match(rawdata, i) # </ + tag + >
+        match = endtagfind.match(rawdata, self.i) # </ + tag + >
         if not match:
             if self.cdata_elem is not None:
-                self.handle_data(rawdata[i:gtpos])
+                self.handle_data(rawdata[self.i:gtpos])
                 return gtpos
             if self.strict:
-                self.error("bad end tag: %r" % (rawdata[i:gtpos],))
+                self.error("bad end tag: %r" % (rawdata[self.i:gtpos],))
             # find the name: w3.org/TR/html5/tokenization.html#tag-name-state
-            namematch = tagfind_tolerant.match(rawdata, i+2)
+            namematch = tagfind_tolerant.match(rawdata, self.i+2)
             if not namematch:
                 # w3.org/TR/html5/tokenization.html#end-tag-open-state
-                if rawdata[i:i+3] == '</>':
-                    return i+3
+                if rawdata[self.i:self.i+3] == '</>':
+                    return self.i+3
                 else:
-                    return self.parse_bogus_comment(i)
+                    return self.parse_bogus_comment(self.i)
             tagname = namematch.group().lower()
             # consume and ignore other stuff between the name and the >
             # Note: this is not 100% correct, since we might have things like
-            # </tag attr=">">, but looking for > after tha name should cover
+            # </tag attr=">">, but looking for > after that name should cover
             # most of the cases and is much simpler
             gtpos = rawdata.find('>', namematch.end())
             self.handle_endtag(tagname)
@@ -524,6 +541,7 @@ class HTMLParser(_markupbase.ParserBase):
     def handle_starttag(self, tag, attrs):
          #if attrs:
             #attrs.insert(0,tag)
+        #print(tag,self.i)
         if attrs:
             i1=len(self.key_attribute_list)
             i2=len(self.value_attribute_list)
@@ -535,22 +553,25 @@ class HTMLParser(_markupbase.ParserBase):
         else:
             self.key_attribute_list.append(None)
             self.value_attribute_list.append(None)
-        must_parent = html_element_from_name(tag)["parent"]#in file extractor
-        must_parents = must_parent.split(",")
-        for parent in must_parents:
-            if parent in self.dynamic_start_list or must_parent == "root":
-                break
-        else :
-            #the must parent is not open or missing (<li> needs <ul> or <ol> open before)
-            self.must_parent_errors.append([",".join(must_parents), tag])
+        html_element = html_element_from_name(tag)
+        if html_element is not None: # found in saved, documented text
+            must_parent = html_element["parent"]#in file extractor
+            must_parents = must_parent.split(",")
+            for parent in must_parents:
+                if parent in self.dynamic_start_list or must_parent == "root":
+                    break
+            else :#this block executes if the for block hasn t broke
+                #the must parent is not open or missing (<li> needs <ul> or <ol> open before)
+                self.must_parent_errors.append([",".join(must_parents), tag])
         self.start_list.append(tag)
         self.dynamic_start_list.append(tag)
 
     # Overridable -- handle end tag
     def handle_endtag(self, tag):
         if self.dynamic_start_list[-1] != tag:
-            #nested noeuds
+            #nested tags: the last closed is not the same as last opened
             self.close_before_error_list.append([self.dynamic_start_list[-1],tag])
+            self.painter(self.i,self.i+len(tag)+2, "error")
             if tag in self.dynamic_start_list:
                 self.dynamic_start_list.remove(tag)
         else:
@@ -567,9 +588,7 @@ class HTMLParser(_markupbase.ParserBase):
 
     # Overridable -- handle data
     def handle_data(self, data):
-        #print(data.strip(),end="")
-        #print(type(data))
-        stripped_data=data.strip()
+        stripped_data = data.strip()
         if stripped_data:
             try:
                 i = j = 0
@@ -629,45 +648,343 @@ class HTMLParser(_markupbase.ParserBase):
 
         return re.sub(r"&(#?[xX]?(?:[0-9a-fA-F]+;|\w{1,32};?))",
                       replaceEntities, s, flags=re.ASCII)
+#CSS regular expressions
+    #" " space 32
+    #\b backspace 8
+    #\t tab 9
+    #\r carriage return 13
+    #\n Linefeed NewLine Unix 10
+    #\f Form feed New Page 12
+anything_start = re.compile(r"[^ \t\n\r\f]+")
+selector_word = re.compile(r"([^{} \t\n\r\f]+[ \t\n\r\f]*)+")
+atrule_word = re.compile(r"@[^{}:]+")
+comment_long = re.compile(r"/\*[^(\*/)]*\*/")
+
+#http://www.w3.org/TR/css3-selectors/#whitespace
+"space"  "tab" "line feed"  "carriage return" "form feed" 
+valid_whitespace = re.compile(r"[ \t\n\r\f]")
+brace_start = re.compile(r"{")
+property_word = re.compile(r"""[^:{}]+""")
+property_value_separator = re.compile(r":")
+#value_word = re.compile("[^;]+") #this ends too soon in e.g content: "Ok; not ok";
+value_word = re.compile(r"""[^";{}]+""")
+literal_word = re.compile(r"""[^"]*""")
+literal_start_or_end = re.compile(r"""["']""")
+value_end = re.compile(r";")
+brace_end = re.compile(r"}")
+
+class CSSParseError(Exception):
+    """Exception raised for all parse errors."""
+
+    def __init__(self, msg="", position=None):
+        assert msg
+        self.msg = str(msg)
+        self.position = position
+
+    def __str__(self):
+        result = self.msg
+        if self.position is not None:
+            result = "{}, at {}".format(result, self.position)
+        return result
+    
+IN_TEXT = 0
+AFTER_AT_RULE = 2
+AFTER_SELECTOR = 4
+IN_RULE = 5
+IN_PROPERTY = 6
+AFTER_PROPERTY = 7
+IN_VALUE = 10
+IN_VALUE_QUOTE = 11
+IN_VALUE_QUOTE_SINGLE = 12
+AFTER_VALUE = 14
+AFTER_PROPERTY_VALUE_SEPARATOR = 15
+TOO_MANY_OPEN_BRACKETS = "TOO_MANY_OPEN_BRACKETS"
+VALUE_END_MISSING = "VALUE_END_MISSING"
+
+class CSSParser(_markupbase.ParserBase):
+    """Parses CSS Text.
+
+    If you already have a parsed object use existing_CSSText to append the incoming parsed data to it
+    strict if you want to raise Errors (and stop the parsing) as soon as something unexpected shows up
+    for_color should be a function(a,b,c) that alters the apparence of your text.
+
+    Use .feed(text) to add raw text data to be parsed
+    Use .parse() to do the parsing
+    Use .x to use the results that are interesting for you
+
+    reset() not implemented yet
+    
+    """
+    
+    
+    def __init__(self, css_text=None, strict=False, for_color=None):
+        """Initialize and reset this instance.
+
+        """
+        self.reset()
+        if css_text is None:
+            css_text = CSSText()
+        self.css_text = css_text
+        self.tree = [self.css_text]
+        if for_color:
+            self.painter = for_color#function
+        else:
+            #most elegant way to do it ?
+            self.painter = do_nothing
+        
+
+    def reset(self):
+        """Reset this instance. Loses all unprocessed data."""
+        self.state = IN_TEXT
+        self.rawdata = ''
+        self.warnings = []
+        self.set_anything_mode()
+        self.error_list = []
+        _markupbase.ParserBase.reset(self)
+
+    def feed(self, data):
+        r"""Feed data to the parser.
+
+        Call this as often as you want, with as little or as much text
+        as you want (may include '\n').
+        """
+        self.rawdata = self.rawdata + data
 
 
+    def set_anything_mode(self):
+        self.searching = anything_start
+        
+    # Internal -- handle data as far as reasonable.  May leave state
+    # and data to be processed by a subsequent call.
+    def parse(self):
+        """Main loop, scans the text until a fatal error or end.
 
+Everytime a significant css object is detected, the specific handler is called.
+Those handlers are overridable.
+"""
+        rawdata = self.rawdata # holds the text
+        self.i = 0 # character index where we are looking at
+        length = len(rawdata) 
+        while self.i < length:
+            match = anything_start.search(rawdata, self.i)
+            if not match:
+                # 
+                return
+            #else:
+            j = match.start()
+            first_letter = rawdata[j]
+            if first_letter == "@" and self.state == IN_TEXT:
+                self.i = self.parse_at_rule(j)
+            elif first_letter == "{":
+                self.i = self.start_block(j)
+            elif first_letter == "}":
+                self.i = self.end_block(j)
+            else:
+                self.i = self.parse_this(j)
+
+            assert self.i is not None, "self.i should be the index not None"
+                
+    def parse_this(self, start):
+        if self.state == IN_TEXT:
+            return self.parse_selector(start)
+        elif self.state == IN_RULE:
+            return self.parse_property(start)
+        elif self.state == AFTER_PROPERTY:
+            return self.parse_property_value_separator(start)
+        elif self.state == AFTER_PROPERTY_VALUE_SEPARATOR:
+            return self.parse_value(start)
+        elif self.state == AFTER_VALUE:
+            return self.parse_after_value(start)
+        
+    def parse_selector(self, start):
+        match = selector_word.search(self.rawdata, start)
+        if match is None:
+            return start + 1 #here you can do better performance 
+        else:
+            self.state = AFTER_SELECTOR
+            self.searching = brace_start
+            self.handle_selector(match.group())
+            return match.end()     
+        
+    def parse_property(self, start):
+        match = property_word.search(self.rawdata, start)
+        self.state = AFTER_PROPERTY
+        self.searching = property_value_separator
+        self.handle_property(match.group())
+        return match.end()        
+       
+    def parse_property_value_separator(self, start):
+        match = property_word.search(self.rawdata, start)
+        if match is None:
+            self.property_value_separator_missing()
+        else:
+            self.state = AFTER_PROPERTY_VALUE_SEPARATOR
+            self.searching = value_word
+            return start + 1
+        
+    def parse_value(self, start):
+        match = value_word.search(self.rawdata, start)
+        self.handle_value(match.group())
+        self.state = AFTER_VALUE#will search for ;
+        self.searching = value_end
+        return match.end()
+
+    def parse_after_value(self, start):
+        match = value_end.search(self.rawdata, start)
+        if match is None:
+            #self.value_end_missing()#not fatal error
+            self.warning( VALUE_END_MISSING, start)
+        self.state = IN_RULE
+        self.searching = property_word
+        return (start + 1)
+    
+    def parse_at_rule(self, start):
+        match = atrule_word.search(self.rawdata, start)
+        atrule_string = match.group()[1::]
+        #only keyframes, no there are other atrules !
+        if atrule_string.split(" ")[0].strip() == "keyframes":
+            keyframe_name = atrule_string.split(" ")[1].strip()
+            self.add_to_tree(CSSKeyframes(keyframe_name))
+            self.state = AFTER_AT_RULE
+        return match.end()
+    
+    def warning(self, message, position):
+        self.warnings.append(message, position)
+
+    def missing_brace_start(self):
+        raise CSSParseError(self.i)
+
+    def missing_brace_end(self):
+        raise CSSParseError(self.i)
+    
+    def value_end_missing(self):
+        raise CSSParseError(self.i)
+
+    def property_value_separator_missing(self):
+        raise CSSParseError(self.i)
+    
+    # Overridable
+    def handle_selector(self, selector):
+        self.add_to_tree(CSSRule(CSSSelector(selector.strip().split(u" "))))
+    
+    # Overridable
+    def handle_property(self, property_,):
+        self.add_to_tree(CSSPropertyValue(property_.strip()))
+    
+    # Overridable
+    def handle_value(self, value):
+        self.tree[-1].value = value.strip()
+        self.close_last_sub_tree() #success we have a property and a value
+    
+    # Overridable
+    def handle_rule(self, rule):
+        pass
+        
+    # Overridable
+    def handle_keyframe(self, keyframe):
+        pass
+        
+    # Overridable
+    def handle_x(self, x):
+        pass
+        
+
+    def handle_comment(self, comment):
+        pass
+
+    # Overridable -- handle declaration
+    def handle_decl(self, declaration):
+        pass
+
+    # Overridable -- handle processing instruction
+    def handle_pi(self, data):
+        pass
+
+    #methods used in overridable methods
+    def add_to_tree(self, css_object):
+        self.tree[-1].append(css_object)
+        self.tree.append(css_object)
+
+    def close_last_sub_tree(self):
+        return self.tree.pop()
+
+    def start_block(self, start):
+        if self.state == AFTER_SELECTOR:
+            self.state = IN_RULE
+            self.searching = property_word
+            
+        elif self.state == IN_RULE:
+            self.warning(TOO_MANY_OPEN_BRACKETS, start)
+            
+        elif self.state == AFTER_AT_RULE:
+            self.state = IN_TEXT
+            self.searching = anything_start
+        return start + 1
+    
+    def end_block(self, start):
+        if self.state == IN_RULE:
+            self.state = IN_TEXT
+            self.searching = anything_start
+        self.close_last_sub_tree()
+        return start + 1
 
 
 if __name__=='__main__':
     a=r"""
 
-<html lang="fr"><!DOCTYPE html>
+<html lang="?"><!DOCTYPE html>
     <head>
         <meta charset="utf-8">
-        <title>index exos C</title>
+        <title>C</title>
     </head>
     <body hey>
         <p>bonjour</p>
         <footer>
-            <p>lol</p>
+            <p>er weiss nit wat er schreiben muss</footer></p>
             dans footer
-            <a target="here" href="https://www.b.com/">b</a>
-        </footer>
+            <a target="here" href="https://www.jssuperheroes.inputoutput/">b</a>
     </body>
 </html>
 """
     p = HTMLParser()
     p.feed(a)
     p.close()
-    print("Declaration at the right place:",p.doctype_first and p.declaration)
-    print("Document:", p.declaration + "\n")
-    print("start", p.start_list)
-    print("end", p.end_list)
-    print("\nattribute list",p.key_attribute_list)
-    print("value list", p.value_attribute_list)
-    print("\ndata",p.content_list)
-    print("\n\n")
-    start = p.start_list[:]
-    end = p.end_list[:]
-    finished = False
-    print(start,"\n")
-    print(end,"\n")
-    print("close before: ",p.close_before_error_list)
-    if len(start) != len(end):
-        print("Some not closed or not opened")
+##    print("Declaration at the right place:",p.doctype_first and p.declaration)
+##    print("Document:", p.declaration + "\n")
+##    print("start", p.start_list)
+##    print("end", p.end_list)
+##    print("\nattribute list",p.key_attribute_list)
+##    print("value list", p.value_attribute_list)
+##    print("\ndata",p.content_list)
+##    print("\n\n")
+##    start = p.start_list[:]
+##    end = p.end_list[:]
+##    finished = False
+##    print(start,"\n")
+##    print(end,"\n")
+##    print("close x before y (x,y): ",p.close_before_error_list)
+##    if len(start) != len(end):
+##        print("Some not closed or not opened")
+    
+    #generic css text to test the parser
+    css_text = r"""
+
+    @keyframes yo
+    {
+    a{color:blue;}
+    b{hello:false;}
+}
+
+rule1 {
+                    property1: value1;
+    property2: value2;
+}"""
+
+    #css parser should not have different result for different whitespacing
+    import time
+    a= time.time()
+    css_parser = CSSParser()
+    css_parser.feed(css_text)
+    css_parser.parse()
+    print(css_parser.css_text)
+    print(time.time() - a)

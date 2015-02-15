@@ -37,7 +37,7 @@
         }
     ],
     [
-        "Informations d'en-tête",
+        "Informations d'en-t\u00eate",
         {
             "link":{
                 "alt(s)":[],
@@ -69,12 +69,10 @@
                 "void":false
             },
             "script":{
-                "alt(s)":[],
-                "must_attributes":[],
+                "alt(s)":"",
+                "must_attributes":"",
                 "parent":"html",
-                "specific_attributes":[
-                    "type"
-                ],
+                "specific_attributes":"type,",
                 "version":"1+",
                 "void":false
             },
@@ -316,10 +314,10 @@
                 "void":false
             },
             "i":{
-                "alt(s)":[],
-                "must_attributes":[],
+                "alt(s)":"em,span",
+                "must_attributes":"",
                 "parent":"body",
-                "specific_attributes":[],
+                "specific_attributes":"",
                 "version":"1+",
                 "void":false
             },
@@ -395,7 +393,7 @@
                 "version":"1+",
                 "void":false
             },
-            "sup":{
+            "sub":{
                 "alt(s)":[],
                 "must_attributes":[],
                 "parent":"body",
@@ -403,7 +401,7 @@
                 "version":"1+",
                 "void":false
             },
-            "sub":{
+            "sup":{
                 "alt(s)":[],
                 "must_attributes":[],
                 "parent":"body",
@@ -428,12 +426,12 @@
                 "void":false
             },
             "wbr":{
-                "alt(s)":[],
-                "must_attributes":[],
+                "alt(s)":"",
+                "must_attributes":"",
                 "parent":"body",
-                "specific_attributes":[],
+                "specific_attributes":"",
                 "version":"1+",
-                "void":false
+                "void":true
             }
         }
     ],
@@ -632,29 +630,19 @@
                 "void":false
             },
             "track":{
-                "alt(s)":[],
-                "must_attributes":[],
+                "alt(s)":"",
+                "must_attributes":"",
                 "parent":"body",
-                "specific_attributes":[],
+                "specific_attributes":"",
                 "version":"1+",
-                "void":false
+                "void":true
             },
             "video":{
-                "alt(s)":[],
-                "must_attributes":[],
+                "alt(s)":"",
+                "must_attributes":"",
                 "parent":"body",
-                "specific_attributes":[
-                    "src",
-                    "alt",
-                    "autoplay",
-                    "controls",
-                    "loop",
-                    "width",
-                    "height",
-                    "preload",
-                    "poster"
-                ],
-                "version":"1+",
+                "specific_attributes":"src alt autoplay controls loop width height preload poster",
+                "version":"5+",
                 "void":false
             }
         }

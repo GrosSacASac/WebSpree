@@ -16,5 +16,5 @@
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
 ##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril@hotmail.com
+##by sending an email to the following adress:capocyril [ (a ] hotmail.com
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

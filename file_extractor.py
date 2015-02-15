@@ -5,7 +5,7 @@
 #Role:extracts data from static data files
 
 #Walle Cyril
-#20/02/2014
+#2014-11-09
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -25,7 +25,7 @@
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
 ##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril@hotmail.com
+##by sending an email to the following adress:capocyril [ (a ] hotmail.com
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 import codecs
@@ -33,10 +33,14 @@ import os
 import json
 
 DEFAULT_ENCODING_PY = DEFAULT_ENCODING_WEB = "utf-8"
-
+FILE_TYPES = [("HyperText Mark-Up Language file", "*.html" ),
+              ("Cascade Style Sheet", "*.css"),
+              ("JavaScript", "*.js"),
+              ("All","*.*")]
 ######----Constantes longues et extracteurs-----######
 #This will not be used anymore:
 def table_with_textfile(NomDuDocument,NbColonnes,Tableau=None):
+    """Remove this soon when all constants are normalized"""
     if Tableau is None:
         Tableau = []
     ManqueAide = "Il n'y a pas encore d'aide ici"
@@ -47,7 +51,7 @@ def table_with_textfile(NomDuDocument,NbColonnes,Tableau=None):
         #print(Ligne.strip())
         if Ligne[0] != "#":
             Tableau.append([])
-            i = i+1
+            i += 1
             for cols in range(NbColonnes):
                 try:
                     TexteCol = ((Ligne.split(";"))[cols]).strip()
@@ -66,17 +70,28 @@ def table_with_textfile(NomDuDocument,NbColonnes,Tableau=None):
 
 
 staticf = "Constantes/"
-#New extractors:s
+#extract and store
 def json_file_to_object(directory_name="", file_name=""):
+    """Reads a json file and returns its equivalent python object."""
     file_path = os.path.normpath(os.path.join(directory_name,file_name))
     return json.loads(codecs.open(file_path,'r',"utf-8").read())
 
 def load_local_strings(lang="fr"):
+    """returns additional description in selected language."""
     return (json_file_to_object(staticf+lang, lang+"_html5_elements.json"),
             json_file_to_object(staticf+lang, lang+"_html5_attributes.json"),
             json_file_to_object(staticf+lang, lang+"_css_selectors.json")
             )
 
+def object_to_json_file(data, directory_name="", file_name=""):
+    """Stores data in json format in the given path."""
+    file_path = os.path.normpath(os.path.join(directory_name,file_name))
+    print ("saving",file_path)
+    codecs.open(file_path,'w',"utf-8").write(
+                    json.dumps(data,sort_keys=True, indent=4,
+                               separators=(',',':'))
+                    )
+    
 ENCODINGS = table_with_textfile(os.path.normpath(os.path.join("Constantes","encodings.txt")),3)
 
 
@@ -90,12 +105,30 @@ CSS_SELECTORS = json_file_to_object(staticf,"css_selectors.json")
  LOCAL_CSS_SELECTORS)               = load_local_strings("fr")
 
 def html_element_from_name(element_tag):
+    """Takes the element name as a string and return its complete structure."""
     for couple in ELEMENTS:
         for element in couple[1]:
             if element == element_tag:
                 return couple[1][element]
+    return None #unknown element for WebSpree or custom element
+
+def store_change_in_source(data_holder,lang="fr"):
+    """Saves the source file so that it has the same value as the current variable."""    
+    if data_holder is ELEMENTS: #id(data_holder) == id(ELEMENTS)
+        object_to_json_file(data_holder,staticf,"html5_elements.json")
+    elif data_holder is ATTRIBUTES:
+        object_to_json_file(data_holder,staticf,"html5_attributes.json")
+    elif data_holder is GENERAL_ATTRIBUTES_LIST:
+        object_to_json_file(data_holder,staticf,"html5_general_attributes.json")
+    elif data_holder is CSS_SELECTORS:
+        object_to_json_file(data_holder,staticf,"css_selectors.json")
+    elif data_holder is LOCAL_ELEMENTS:
+        object_to_json_file(data_holder,staticf+lang, lang+"_html5_elements.json")
+    elif data_holder is LOCAL_ATTRIBUTES:
+        object_to_json_file(data_holder,staticf+lang, lang+"_html5_attributes.json")
+    elif data_holder is LOCAL_CSS_SELECTORS:
+        object_to_json_file(data_holder,staticf+lang, lang+"_css_selectors.json")
                 
 
-#-------------------------------------------------------------------------------------
-if __name__ == '__main__':#essay
+if __name__ == '__main__':
     pass

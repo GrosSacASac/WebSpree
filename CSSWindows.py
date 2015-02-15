@@ -5,7 +5,7 @@
 #Role: Define the CSS specific tools in tkinter
 
 #Walle Cyril
-#11/05/2014
+#2014-11-09
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -25,7 +25,7 @@
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
 ##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril@hotmail.com
+##by sending an email to the following adress:capocyril [ (a ] hotmail.com
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 #import tkinter ...
@@ -58,40 +58,9 @@ from tks_widgets_1 import *
 def _(l_string):
     #print("local language: "+l_string)
     return l_string
-class memoized(object):
-    """Decorator. Caches a function's return value each time it is called.
-
-If called later with <0.25 second intervall, the cached value is returned instead."""
-    def __init__(self, func):
-        self.func = func
-        self.last_call=0
-        self.last_arg_0 = 0
-    def __get__(self, instance, owner):
-        if instance is None:
-            return self
-        d = self
-        # use a lambda to produce a bound method
-        mfactory = lambda self, *args: d(self, *args)
-        mfactory.__name__ = self.func.__name__
-        return mfactory.__get__(instance, owner)
-    def __call__(self,instance, *args):
-        now = time.time()
-        interval= now - self.last_call
-        self.last_call = now
-        if interval < 0.25 and self.last_arg_0 == args[0]:
-            return (self.a, self.b)
-        else:
-            self.last_arg_0=args[0]
-            def closure(*args):
-                return self.func(instance, *args)
-            self.a, self.b = closure(*args)
-            return (self.a, self.b)
-      
-    def __repr__(self):
-        """Return the function's docstring."""
-        return self.func.__doc__
 
 ######this data will be exported in external json files soon
+#it is here now to iterate faster
 GENERAL_PROPERTY_LIST_2={
     "color":[
                ["color",["color"]]
@@ -163,29 +132,29 @@ class CSSWindows(tk.Frame):
                                             columns=("local","select"),height=adapted_height,cursor="hand2",\
                                              yscrollcommand=self.select_treeview_lift.set,padding=0,takefocus=True,\
                                              displaycolumns=(0,1),show='headings')
-        self.select_plus_help.next_=next_gen(self.select_treeview)
-        self.select_plus_help.previous=prev_gen(self.select_treeview)
-        self.select_treeview.column("#0",width=20,stretch=False)
-        self.select_treeview.heading("local",text=_(u"Traduction"))
-        self.select_treeview.column("local",minwidth=100)
-        self.select_treeview.heading("select",text=_(u"Code"))
-        self.select_treeview.bind('<<TreeviewSelect>>',self.display_help_select)
+        self.select_plus_help.next_ = next_gen(self.select_treeview)
+        self.select_plus_help.previous = prev_gen(self.select_treeview)
+        self.select_treeview.column("#0", width=20, stretch=False)
+        self.select_treeview.heading("local", text=_(u"Traduction"))
+        self.select_treeview.column("local", minwidth=100)
+        self.select_treeview.heading("select", text=_(u"Code"))
+        self.select_treeview.bind('<<TreeviewSelect>>', self.display_help_select)
         self.select_treeview.bind('<ButtonRelease-1>',self.update_select_click)
         self.select_treeview_lift.config(command=self.select_treeview.yview)
         #_List of elements:
         i = 0
-        tags=["tag_1","tag_2"]
+        tags = ["tag_1","tag_2"]
         self.select_treeview.tag_configure("tag_1", background='#cccfff')
         self.select_treeview.tag_configure("tag_2", background='#cfffcc')
         self.select_treeview.tag_configure("tag_3", background='#ffccbc')
         
               
               
-        function=self.select_treeview.insert("",'end',values=(_(u"Element"),""),tag=tags[0])
-        for couple in ELEMENTS:
-            for ele in couple[1]:
-                self.select_treeview.insert(function,'end', \
-                                                 values=(LOCAL_ELEMENTS[ele]["translation"],ele),tag="tag_3")
+##        function=self.select_treeview.insert("",'end',values=(_(u"Element"),""),tag=tags[0])
+##        for couple in ELEMENTS:
+##            for ele in couple[1]:
+##                self.select_treeview.insert(function,'end', \
+##                                                 values=(LOCAL_ELEMENTS[ele]["translation"],ele),tag="tag_3")
         for selector in CSS_SELECTORS:
             self.select_treeview.insert("",'end', values=("",selector),tag="tag_3")
         
@@ -277,11 +246,7 @@ class CSSWindows(tk.Frame):
         self.delete_current_button.grid(row=2,column=1,sticky='nw')
 
         self.var_for_auto_close_checkbutton=tk.BooleanVar(value=True)
-        self.auto_close_checkbutton=ttk.Checkbutton(frame_2_user_input, text=_(u"Fermer Fermeture"),variable=self.var_for_auto_close_checkbutton)
-        #no display is better
-        #self.auto_close_checkbutton.grid(row=2,column=2,sticky='nw')
         
-
         #Help
         self.complete_help_select=ttk.Label(self.select_plus_help.help_frame, text=_(""),wrap=400)
         self.complete_help_select.grid(row=0,column=0,sticky='nswe')
@@ -302,9 +267,6 @@ class CSSWindows(tk.Frame):
         
         #self.grid_columnconfigure(0,weight=0)
 
-    
-                                
-    
     def refresh_input(self):
         fresh_text = u"{} {{\n  ".format(self.select_string) +\
                      u"\n  ".join(
@@ -312,12 +274,10 @@ class CSSWindows(tk.Frame):
                           for property_and_value in self.property_values])
         
         if self.var_for_auto_close_checkbutton.get():
-            fresh_text+="\n}"
+            fresh_text += "\n}"
         self.content_area_form.delete('1.0','end-1c')
         self.content_area_form.insert('end',fresh_text)
         
-    
-
     @memoized
     def get_iid_and_value_1(self,tree):
         """Return the tuple (iid of selection in tree, second value).
@@ -333,12 +293,12 @@ Swow the first child and destroys previous choices"""
             tree.item(selected_item_id, open=not(tree.item(selected_item_id, "open")))
             return (selected_item_id, None)
         else:
-            value_1=(tree.item(selected_item_id,'value'))[1]
+            value_1 = (tree.item(selected_item_id,'value'))[1]
             return (selected_item_id, value_1)
         
         
     def display_help_select(self,*event):
-        tree=self.select_treeview#tree calling this method
+        tree = self.select_treeview#tree calling this method
         selected_item_id, value_1 = self.get_iid_and_value_1(tree)
         if value_1 is not None:
             self.complete_help_select['text']=u"put help here for {}".format(value_1)
@@ -346,7 +306,7 @@ Swow the first child and destroys previous choices"""
         
     def update_select_click(self,*event):
         tree=self.select_treeview#tree calling this method
-        if not(tree.focus()==""):
+        if tree.focus() != "":
             selected_item_id, value_1 = self.get_iid_and_value_1(tree)
             if value_1 is not None:
                 self.select_string=u"{} {}".format(self.select_string, value_1)
@@ -361,7 +321,7 @@ Swow the first child and destroys previous choices"""
         
     def update_property_click(self,*event):#click
         tree=self.property_treeview#tree calling this method
-        if not(tree.focus()==""):
+        if tree.focus() != "":
             selected_item_id, value_1 = self.get_iid_and_value_1(tree)
             if value_1 is not None:
                 if not (any(value_1 == items[0] for items in self.property_values)):
@@ -379,19 +339,19 @@ Swow the first child and destroys previous choices"""
         
     def update_value_click(self,*event):
         tree=self.value_treeview#tree calling this method
-        if not(tree.focus()==""):
+        if tree.focus() != "":
             selected_item_id, value_1 = self.get_iid_and_value_1(tree)
             if value_1 is not None:
                 parent=tree.parent(selected_item_id)
                 #create menu of selection to choose property the value should apply
                 if not (self.property_values):#no property
                     pass
-                elif len(self.property_values)==1:
-                    self.property_values[0][1]=value_1
+                elif len(self.property_values) == 1:
+                    self.property_values[0][1] = value_1
                     self.refresh_input()
                 else:
-                    only_properties=[]
-                    good_for=[]
+                    only_properties = []
+                    good_for = []
                     for property_, value in self.property_values:
                         only_properties.append(property_)
                     for group in GENERAL_PROPERTY_LIST_2:
@@ -401,30 +361,30 @@ Swow the first child and destroys previous choices"""
                                 if parent in prop[1]:
                                     good_for.append(prop[0])
                     
-                    if len(good_for)==1:
+                    if len(good_for) == 1:
                         #apply directly
                         index=only_properties.index(good_for[0])
-                        self.property_values[index][1]=value_1
+                        self.property_values[index][1] = value_1
                         self.refresh_input()
                     else:
                         x = tree.winfo_rootx()
                         y = tree.winfo_rooty()
                         self.value_confirm=tk.Toplevel(self)
+                        soft_destruction(self,self.value_confirm)
                         self.value_confirm.geometry('+{x}+{y}'.format(x=x, y=y))
                         for prop in good_for:
                             index=only_properties.index(prop)
                             def handler_2(index=index):
                                 return self.apply_for(index,value_1)
-                            b=tk.Button(
+                            b = tk.Button(
                                 self.value_confirm,
                                 text=_(u"Appliquer {} pour {}").format(value_1,prop),
                                 command=handler_2)
                             b.grid()
-                        soft_destruction(self,self.value_confirm)
                         self.value_confirm.grid()
           
     def apply_for(self,index,value_1):
-        self.property_values[index][1]=value_1
+        self.property_values[index][1] = value_1
         self.refresh_input()
         self.value_confirm.destroy()
         
@@ -436,7 +396,7 @@ Swow the first child and destroys previous choices"""
             tree.detach(iid)
 
         #find the important ones
-        only_properties=[]
+        only_properties = []
         for property_,value in self.property_values:
             only_properties.append(property_)
         self.types_of_possible_values=[]
@@ -455,18 +415,17 @@ Swow the first child and destroys previous choices"""
     
     def delete_current(self):
         self.content_area_form.delete('1.0','end-1c')
-        self.select_string=""
-        self.property_values=[]
+        self.select_string = ""
+        self.property_values = []
         self.refresh_input()
         self.refresh_values()
         
     def confirm_write(self):
         #add
-        tab_index=self.model.selected_tab
+        tab_index = self.model.selected_tab
         current_object=self.model.tabs_html[tab_index]
         text_to_add=(self.content_area_form.get('1.0','end-1c'))
-        current_object.add_to_text(text_to_add+"\n")
-        self.master_window.tk_copy_text(current_object)
+        current_object.add_to_text(text_to_add + "\n")
         #delete the added
         self.delete_current()
 

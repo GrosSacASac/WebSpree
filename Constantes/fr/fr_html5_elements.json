@@ -62,7 +62,7 @@
     "body":{
         "common usage":"On utilise une balise unique body pour mettre tout le contenu de son document dedans",
         "description":"Mettez ici le contenu de votre page",
-        "role":"Délimiteur de contenu",
+        "role":"D\u00e9limiteur de contenu",
         "translation":"Corps"
     },
     "button":{
@@ -228,9 +228,9 @@
         "translation":"Titre 6"
     },
     "head":{
-        "common usage":"On utilise une balise unique head pour mettre tout le méta-contenu de son document dedans",
+        "common usage":"On utilise une balise unique head pour mettre tout le m\u00e9ta-contenu de son document dedans",
         "description":"Mettez ici les informations qui concernent le document lui m\u00eame. Ces informations sont appel\u00e9s m\u00e9tadonn\u00e9es et incluent le plus souvent des liens ou des d\u00e9finitions sur les scripts, feuilles de style,langues et encodages",
-        "role":"Conteneur de méta-informations",
+        "role":"Conteneur de m\u00e9ta-informations",
         "translation":"En-t\u00eate"
     },
     "header":{
@@ -252,9 +252,9 @@
         "translation":"HTML"
     },
     "i":{
-        "common usage":"",
-        "description":"Il n'y a pas encore d'aide ici",
-        "role":"",
+        "common usage":"Ne pas utiliser. Utiliser les propri\u00e8t\u00e9s CSS \u00e9quivalentes \u00e0 la place",
+        "description":"Le contenu est italique",
+        "role":"Mise en \u00e9vidence du texte",
         "translation":"Italique"
     },
     "iframe":{
@@ -420,9 +420,9 @@
         "translation":"Param\u00e8tres d'objet"
     },
     "pre":{
-        "common usage":"utilisé pour afficher du code ou des déssins à base de caractères",
+        "common usage":"utilis\u00e9 pour afficher du code ou des d\u00e9ssins \u00e0 base de caract\u00e8res",
         "description":"Indique que le contenu est d\u00e9j\u00e0 format\u00e9. Les sauts de lignes , espace et indentations qui sont normalement tronsform\u00e9s en un unique espacement seront ici pr\u00e9s\u00e8rv\u00e9s",
-        "role":"garder avec le même espacement que dans la source",
+        "role":"garder avec le m\u00eame espacement que dans la source",
         "translation":"Pr\u00e9format\u00e9"
     },
     "progress":{
@@ -452,7 +452,7 @@
     "script":{
         "common usage":"",
         "description":"Un script",
-        "role":"",
+        "role":"Inclusion d'un script comme extension",
         "translation":"Script ou Programme"
     },
     "section":{
@@ -492,22 +492,22 @@
         "translation":"Important"
     },
     "sub":{
-        "common usage":"Utilisé quand on peut se passer de <math> dans de courtes formules. Utilisé aussi pour faire une anchre vers des explications détaillés",
+        "common usage":"Utilis\u00e9 quand on peut se passer de <math> dans de courtes formules. Utilis\u00e9 aussi pour faire une anchre vers des explications d\u00e9taill\u00e9s",
         "description":"texte en indice",
         "role":"met en indice le texte",
         "translation":"indice"
-    },
-    "sup":{
-        "common usage":"",
-        "description":"texte en exposant",
-        "role":"",
-        "translation":"exposant"
     },
     "summary":{
         "common usage":"",
         "description":"Enfant de details",
         "role":"",
         "translation":"Sommaire"
+    },
+    "sup":{
+        "common usage":"",
+        "description":"texte en exposant",
+        "role":"",
+        "translation":"exposant"
     },
     "svg":{
         "common usage":"",

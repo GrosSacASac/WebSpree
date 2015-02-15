@@ -5,7 +5,7 @@
 #Role:class defintion to keep extra data alive
 
 #Walle Cyril
-#20/02/2014
+#2014-11-09
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -25,7 +25,7 @@
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
 ##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril@hotmail.com
+##by sending an email to the following adress:capocyril [ (a ] hotmail.com
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 import codecs
@@ -137,8 +137,10 @@ and there should be no problem for reading and writing the file."""
         possible=True
         try:
             if os.path.isdir(self.directory_name):
-                codecs.open(self.option_file_path,'w',"utf-8").write(\
-                json.dumps(self.default_values,sort_keys=True, indent=4, separators=(',',':')))
+                codecs.open(self.option_file_path,'w',"utf-8").write(
+                    json.dumps(self.default_values,sort_keys=True, indent=4,
+                               separators=(',',':'))
+                    )
             else:
                 os.mkdir(self.directory_name)#Create the directory
                 self.__insert_all_default_values()#succes

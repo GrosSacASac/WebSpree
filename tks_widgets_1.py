@@ -5,7 +5,7 @@
 #Role: Define custom tools for tkinter
 
 #Walle Cyril
-#11/05/2014
+#2014-11-09
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -25,15 +25,10 @@
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
 ##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril@hotmail.com
+##by sending an email to the following adress:capocyril [ (a ] hotmail.com
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-#DragDropFeedback
-#MainPlusHelp
-#, next_gen, prev_gen
-#InformationBubble
-#HyperLink
-#and more
+#
 import webbrowser
 
 try:#3.X
@@ -46,11 +41,147 @@ except ImportError:#2.X
     import tkFont as tkfont
 
 
-from tks_styles import*
+from tks_styles import *
+from file_extractor import *
 def _(l_string):
-    #print("local language: "+l_string)
     return l_string
 
+#TODO define other formats,
+#set .for_data_type  = in the corresponding parent widget,
+#bind the new format in the elifs here
+HTML_ELEMENT_FORMAT = {
+    "alt(s)":list,
+    "must_attributes":list,
+    "parent":list,
+    "specific_attributes":list,
+    "version":str,
+    "void":bool,
+    "common usage":str,
+    "description":str,
+    "role":str,
+    "translation":str}
+
+HTML_ATTRIBUTE_FORMAT = {
+    "alt(s)":list,
+    "must_attributes":list,
+    "parent":list,
+    "specific_attributes":list,
+    "version":str,
+    "void":bool,
+    "common usage":str,
+    "description":str,
+    "role":str,
+    "translation":str}
+##CSS_SELECTOR_FORMAT = {
+##    "define later":list}
+##CSS_SELECTOR_FORMAT = {
+##    "define later":list}
+##CSS_SELECTOR_FORMAT = {
+##    "define later":list}
+
+
+
+
+def list_from_string(string):
+    return string.split(",")
+
+def bool_from_string(string):
+    string_lower = string.lower()
+    return "true" in string_lower or "yes" in string_lower
+
+def list_of_strings_from_user_string(user_string):
+    try:
+        if user_string.startswith("[") or user_string.startswith("("):
+            user_string = user_string[1::]
+            if user_string.endswith("]") or user_string.endswith(")"):
+                user_string = user_string[:-1]
+        list_1 = list_from_string(user_string)
+        list_1 = list(map(str.strip, list_1))
+        
+    except Exception:
+        list_1 = list() # empty list
+    finally:
+        return list_1
+    
+def string_from_user_string(user_string):
+    try:
+        if user_string.startswith("\"") or user_string.startswith("'"):
+            user_string = user_string[1::]
+            if user_string.endswith("\"") or user_string.endswith("'"):
+                user_string = user_string[:-1]
+        string = user_string.strip()
+        #look after 
+    except Exception:
+        string = str() # empty
+    finally:
+        return string
+    
+def bool_from_user_string(user_string):
+    try:
+        boolean = bool_from_string(user_string.strip())
+    except Exception:
+        boolean = False
+    finally:
+        return boolean
+    
+def int_from_user_string(user_string):
+    try:
+        integer = int(user_string.strip())
+    except Exception:
+        integer = 0
+    finally:
+        return integer
+    
+def float_from_user_string(user_string):
+    try:
+        float_1 = float(user_string.strip())
+    except Exception:
+        float_1 = 0.0
+    finally:
+        return float_1
+    
+DATA_FROM_USER_STRING_LINK = {
+    list:list_of_strings_from_user_string,
+    str:string_from_user_string,
+    bool:bool_from_user_string,
+    int:int_from_user_string,
+    float:float_from_user_string}
+
+def f_only(function):
+    def function_then_break(*event):
+        function()
+        return "break"#prevent default behavior
+    return function_then_break
+
+class memoized(object):
+    """Decorator. Caches a function's return value each time it is called.
+
+If called later with <0.25 second intervall, the cached value is returned instead."""
+    def __init__(self, func):
+        self.func = func
+        self.last_call=0
+        self.last_arg_0 = 0
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        d = self
+        # use a lambda to produce a bound method
+        mfactory = lambda self, *args: d(self, *args)
+        mfactory.__name__ = self.func.__name__
+        return mfactory.__get__(instance, owner)
+    def __call__(self,instance, *args):
+        now = time.time()
+        interval= now - self.last_call
+        self.last_call = now
+        if interval < 0.25 and self.last_arg_0 == args[0]:
+            return (self.a, self.b)
+        else:
+            self.last_arg_0=args[0]
+            def closure(*args):
+                return self.func(instance, *args)
+            self.a, self.b = closure(*args)
+            return (self.a, self.b)
+    
 class MainPlusHelp(ttk.Notebook):
     def __init__(self,parent,title_content,title_help):
         ttk.Notebook.__init__(self,parent)
@@ -82,8 +213,9 @@ class MainPlusHelp(ttk.Notebook):
         self.grid(sticky='nswe')
         
     def switch_help(self,event):
-        def toogle_index(i):#0 becomes 1 and 1 becomes 0
-            return int(not i)
+        def toogle_index(x):
+            """0 becomes 1 and 1 becomes 0"""
+            return -x + 1
         w=event.widget
         current_tab=w.nametowidget(w.winfo_parent())
         try:
@@ -180,6 +312,13 @@ class HyperLink(tk.Label):
         #if the pointer is still on the link when click released
         if self.winfo_containing(event.x_root,event.y_root) is self:
             webbrowser.open_new_tab(self.URL)
+
+class LabelString(ttk.Label):
+    """Label, can store an additional string."""
+    def __init__(self,parent,string,*args,**kw):
+        ttk.Label.__init__(self,parent,*args,**kw)
+        self.string = string
+
         
 class DragDropFeedback(tk.Toplevel):
     def __init__(self,parent=None,text="no text given", x=0, y=0):
@@ -206,7 +345,9 @@ class handler(object):
         self.event=event
     def __call__(self, *args):
         return self.function(*self.event +args)
-        
+
+
+    
 def create_context_menu(event):
     """Opens a context menu with right click."""
     tools=[(_("Couper"), handler(cut,event)),
@@ -219,8 +360,9 @@ def create_context_menu(event):
     context_menu.tk_popup(event.x_root+42, event.y_root+10,entry="0")
     event.widget.focus()
     
-#bind event and handler for both caps lock and without caps lock
+
 def bind_(widget, all_=False, modifier="", letter="", callback=None, add='',):
+    """bind event and handler for both caps lock and without caps lock."""
     if modifier and letter:
         letter = "-" + letter
     if all_:
@@ -230,8 +372,9 @@ def bind_(widget, all_=False, modifier="", letter="", callback=None, add='',):
         widget.bind('<{}{}>'.format(modifier,letter.upper()), callback, add)
         widget.bind('<{}{}>'.format(modifier,letter.lower()), callback, add)
 
-#soft toplevel self destruction
+
 def soft_destruction(root,window):
+    """destroy the windows when root gains focus, or esc, enter is hit."""
     def destroy(event):
         window.destroy()
     window.focus_set()
@@ -239,7 +382,158 @@ def soft_destruction(root,window):
     root.bind('<FocusIn>',destroy,add='+')
     window.bind('<Return>',destroy)
 
-if __name__ == '__main__':#essay
+def warn_user(message):
+    print(message)#use GUI
+    
+def save_data_changes(data_key, data_type, new_key_values):
+    if data_type == "html_element":
+        data_holder = ELEMENTS
+        data_holder_local = LOCAL_ELEMENTS
+        data_holder_in = html_element_from_name(data_key)#!understand before changing
+    else:
+        if data_type == "html_attribute":
+            data_holder = ATTRIBUTES
+            data_holder_local = LOCAL_ATTRIBUTES
+        #elif data_type == "css selector" ...
+        data_holder_in = data_holder[data_key]
+        
+    if copy_new_values(data_holder_in,new_key_values):#if anything has changed
+        store_change_in_source(data_holder)
+    if copy_new_values(data_holder_local_in,new_key_values):
+        store_change_in_source(data_holder_local)
+    
+def receive_data_changes(data_type, keys, old_values, get_new_values):
+    if data_type == "html_element":
+        format_rule = HTML_ELEMENT_FORMAT
+    elif data_type == "html_attribute" :
+        format_rule = HTML_ATTRIBUTE_FORMAT
+##    elif data_type == "x" :
+##        format_rule = HTML_ELEMENT_FORMAT
+##    elif data_type == "y" :
+##        format_rule = HTML_ELEMENT_FORMAT
+##    elif data_type == "z" :
+##        format_rule = HTML_ELEMENT_FORMAT
+    new_values = get_new_values()
+    clean_new_values = []
+    i = 0
+    for new_value in new_values:
+        clean_new_values.append(DATA_FROM_USER_STRING_LINK[format_rule[keys[i]]](new_value))
+        if not clean_new_values[i]:
+            #perhaps throw error instead of sending
+            #false values so that you can use false values
+            #then replace if with except
+            warn_user("False,void or 0 value for {} we take the old value back".format(keys[i]))
+            clean_new_values[i] = old_values[i]
+        i += 1
+    new_key_values = dict(zip(keys, clean_new_values))
+    old_key_values = dict(zip(keys, old_values)) 
+    data_key = new_data.pop(keys[0])
+    
+    
+    save_data_changes(data_key, data_type, new_key_values)
+    
+def general_editing_dialog(root, data_type, keys, old_values, focus_first=""):
+    """Displays a form with default values ready to be edited."""
+    edit_variable_dialog = tk.Toplevel(root)
+    tk_string_holders = []
+    i = 0
+    for label,old_value in zip(keys,old_values):
+        label_i = ttk.Label(edit_variable_dialog,text=label)
+        label_i.grid(row=i,column=0)
+        tk_string_holders.append(tk.StringVar(value=old_value))
+        entry_i = ttk.Entry(edit_variable_dialog,textvariable=tk_string_holders[i])
+        entry_i.grid(row=i,column=1)
+        if focus_first == label:
+            entry_i.select_range(0, tk.END)#Select All
+            entry_i.focus()
+        i += 1
+    def get_new_values():#side effect destroys the dialog
+        new_values = []
+        widget_from_name = edit_variable_dialog.nametowidget
+        i = 0
+        for child_name in edit_variable_dialog.winfo_children():
+            child = widget_from_name(child_name)
+            if isinstance(child, ttk.Entry):
+                new_values.append(tk_string_holders[i].get())
+                i += 1
+        edit_variable_dialog.destroy()
+        return new_values
+    confirm_button = ttk.Button(edit_variable_dialog,text=_(u"Confirmer"),
+                                command=handler(receive_data_changes,
+                                                data_type,keys,old_values,get_new_values))
+    confirm_button.grid(row=i+1,column=0)
+    cancel_button = ttk.Button(edit_variable_dialog,text=_(u"Annuler"),
+                               command=edit_variable_dialog.destroy)
+    cancel_button.grid(row=i+1,column=1)
+    
+def specific_editing_dialog_factory(event):
+    """Returns a functions that print a editing dialog for the source."""
+    w = event.widget # w = widget
+    string = w.string
+    parent_widget = w.nametowidget(w.winfo_parent())
+    brothers = parent_widget.winfo_children()
+    
+    keys, old_values = [], []
+    for brother in brothers:
+        widget_brother = w.nametowidget(brother)
+        if isinstance(widget_brother,LabelString):
+            keys.append(widget_brother.string)
+            old_values.append(widget_brother['text'])
+
+    def specific_editing_dialog():
+        general_editing_dialog(w,parent_widget.for_data_type,keys,old_values,w.string)
+    return specific_editing_dialog
+
+def local_menu_print(event):
+    """Prints a context menu with usefull commands."""
+    local_menu = tk.Menu(event.widget, tearoff=0, takefocus=0)
+    local_menu.add_command(label=_(u"Modifier"), command=specific_editing_dialog_factory(event))
+    #local_menu.add_command(label=_(u""), command=...)
+    local_menu.tk_popup(event.x_root+42, event.y_root+10,entry="0")
+
+#this could be in another more general module
+#because it is not used specifcly for tkinter
+def copy_new_values(dict1, dict2):
+    """Updates dict1 with values of dict2 only if dict1 already has the keys.
+
+It does never change the len(dict1).
+dict1 will have the same values as dict2 for all keys in common.
+dict2 is not changed. As dict1 is directly modified it is not returned again.
+Return True if anything has changed, False otherwhise"""
+    changed = False
+    if dict1 == dict2:
+        return changed
+    #else :
+    for key2 in dict2:
+        if key2 in dict1 and dict1[key2] != dict2[key2]:
+            dict1[key2] = dict2[key2]
+            changed = True
+    return changed
+
+if __name__ == '__main__':
+    import unittest
+    
+    class UserStringInputParseTestCase(unittest.TestCase):
+        def test_list_of_strings_from_user_string(self):
+            wanted = ["a", "and", "b"]
+            self.assertEqual(list_of_strings_from_user_string("[a,and, b]"), wanted)
+            self.assertEqual(list_of_strings_from_user_string("(  a, and,b  )"), wanted)
+            self.assertEqual(list_of_strings_from_user_string("a,and,b"), wanted)
+            
+        def test_string_from_user_string(self):
+            wanted = "Hi"
+            self.assertEqual(string_from_user_string("Hi\n"), wanted)
+            self.assertEqual(string_from_user_string("\"Hi\""), wanted)
+
+        def test_bool_from_user_string(self):
+            self.assertEqual(bool_from_user_string("it s false!"), False)
+            self.assertEqual(bool_from_user_string("I don t know"), False)
+            self.assertEqual(bool_from_user_string("YES YES YES"), True)
+            self.assertEqual(bool_from_user_string("it s TRue!"), True)
+            self.assertEqual(bool_from_user_string("true"), True)
+            
+    
+    unittest.main()
     root=tk.Tk()
     F1=tk.LabelFrame(root, FRAME_STYLE,text="links")
     F2=tk.LabelFrame(root, FRAME_STYLE,text="LabelFrame_2")

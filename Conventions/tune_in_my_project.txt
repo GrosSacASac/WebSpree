@@ -1,11 +1,11 @@
 tune_in_my_project.txt
 Last Update of this document:
-09/05/2014
+16/11/2014
 
 Main language for code:
 Python 3 in English
 
-Main environment:
+Main OS environment target :
 Windows xp and later
 
 Portability:
@@ -14,10 +14,6 @@ the main code should also work with Python 2.76+ but this may change. When I wri
 
 write idiomatic code!(pythonic):
 https://www.jeffknupp.com/writing-idiomatic-python-ebook/
-good
-if a:
-bad
-if a==True:
 
 
 naming:
@@ -28,12 +24,13 @@ everything you can !(See file in Conventions for details.)
 
 strings:
 In Python you can use " " or ' ' or """ """ for strings
-* Use 'for python keywords'
-* Use u"for self decided strings and double quotes inside with antislash \"     "
-the u prefix forces unicode in Python<3.0
+* Use 'for python keywords where you have no other choice'. example self.help_select['text'] (in tkinter)
+* Use "for arbitrary strings" example level = self.get_option("translate_html_level")
+* Using '' and "" can help to read the code and make the difference between arbitrary strings and the rest
 * Use _(u"for locale strings, these are shown to the end user")
 * Use """ for Docstrings."""
 * Use the r prefix if you NEED raw strings (\n will not be transformed)
+* the u prefix forces unicode in Python<3.0
 
 
 indent:

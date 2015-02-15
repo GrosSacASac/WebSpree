@@ -5,7 +5,7 @@
 #Role: Define the HTML specific tools in tkinter
 
 #Walle Cyril
-#05/05/2014
+#2014-11-09
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -25,7 +25,7 @@
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
 ##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril@hotmail.com
+##by sending an email to the following adress:capocyril [ (a ] hotmail.com
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 #import tkinter ...
@@ -55,7 +55,6 @@ from tks_styles import*
 from tks_widgets_1 import *
 
 def _(l_string):
-    #print("local language: "+l_string)
     return l_string
 
 class HTMLWindows(tk.Frame):
@@ -132,18 +131,52 @@ class HTMLWindows(tk.Frame):
         self.specific_attributes_treeview.grid(row=0,column=1,sticky='w')
         self.specific_attributes_treeview.bind('<<TreeviewSelect>>',self.update_attribute_selection,"")
 
-
-        #Help
-        self.complete_help_element = ttk.Label(self.element_plus_help.help_frame, text=_(""),wrap=400)
-        self.complete_help_element.grid(row=0,column=0,sticky='nswe')
-        self.complete_help_attribute = ttk.Label(self.attribute_plus_help.help_frame, text=_(""),wrap=400)
-        self.complete_help_attribute.grid(row=0,column=0,sticky='nswe')
-        #HyperW3C = Hyperlien(master,"www.w3c.org",LABEL_STYLE,text="Site du World Wide Web Consortium",justify='left')
-        #HyperW3C.pack(side='left',fill='y')
-
-        
+        wrap=100
+        #Help element
+        frame_element_help_labels = ttk.Frame(self.element_plus_help.help_frame)
+        frame_element_help_labels.for_data_type = "html_element"
+        frame_element_help_labels.grid(row=0,column=0,columnspan=3)
+        str_list_help = ["element", "alt(s)", "must_attributes", "version",
+                         "parent", "specific_attributes", "void"]
+        str_list_help_local = ["translation", "description", "role", "common usage"]
+        self.help_element, self.help_element_local = {}, {}
+        i = 0
+        for string in str_list_help:
+            self.help_element[string] = LabelString(frame_element_help_labels,
+                                                    string=string, text=_(u""),
+                                                    wraplength=wrap)
+            self.help_element[string].grid(row=i,column=0,sticky='nswe')
+            self.help_element[string].bind('<Button-3>',local_menu_print)
+            i += 1
+        for string in str_list_help_local:
+            self.help_element_local[string] = LabelString(frame_element_help_labels,string=string, text=_(u""))
+            self.help_element_local[string].grid(row=i,column=0,sticky='nswe')
+            self.help_element_local[string].bind('<Button-3>',local_menu_print)
+            i += 1
+        #Help attribute this is  a copy from here to #Help element
+        frame_attribute_help_labels = ttk.Frame(self.attribute_plus_help.help_frame)
+        frame_attribute_help_labels.for_data_type = "html_attribute" #see tks_widgets_1
+        frame_attribute_help_labels.grid(row=0,column=0,columnspan=3)
+        str_list_help = ["attribute", "alt(s)", "default_value", "version", "possible_values"]
+        str_list_help_local = ["translation", "description", "role", "common usage"]
+        self.help_attributes, self.help_attributes_local = {}, {}
+        i = 0
+        for string in str_list_help:
+            self.help_attributes[string] = LabelString(frame_attribute_help_labels,
+                                                       string=string, text=_(u""),
+                                                       wraplength=wrap)
+            self.help_attributes[string].grid(row=i,column=0,sticky='nswe')
+            self.help_attributes[string].bind('<Button-3>',local_menu_print)
+            i += 1
+        for string in str_list_help_local:
+            self.help_attributes_local[string] = LabelString(frame_attribute_help_labels,string=string, text=_(u""))
+            self.help_attributes_local[string].grid(row=i,column=0,sticky='nswe')
+            self.help_attributes_local[string].bind('<Button-3>',local_menu_print)
+            i += 1
+            
+                
         #user input
-        frame_2_user_input = tk.Frame(self, FRAME_STYLE_2,bg=COLOURS_A[2])#Buttons et saisies
+        frame_2_user_input = tk.Frame(self, FRAME_STYLE_2,bg=COLOURS_A[2])
         help_label_for_content = ttk.Label(frame_2_user_input,text=_("Ecrivez le contenu"))
         help_label_for_content.grid(row=0,column=0,sticky='nw')
         help_label_for_attribute = ttk.Label(frame_2_user_input, text=_("Placez les attributs"))
@@ -179,9 +212,6 @@ class HTMLWindows(tk.Frame):
         frame_attribute_master.grid(row=0,column=1,sticky='nsw')
         frame_2_user_input.grid(row=1,column=0,columnspan=2,sticky='nsw')
         
-
-    
-                                
     def update_attribute_selection(self,event):
         selected_item_id = event.widget.selection()[0]
         attribute = (event.widget.item(selected_item_id,'value'))[0]
@@ -192,14 +222,17 @@ class HTMLWindows(tk.Frame):
 
         minimum = "{}\n{}\n{}".format(attribute_local_details["description"],attribute_local_details["role"],\
                                                            attribute_local_details["common usage"]).strip()
-        complete_help = (_(u"{} ({})\n{}\nAlternatives: {}\nValeur par défaut: {}\nValeur possibles: {}\nVersion: {}")\
-                                        .format(attribute,attribute_local_details["translation"],\
-                                                    minimum,", ".join(attribute_details["alt(s)"]),\
-                                                    attribute_details["default_value"],\
-                                                    ", ".join(attribute_details["possible_values"]),\
-                                                    attribute_details["version"],)).strip()
         self.attribute_plus_help.short_help['text'] = minimum
-        self.complete_help_attribute['text'] = complete_help
+        self.help_attributes["attribute"]['text'] = attribute
+        self.help_attributes["alt(s)"]['text'] = attribute_details["alt(s)"]
+        self.help_attributes["default_value"]['text'] = attribute_details["default_value"]
+        self.help_attributes["version"]['text'] = attribute_details["version"]
+        self.help_attributes["possible_values"]['text'] = attribute_details["possible_values"]
+        
+        self.help_attributes_local["translation"]['text'] = attribute_local_details["translation"]
+        self.help_attributes_local["description"]['text'] = attribute_local_details["description"]
+        self.help_attributes_local["common usage"]['text'] = attribute_local_details["common usage"]
+        self.help_attributes_local["role"]['text'] = attribute_local_details["role"]
         
     def update_element_selection(self,*event):
         tree = self.elements_in_treeview
@@ -208,48 +241,50 @@ class HTMLWindows(tk.Frame):
         selected_item_id = tree.selection()[0]
         if tree.get_children(selected_item_id):#folder of element
             tree.item(selected_item_id, open=not(tree.item(selected_item_id, "open")))
-            
-        else:#element
-            element_tag = (tree.item(selected_item_id,'value'))[0]
-            self.last_selected_element = element_tag
-            
-
-            previous=self.content_area_form['state']
-            self.content_area_form['state'] = 'normal'
-            self.content_area_form.delete('1.0','end-1c')#Mettre en option
-            self.content_area_form['state'] = previous
-            self.attribute_area_form.delete('1.0','end-1c')
-            tree.heading("element",text = _("Code: ")+element_tag)
-            
-            
-            
-            _i = self.specific_attributes_treeview.get_children()
-            for item in _i:
-                self.specific_attributes_treeview.delete(item)#delete all items in specific_attributes_treeview before
-            
-            html_element = html_element_from_name(element_tag)
-            self.last_selected_element_is_void = html_element["void"]
-            minimum = u"{}\n{}\n{}".format(LOCAL_ELEMENTS[element_tag]["description"],LOCAL_ELEMENTS[element_tag]["role"],\
-                                               LOCAL_ELEMENTS[element_tag]["common usage"]).strip()
-            complete_help_element = \
-                _(u"<{}> ({})\n{}\nAlternatives: {}\nAttributs obligatoires: {}\nAttributs spécifiques: {}\nDois avoir comme parent: {}\nVersion: {}\nElement vide: {}")\
-                .format(element_tag,LOCAL_ELEMENTS[element_tag]["translation"],\
-                            minimum,", ".join(html_element["alt(s)"]),\
-                            ", ".join(html_element["must_attributes"]),
-                            ", ".join(html_element["specific_attributes"]),\
-                            html_element["parent"],html_element["version"],str(html_element["void"])).strip()
-            
-            self.element_plus_help.short_help['text'] = minimum
-            self.complete_help_element['text'] = complete_help_element
-            
-            self.content_area_form['state'] = 'normal'
-            if self.last_selected_element_is_void:
-                self.content_area_form.insert('end',_("Les éléments vides n'ont pas de contenu"))
-                self.content_area_form['state'] = 'disabled'
-            #todo add must attributes somewhere
-            for attribute in html_element["specific_attributes"]:
-                    self.specific_attributes_treeview.insert("",'end',values = (attribute,LOCAL_ATTRIBUTES[attribute]["translation"]))#,tags="specific_attribute")
-                                
+            return
+        
+        #else element
+        element_tag = (tree.item(selected_item_id,'value'))[0]
+        if element_tag == self.last_selected_element:
+            return
+        self.last_selected_element = element_tag
+        self.content_area_form.delete('1.0','end-1c')#this should be optional
+        self.attribute_area_form.delete('1.0','end-1c')
+        tree.heading("element",text = _(u"Code: {}").format(element_tag))
+        
+        
+        #delete all items in specific_attributes_treeview before displaying the new
+        displayed_specific_attributes = self.specific_attributes_treeview.get_children()
+        for item in displayed_specific_attributes:
+            self.specific_attributes_treeview.delete(item)
+        
+        html_element = html_element_from_name(element_tag)
+        self.last_selected_element_is_void = html_element["void"]
+        minimum = u"{}\n{}\n{}".format(LOCAL_ELEMENTS[element_tag]["description"],LOCAL_ELEMENTS[element_tag]["role"],\
+                                           LOCAL_ELEMENTS[element_tag]["common usage"]).strip()
+        self.element_plus_help.short_help['text'] = minimum
+        
+        self.help_element["element"]['text'] =  element_tag
+        self.help_element["alt(s)"]['text']  =  html_element["alt(s)"]
+        self.help_element["must_attributes"]['text'] = html_element["must_attributes"]
+        self.help_element["specific_attributes"]['text'] = html_element["specific_attributes"]
+        self.help_element["parent"]['text']  =  html_element["parent"]
+        self.help_element["version"]['text'] =  html_element["version"]
+        self.help_element["void"]['text'] = str(html_element["void"]) #warning !
+        
+        self.help_element_local["translation"]['text'] = LOCAL_ELEMENTS[element_tag]["translation"] 
+        self.help_element_local["description"]['text'] = LOCAL_ELEMENTS[element_tag]["description"]
+        self.help_element_local["role"]['text'] =        LOCAL_ELEMENTS[element_tag]["role"]
+        self.help_element_local["common usage"]['text'] = LOCAL_ELEMENTS[element_tag]["common usage"]
+        
+        self.content_area_form['state'] = 'normal'
+        if self.last_selected_element_is_void:
+            self.content_area_form.insert('end',_("Les éléments vides n'ont pas de contenu"))
+            self.content_area_form['state'] = 'disabled'
+        #todo add must attributes somewhere
+        for attribute in html_element["specific_attributes"]:
+                self.specific_attributes_treeview.insert("",'end',values = (attribute,LOCAL_ATTRIBUTES[attribute]["translation"]))#,tags="specific_attribute")
+                            
 
 
                 
@@ -274,7 +309,6 @@ class HTMLWindows(tk.Frame):
             if self.var_for_auto_close_checkbutton.get():
                 text_to_add += current_object.add_indent_and_line(current_object.close_element())
         current_object.add_to_text(text_to_add)
-        self.master_window.tk_copy_text(current_object)
 
         
         if not current_object.element_still_not_closed_list:
@@ -326,4 +360,4 @@ class HTMLWindows(tk.Frame):
                 self.confirm_write()
         except AttributeError:
             pass
-        
+

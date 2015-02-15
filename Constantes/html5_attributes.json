@@ -48,9 +48,9 @@
         "version":"1+"
     },
     "class":{
-        "alt(s)":[],
-        "default_value":"class1",
-        "possible_values":[],
+        "alt(s)":"",
+        "default_value":"c",
+        "possible_values":"",
         "version":"1+"
     },
     "cols":{
@@ -116,13 +116,17 @@
     "href":{
         "alt(s)":[],
         "default_value":"",
-        "possible_values":["URL"],
+        "possible_values":[
+            "URL"
+        ],
         "version":"1+"
     },
     "id":{
         "alt(s)":[],
         "default_value":"",
-        "possible_values":["string"],
+        "possible_values":[
+            "string"
+        ],
         "version":"1+"
     },
     "inert":{
