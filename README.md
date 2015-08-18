@@ -6,7 +6,7 @@ Learn Web-related technologies
 
   WeBspree is a desktop text editor designed around html css ans js, It will help you in  this huge jungle of many keywords and guide you with integrated tutorials and progression guide.
   
-    Here's a screeshot of what it looks like(early 2015): (Images/Histoire_en_Captures/Capture9.jpg)
+    Here's a screeshot of what it looks like(early 2015): [![Screenchot](Images/Histoire_en_Captures/Capture9.jpg)
     
 ##How to run the sofware ?
 
@@ -36,7 +36,7 @@ Learn Web-related technologies
   
 ##How does it work ?
 
-  (Documentation/simplified_internal_architecture.svg)
+  [![simplified_internal_architecture](Documentation/simplified_internal_architecture.svg)
   
 ##More
 
