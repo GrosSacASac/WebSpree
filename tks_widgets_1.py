@@ -344,7 +344,7 @@ class handler(object):
         self.function=function
         self.event=event
     def __call__(self, *args):
-        return self.function(*self.event +args)
+        return self.function(*self.event + args)
 
 
     
@@ -526,11 +526,11 @@ if __name__ == '__main__':
             self.assertEqual(string_from_user_string("\"Hi\""), wanted)
 
         def test_bool_from_user_string(self):
-            self.assertEqual(bool_from_user_string("it s false!"), False)
-            self.assertEqual(bool_from_user_string("I don t know"), False)
-            self.assertEqual(bool_from_user_string("YES YES YES"), True)
-            self.assertEqual(bool_from_user_string("it s TRue!"), True)
-            self.assertEqual(bool_from_user_string("true"), True)
+            self.assertFalse(bool_from_user_string("it s false!"))
+            self.assertFalse(bool_from_user_string("I don t know"))
+            self.assertTrue(bool_from_user_string("YES YES YES"))
+            self.assertTrue(bool_from_user_string("it s TRue!"))
+            self.assertTrue(bool_from_user_string("true"))
             
     
     unittest.main()

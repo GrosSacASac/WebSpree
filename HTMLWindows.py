@@ -289,11 +289,10 @@ class HTMLWindows(tk.Frame):
 
                 
     def confirm_write(self):
-        #tab_index=self.model.selected_tab
         #self.text_fields[tab_index][0]  Text
         #self.text_fields[tab_index][1]  close_last_element_button
-        tab_index=self.model.selected_tab
-        current_object = self.model.tabs_html[tab_index]
+        html_fragment = self.model.return_fragment("html")
+       
         current_close_last = self.master_window.text_fields[tab_index][1]
         
         element_tag = self.last_selected_element
@@ -302,16 +301,16 @@ class HTMLWindows(tk.Frame):
             attributes_with_spaces = " "+attributes_with_spaces.replace("\n"," ")
         
         if self.last_selected_element_is_void:
-            text_to_add = current_object.add_indent_and_line(current_object.open_close_void_element(element_tag,attributes_with_spaces))
+            text_to_add = html_fragment.add_indent_and_line(current_object.open_close_void_element(element_tag,attributes_with_spaces))
         else:#if not void
-            text_to_add = current_object.add_indent_and_line(current_object.open_element(element_tag, attributes_with_spaces))
-            text_to_add += current_object.add_indent_and_line(self.content_area_form.get('1.0','end-1c'))
+            text_to_add = html_fragment.add_indent_and_line(current_object.open_element(element_tag, attributes_with_spaces))
+            text_to_add += html_fragment.add_indent_and_line(self.content_area_form.get('1.0','end-1c'))
             if self.var_for_auto_close_checkbutton.get():
-                text_to_add += current_object.add_indent_and_line(current_object.close_element())
-        current_object.add_to_text(text_to_add)
+                text_to_add += html_fragment.add_indent_and_line(current_object.close_element())
+        html_fragment.append(text_to_add)
 
         
-        if not current_object.element_still_not_closed_list:
+        if not html_fragment.element_still_not_closed_list:
             current_close_last['state'] = 'disabled'
         else:
             current_close_last['state'] = 'active'###

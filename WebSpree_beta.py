@@ -40,10 +40,10 @@ import webbrowser
 
 ##DATA##
 #from file_extractor import*
-##TEXT AND STRINGS##
-from Text__classes import*
 ##GUI##
 from GraphicalUserInterfaceTk import *
+##TEXT AND STRINGS##
+from Text__classes import *
 ##OPTIONS##
 from Options_class import *
 ##LOG##
@@ -62,7 +62,7 @@ def title_from_path(path):
 
 
 class WebSpree(InterfaceOptions):#Model
-    """ Object containing html css and javaScript file.
+    """ Bridge between all. Single instance only.
 
 creating a copy of this object starts the app."""
     def __init__(self):
@@ -70,7 +70,7 @@ creating a copy of this object starts the app."""
         self.options_file_object = Options(imported_default_values=DEFAULT_VALUES)
         #do not touch this directly use interface methods
         
-        #we create 1 html tab. Each tab is an instance of Text_HTML class
+        #we create 1 html tab. Each tab is an instance of FileDocument class
         #each tab is stored as 1 element of this list
         
         #this is the variable to know which one the user is currently editing
@@ -78,82 +78,59 @@ creating a copy of this object starts the app."""
         
         self.graphical_user_interface_tk = GraphicalUserInterfaceTk(self)
         self.tabs_html = []
+##        for path in self.get_option("previous_files_opened"):
+##            try:
+##                self.edit_file(path)
+##            except Exception as E:
+##                print(E)
+##                pass#file not found or something
         for path in self.get_option("previous_files_opened"):
-            try:
-                self.edit_file(path)
-            except Exception as E:
-                print(E)
-                pass#file not found or something
+            self.edit_file(path)
+            
         if not self.tabs_html:#nothing opened so we provide a blank "new" file
-            self.start_mod = 2
+            self.start_mod = "newtab"
             self._start_new_session()
         self.graphical_user_interface_tk._start()
         
+    def create_document(self, selected_tab, title, text=u"", path=u""):
+        self.graphical_user_interface_tk.new_html_tab(selected_tab, title)
+        current_text_html = FileDocument(self.options_file_object,content=text,
+                                      saved=True, path=path,
+                                      encoding_py=DEFAULT_ENCODING_PY,
+                                      document_language="fr", # !
+                                      gui_link=self.graphical_user_interface_tk)
+        self.tabs_html.append(current_text_html)
+        current_text_html.start()
+        
     def _start_new_session(self):
-        #self.start_mod = -2#0:standard, -1: blank, 1:open ,2new tab when there is nothing-2 nothing
-        if self.start_mod == 0:
-            self.selected_tab = len(self.tabs_html)
-            tk_text = self.graphical_user_interface_tk.new_html_tab(self.selected_tab, self.get_option("last_html_document_title"))
+        self.selected_tab = len(self.tabs_html)
+        if self.start_mod == "standard":
+            self.create_document(self.selected_tab, self.get_option("last_html_document_title"))
+            self.tabs_html[selected_tab].add_standard_beginning()
+            
+        elif self.start_mod == "blank":
+            self.create_document(self.selected_tab, self.get_option("last_html_document_title"))
 
-            current_text_html = Text_HTML(self.options_file_object,content="",
-                                          saved=True,path="",
-                                          encoding_py=DEFAULT_ENCODING_PY,
-                                         w3c_encoding=DEFAULT_ENCODING_WEB,
-                                          version=5.0,document_language="fr",
-                                          gui=self.graphical_user_interface_tk)
-            
-            current_text_html.add_standard_beginning()
-            self.tabs_html.append(current_text_html)
-            
-        elif self.start_mod == -1:
-            self.selected_tab = len(self.tabs_html)
-            
-            tk_text = self.graphical_user_interface_tk.new_html_tab(self.selected_tab, self.get_option("last_html_document_title"))
-
-            current_text_html = Text_HTML(self.options_file_object,content="",
-                                          saved=True,path="",
-                                          encoding_py=DEFAULT_ENCODING_PY,
-                                         w3c_encoding=DEFAULT_ENCODING_WEB,
-                                          version=5.0,document_language="fr",
-                                          gui=self.graphical_user_interface_tk)
-            self.tabs_html.append(current_text_html)
-        elif self.start_mod == 1:
+        elif self.start_mod == "open":
             self.graphical_user_interface_tk.edit_file_dialog()
             #perhaps check if correctly opened here and update some data
             #but then Ctrl+N hotkey misses something
-        elif self.start_mod == 2:
-            self.selected_tab = 0
-            tk_text = self.graphical_user_interface_tk.new_html_tab(self.selected_tab, _("nouveau"))
-
-            current_text_html = Text_HTML(self.options_file_object,content="",
-                                          saved=True,path="",
-                                          encoding_py=DEFAULT_ENCODING_PY,
-                                         w3c_encoding=DEFAULT_ENCODING_WEB,
-                                          version=5.0,document_language="fr",
-                                          gui=self.graphical_user_interface_tk)
-            self.tabs_html.append(current_text_html)
             
-
-
-         
+        elif self.start_mod == "newtab":
+            self.create_document(self.selected_tab, _("nouveau"))
+                     
     def edit_file(self,file_path):
         if not os.path.isfile(file_path):
-            return #we stop here because the file has been lost
+            return #we stop here because the file has been lost        
+        #print("edit_file:", file_path)
         self.selected_tab = len(self.tabs_html)
         text_in_file = codecs.open(file_path,'r','utf-8').read()
         #set other usefull data here
-        
-        
         self.set_option("last_html_document_title",title_from_path(file_path))
-        self.graphical_user_interface_tk.new_html_tab(self.selected_tab, self.get_option("last_html_document_title"))
+        self.create_document(self.selected_tab, self.get_option("last_html_document_title"),
+                             text=text_in_file, path=file_path)       
 
-        current_text_html = Text_HTML(self.options_file_object,content=text_in_file,
-                                      saved=True, path=file_path,
-                                      encoding_py=DEFAULT_ENCODING_PY,
-                                      w3c_encoding=DEFAULT_ENCODING_WEB,
-                                      version=5.0,document_language="fr",
-                                      gui=self.graphical_user_interface_tk)
-        self.tabs_html.append(current_text_html)
+        
         #todo
         #change the way it sniffs out the encoding  and redo this method
         
@@ -168,14 +145,14 @@ creating a copy of this object starts the app."""
             #file_path=os.path.splitext(file_path)[0]+".html"
         #TODO Let user choose other extension if he/she really wants to have a forced extension
         
-        current_text_html.set_save_path(file_path)
+        current_text_html.save_path = file_path
         current_text_html.save_in_file()
         self.graphical_user_interface_tk.html_text_tabs.tab(tab_index,text=title_from_path(file_path))
         return True#only when success
 
     def save_html_file(self,*event):
         current_text_html = self.tabs_html[self.selected_tab]
-        if current_text_html.get_save_path():
+        if current_text_html.save_path:
             current_text_html.save_in_file()
             return True
         else:#ask for a new path
@@ -184,20 +161,40 @@ creating a copy of this object starts the app."""
         
     def save_file_totest(self):#Try with CTRL+Shift+T
         current_text_html = self.tabs_html[self.selected_tab]
-        if current_text_html.is_saved() or self.save_html_file():
+        if current_text_html.saved or self.save_html_file():
             current_text_html.test_file_with_browser()
         
     def guess_dir(self):
         current_text_html = self.tabs_html[self.selected_tab]
-        last_path = current_text_html.get_save_path()
+        last_path = current_text_html.save_path
         if last_path:
             return os.path.dirname(last_path)
         else:
             return os.path.expanduser('~')
         
     def validate_document(self):
-        return self.tabs_html[self.selected_tab].validate()
+        results = self.tabs_html[self.selected_tab].parse()
+        for result in results:
+            result[0] #...
+        return ["good job finish this"]     
+##        if not parsed_html.declaration:
+##        fail_messages.append(_(u"Déclaration du type de document introuvable, insérez <!DOCTYPE html>"))
+##    if not parsed_html.doctype_first:
+##        fail_messages.append(_(u"La déclaration du type de document doit se trouver en haut du document"))
+##    for should,closed in parsed_html.close_before_error_list:
+##        fail_messages.append(_(u"Vous devez fermer {} avant {}").format(should,closed))
+##    if len(parsed_html.start_list) > len(parsed_html.end_list):
+##        fail_messages.append(_(u"Il faut fermer toutes les balises !"))
+##    for parent,child in parsed_html.must_parent_errors:
+##        fail_messages.append(_(u"Les balises {} doivent êtres contenus dans des balises {}").format(child,parent))
+##        
 
+    def return_fragment(self, wanted="html"):
+        for inline in self.tabs_html[self.selected_tab].inlines:
+            if inline[0] == wanted:
+                return inline[1]
+        else:
+            print("wanted fragment not found")
         
 
 

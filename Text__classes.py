@@ -1,12 +1,12 @@
 #!/usr/bin/python
 #-*-coding:utf-8*
 
-#Text__classes.py
-#Role: define objects containing documents
+"""Text__classes.py
+Role: define objects containing documents
 
-#Walle Cyril
-#2014-11-09
-
+Authors: Walle Cyril
+Last-edit: 2015-05-25
+"""
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
 ##Copyright (C) 2014 Walle Cyril
@@ -34,171 +34,87 @@ import webbrowser
 #import json
 
 from html_parser import *
+from css_parser import *
 from character_translator import html5, html5reci,minimum_translation
 from Options_class import *
 
 def _(l_string):
     return l_string
 
-class Text_(InterfaceOptions):
-    """base Text_ class
+#export FileDocument, HTMLFragment, CSSFragment, JSFragment
 
-with InterfaceOptions
-"""
-    def __init__(self,options_file_object,content="",saved=True,path="",encoding_py="utf-8",
-                 gui=None):
-        self.__content = ""
-        self.insertion = None
-        self.tk_text = gui
-        if content:
-            self.add_to_text(content)
-        if self.tk_text:
-            self.tk_text.reset_undo()
-        self.__saved = saved
-        self.__path = path
-        self.__encoding_py = encoding_py
-        #if self.tk_text:
-            # self.tk_text.tk_insert_text(where, inserted_text)
-            # self.tk_text.tk_delete_text(from_, to_)
-            # self.tk_text.reset_undo()
 
-        self.last_find_index = -1
-        #Parent data
-        self.options_file_object = options_file_object#do not touch this directly use interface methods
+def raw_insert(base, new, position=None):
+    """Inserts str into str after character at position position.
 
-    def is_saved(self):
-        return self.__saved
-
-    def set_save_path(self,new_path):
-        self.__path = new_path
-
-    def get_save_path(self):
-        return self.__path
-
-    def get_encoding(self):
-        return self.__encoding_py
-    
-    def set_encoding(self,new_encoding_py):
-        self.__encoding_py = new_encoding_py
-
-    def save_in_file(self):
-        codecs.open(self.__path,'w',self.__encoding_py).write(self.__content)
-        self.__saved = True
-
-    def save_in_file_to_test(self):
-        """saves file in Cache folder with self-chosen name and returns path to that file."""
-        file_name = "essay-{}.{}".format(self.doctype,self.extension)
-        file_path = os.path.join("Cache",file_name)
-        codecs.open(file_path,'w',self.__encoding_py).write(self.__content)
-        return file_path
-      
-    @property
-    def text(self):
-        return self.read()
-    
-    @text.setter
-    def text(self, value):
-        self.__overwrite_content(value)
-    
-    #@text.deleter#not needed for now
-        
-    def read(self):
-        """returns the content."""
-        return self.__content
-
-    def __overwrite_content(self,new_content):
-        self.__saved = False
-        self.__content = new_content
-    
-    def __add__(self,other):
-        if isinstance(other,str):
-            return self.__content + other
-
-    def __radd__(self,other):
-        if isinstance(other,str):
-            return other + self.__content
-        
-    def __repr__(self):
-        return self.read()
-
-    def __getitem__(self, key):
-        return self.read().__getitem__(key)
-    
-    def __len__(self):
-        return len(self.read())
-
-    def add_to_text(self,text):
-        """adds the text to our text.
-
-        if insertion is not None the text is inserted on the position value of insertion"""
-        #to do write and see in real time
-        if ((self.insertion is None) or (self.insertion>len(self))):#insertion out of bound or None is appending
-            insertion = len(self)
-        else:
-            insertion = self.insertion
-        self.text = "".join((self[0:insertion], text, self[insertion:]))
-        if self.tk_text:
-            self.tk_text.tk_insert_text(insertion, text)
-        if insertion == self.insertion:
-            self.insertion += len(text)
-        else:
-            self.insertion = None
+    if position is not given concatenation happens"""
             
-    #def insert(self, index, text):
-    def delete(self, start, length):
-        self.text = "".join((self[0:start], self[start+length:]))
-        self.insertion = start
-        if self.tk_text:
-            self.tk_text.tk_delete_text(start, start+length)
-        
-    def find(self, string, start=-2):
-        if start == -2 :
-            if self.last_find_index == -1:
-                start = 0
-            elif self.last_find_index != -1:
-                start = self.last_find_index + len(string)
-        self.last_find_index = self.read().find(string, start)
-        return self.last_find_index
+    if not new or not isinstance(new, str):
+        return base
+    length = len(base)
+    if position is None or position >= length:
+        return base + new
+    else:
+        return u"{}{}{}".format(base[0:position], new, base[position::])
+    
+def raw_remove(base, from_, to_):
+    """removes"""
+    assert 0 <= from_ <= to_
+    if not base:
+        return base
+    return u"{}{}".format(base[0:from_], base[to_::])
+    
+class CommonFragment():
+    """holds what doesn t change.
 
-    def replace(self,old, new, count=-1):
-        #count is ignored for now
-        where = self.find(old)
-        if where != -1:
-            self.delete(where,len(old))
-            self.add_to_text(new)
-        
-                                 
-class Text_HTML(Text_):
+defines insert append remove find replace"""
+    def __init__(self, text=u""):
+        self.text = text
+
+    def insert(self, string, position=None):
+        self.text = raw_insert(self.text, string, position)
+            
+    def append(self, string):
+        self.insert(string)
+
+    def remove(self, from_, to_):
+        self.text = raw_remove(self.text, from_, to_)
+
+    def __len__(self):
+        return len(self.text)
+
+    def find(self, *args):
+        return self.text.find(*args)
+
+    def replace(self, *args):
+        self.text = self.text.replace(*args)
+            
+class HTMLFragment(CommonFragment):
     """Stores an html text and has methods to edit it."""
-    def __init__(self,options_file_object,content="",saved=True,path="",encoding_py="utf-8",
-                 w3c_encoding="utf-8",version=5.0,document_language="fr",
-                 gui=None):
-        Text_.__init__(self,options_file_object,content,saved,path,encoding_py,
-                 gui=gui)
-
+    def __init__(self, text=u"", document_language="en", doctype="html"):
+        CommonFragment.__init__(self,text=text)
         #specific addition for HTML
-        self.w3c_encoding = w3c_encoding
-        self.version = version
         self.document_language = document_language
-        
-        self.doctype = "HTML{}".format(version)
-        self.extension = "html"
+        self.doctype = doctype
 
-        #html can contain css and js (inline)
-        self.inline = {}
-        #self.inline = {(index_start, index_end): "extension",
-        #               (index_start, index_end): "extension"}
-        
         #editing data
-        self.element_still_not_closed_list = []
-        self.instant_indenting_level = 0
-        self.current_direction = 0
+        # get self.element_still_not_closed_list = []
+        # get self.instant_indenting_level = 0
+        # get self.current_direction = 0
         #helps to indent properly
         self.current_translation_needed = True
         #help to detect if we need translation (e.g for display content)
         # or to protect tags themselves (e.g. for <p>)
         self.insertion = None
-             
+
+        
+    def parse(self):
+        parser = HTMLParser()
+        parser.feed(self.text)
+        parser.close()
+        return parser # parser is an object with results
+            
+                   
     #editing methods
     def html_to_normal_char(self,html_conversion):
         #not used yet
@@ -248,7 +164,7 @@ class Text_HTML(Text_):
             for character in text:
                 new = self.normal_char_to_html(character,tr_level)
                 indented_text += new
-                if new == "<br />":#Ce if rend la prévisualisation plus lisible
+                if new == "<br />":
                     indented_text += "\n"
                     for i in range(self.instant_indenting_level+self.current_direction):
                         indented_text += (self.get_option("indent_size") * self.get_option("indent_style"))
@@ -256,7 +172,7 @@ class Text_HTML(Text_):
         self.current_translation_needed = True
         return indented_text
 
-#editing macros with border effect
+  #editing macros with border effect
     def open_close_void_element(self,lone_element,attributes=""):
         self.current_translation_needed = False
         return "<"+lone_element+attributes+">"
@@ -312,211 +228,425 @@ class Text_HTML(Text_):
         elif self.version == "HTML 4.01 Transitional":
             pass
             
-        self.add_to_text(beginning)
-        if self.tk_text:
-            self.tk_text.reset_undo()
+        self.insert(beginning)
+        #if self.tk_text:
+            #self.tk_text.reset_undo()
 
         #revert effects
         self.insertion = previous_insertion
         self.set_option("translate_html_level",previous_translate)
 
-    #settings
-    def get_w3c_encoding(self):
-        return self.w3c_encoding
 
-    def set_w3c_encoding(self,new_w3c_encoding):
-        self.w3c_encoding = new_w3c_encoding
+    @property
+    def w3c_encoding(self):
+        #todo return encoding as it should appear in the meta charset
+        return self.encoding
+
+    @w3c_encoding.setter
+    def w3c_encoding(self,new_w3c_encoding):
+        #todo convert to python usable encoding string
+        self.encoding = new_w3c_encoding
+           
         
-    #testing
-    def test_file_with_browser(self):
-        webbrowser.open(self.get_save_path(),new=2)#new=2 to open in a new tab if possible
+    def __add__(self,other):
+        assert False, "not implemented"
+
+    def __radd__(self,other):
+        assert False, "not implemented"
         
-    def validate(self,parsed_html=None):
-        fail_messages = []
-        if parsed_html is None:
-            parsed_html = HTMLParser()
-            parsed_html.feed(self.read())
-            parsed_html.close()
+    def __str__(self):
+        return self.text
+    
+    def __repr__(self):
+        return str(self)
+
+    #def __getitem__(self, key):
+    #    return deprecated
+    
+    def __len__(self):
+        return len(self.text)
+    
+
             
-        
-        if not parsed_html.declaration:
-            fail_messages.append(_(u"Déclaration du type de document introuvable, insérez <!DOCTYPE html>"))
-        if not parsed_html.doctype_first:
-            fail_messages.append(_(u"La déclaration du type de document doit se trouver en haut du document"))
-        for should,closed in parsed_html.close_before_error_list:
-            fail_messages.append(_(u"Vous devez fermer {} avant {}").format(should,closed))
-        if len(parsed_html.start_list) > len(parsed_html.end_list):
-            fail_messages.append(_(u"Il faut fermer toutes les balises !"))
-        for parent,child in parsed_html.must_parent_errors:
-            fail_messages.append(_(u"Les balises {} doivent êtres contenus dans des balises {}").format(child,parent))
-            
-        
-        return fail_messages
+class CSSFragment(CommonFragment):        
+    """Stores a parsed css text
+
+and has methods to edit it fast."""
     
-class CSSSelector(object):
-    """Stores the filters, together they form an CSSSelector.
-
-filter1 filter2 filtern"""
-    
-    def __init__(self,filters=None):
-        if filters is None:
-            filters = ["*"]
-            #should the default selector be void or general ?
-        self.filters = filters
-        
-    def __repr__(self):
-        return u"{}".format(u" ".join(self.filters))
-    
-class CSSPropertyValue(object):
-    """Stores an attribute and a value.
-
-attr: value;"""
-    
-    def __init__(self,property_="",value=u""):
-        self.property_ = property_
-        self.value = value
-        
-    def __repr__(self):
-        return u"{}: {};".format(self.property_, self.value)
-    
-class CSSRule(object):
-    r"""A CSSRule is composed of 1 CSSSelector and n CSSPropertyValues.
-
-Here's the output of __repr__ method
-    CSSSelector {
-            CSSPropertyValue1
-            CSSPropertyValue2
-            ...
-            CSSPropertyValueN
-        }"""
-
-    def __init__(self, css_selector=None, css_property_values=None):
-        if css_selector is None:
-            css_selector = CSSSelector()
-        self.css_selector = css_selector
-        if css_property_values is None:
-            css_property_values = []
-        self.css_property_values = css_property_values
-
-    def append(self,css_property_value):
-        """adds a new property-value pair to the rule.
-If the property is already there, we only overwrite the old value."""
-        for s_css_property_value in self.css_property_values:
-            if s_css_property_value.property_ == css_property_value.property_:
-                s_css_property_value.value = ss_property_value.value
-                break
-        else: #the property is new to the rule
-            self.css_property_values.append(css_property_value)
-        
-    def __repr__(self):
-        return u"{} {{\n    {}\n}}".format(
-            self.css_selector,
-            "\n    ".join(pv.__repr__() for pv in self.css_property_values))
-    
-class CSSKeyframes(object):
-    r"""A CSSKeyframes is composed of a name and n CSSRules(with x% selectors each).
-
-Here's the output of __repr__ method:
-
-@keyframes Name {
-    CSSSelector1 {
-            CSSPropertyValue1
-            ...
-            CSSPropertyValueN
-        }
-    CSSSelector2 {
-            CSSPropertyValue1
-            ...
-            CSSPropertyValueN
-        }
-}
-        """
-
-    def __init__(self, name=u"", css_rules=None):
-        self.name = name
-        if css_rules is None:
-            css_rules = []
-        self.css_rules = css_rules
-        
-    def __repr__(self):
-        return u"@keyframes {} {{\n    {}\n}}".format(
-            self.name,
-            "\n    ".join(list(map(repr,self.css_rules))))
-            #"\n    ".join(rule.__repr__() for rule in self.css_rules))
-    def __str__(sef):
-        print("repr")
-        return u"@keyframes {} {{\n    {}\n}}".format(
-            self.name,
-            "\n    ".join(list(map(repr,self.css_rules))))
-            #"\n    ".join(rule.__repr__() for rule in self.css_rules))
-        
-    def append(self, css_rule):
-        """adds a new rule to the group.
-If the selector is already there, we instead update that old rule by appending each property-value."""
-        for s_css_rule in self.css_rules:
-            if s_css_rule.css_selector == css_rule.css_selector:
-                for new_css_property_value in css_rule.css_property_values:
-                    s_css_rule.append(new_css_property_value)#see CSSRule to see what happens
-                break
-        else: #the property is new to the rule
-            self.css_rules.append(css_rule)
-            
-class CSSText(Text_):
-    """Stores a css text and has methods to edit it."""
-    
-    def __init__(self,content=u"",saved=True,path=u"",encoding_py="utf-8"):
-        Text_.__init__(self,None,content,saved,path,encoding_py)
-        
+    def __init__(self,text=u""):
+        CommonFragment.__init__(self,text=text)
         #specific addition for CSS
         self.doctype = "CSS"
-        self.extension = "css"
-        self.reset()
-
-    def reset(self):
         self.content_list = []
-        
-    def append(self,to_add):
-        """Adds the given object to the css text, delegating it to special methods."""
-        if isinstance(to_add, str):
-            self.add_to_text(to_add)
-            self.parse()
-        else:
-            self.content_list.append(to_add)
-        if self.tk_text:
-            self.tk_text.tk_copy_text(self.text)
+##   
+##    def insert(self, to_add, position=None):
+##        """Adds the given object to the css text, delegating it to special methods."""
+##        CommonFragment.insert(self, to_add, position)#
+##        
+##        place_method = self.content_list.insert
+##        if position is None or position >= len(self.text):
+##            def eater(f): #append only takes 1 argument
+##                def eaten(ignored,stays):
+##                    return f(stays)
+##                return eaten
+##            place_method = eater(self.content_list.append)
+##        place_method(position,to_add)
+##        if isinstance(to_add, str):
+##            
+##            self.parse()
+##        
+##        #if self.tk_text:
+##            #self.tk_text.tk_copy_text(self.text)
             
 
     def __repr__(self):
         return "\n".join(list(map(repr,self.content_list)))
 
     def parse(self):
-        #...
-        self.text = self.__repr__()
+        parser = CSSParser()
+        parser.feed(self.text).parse()
+        self.content_list = parser.css_text.content_list
+        # parsed css structure
+        # is kept for faster future changes on the css
+        return parser # parser is an object with results
+        
+    def __eq__(self, other):
+        if isinstance(other, str):
+            return repr(self) == other
+        elif isinstance(other, self.__class__):
+            return repr(self) == repr(other)
+        else:
+            return self == other
             
-    def validate(self,parsed_css=None):
-        fail_messages = []
-        if parsed_css is None:
-            pass
+
+fragments = {"html": HTMLFragment,
+             "css": CSSFragment
+            }
+
+class FileDocument(InterfaceOptions):
+    """Represents a file.
+
+Uses HTMLFragment, CSSFragment, JSFragment"""
+    def __init__(self, options_file_object, content=u"", saved=True, path="",
+                 encoding_py="utf-8", document_language="en", gui_link=None,
+                 doctype="html"):
+
+        #specific addition for HTML
+        self.document_language = document_language
+        self.doctype = doctype
+
+        #html can be a mixture of css and js (inline) in any order, in any way
+        #to ease the internal implementation, html itself is considered inlined
+        self.initial_content = content
+        self.inlines = []
+        self.__saved = saved
+        self.save_path = path
+        self.encoding = encoding_py
+        self.gui_link = gui_link
+        #if self.tk_text:
+            # self.tk_text.tk_insert_text(where, inserted_text)
+            # self.tk_text.tk_delete_text(from_, to_)
+            # self.tk_text.reset_undo()
+
+        self.last_find_index = -1
+        #Parent data
+        self.options_file_object = options_file_object#do not touch this directly use interface methods
+
+    def start(self):
+        """Separate init to put the object in a list that is used by methods in start."""
+        self.text = self.initial_content #calls setter
+        del self.initial_content
+    
+        if self.gui_link:
+            self.gui_link.reset_undo()
+        
+    @property
+    def text(self):
+        #complete_text (str)
+        complete_text = u""
+        for inline in self.inlines:
+                complete_text += inline[1].text
+        return complete_text
+
+    @text.setter
+    def text(self, content):
+        #example
+        #self.inlines = [
+        #   [doctype1, content1]
+        #   [doctype2, content2]
+        #   [doctype3, content3]
+        #   ]
+        self.parse(first=True, text=content) #will set inlines
+        
+        self.gui_link.tk_copy_text(content)
+
+
+    def insert(self, string, position=None):
+        if not string:
+            return
+        if position is None:
+            self.inlines[-1][1].text += string
+            position = len(self.text)
+        else:
+            travelled = 0
+            for inline in self.inlines:
+                if position < (travelled + len(inline[1].text)):
+                    local_position = position - travelled
+                    inline[1].text = u"".join((inline[1].text[0:local_position],
+                                          string,
+                                          inline[1].text[local_position::]))
+                    break
+                travelled += len(inline[1].text)
+            else:
+                self.inlines[-1][1].text += string
+        self.gui_link.tk_insert_text(string, position)
+     
+    def append(self, string):
+        self.insert(string)           
+
+    def remove(self, start, end):
+        assert start <= end
+        if start == end:
+            return
+        travelled = 0
+        for inline in self.inlines:
+            local_start = start - travelled
+            local_end = end - travelled            
+            if start == end:  # 1
+                if end < (travelled + len(inline[1].text)):
+                    inline[1].text = u""
+                else:
+                    inline[1].text = inline[1].text[local_end::]
+            elif start < (travelled + len(inline[1].text)):
+                if end < (travelled + len(inline[1].text)):
+
+                    
+                    inline[1].text = u"".join((inline[1].text[0:local_start],
+                                          inline[1].text[local_end::]))
+                    break
+                else:
+                    inline[1].text = inline[1].text[0:local_start]
+                    start = end  # 1
+            travelled += len(inline[1].text)
+        self.gui_link.tk_delete_text(start, end)
+                
+        def is_empty_text(a):
+            return bool(a[1].text)
+        
+        self.inlines = list(filter(is_empty_text, self.inlines))
+        # self.tk_text.tk_delete_text(start, start+length)
+    
+    def delete(self, start, length):
+        assert False
+        
+    def find(self, string, start=-2):
+        if start == -2 :
+            if self.last_find_index == -1:
+                start = 0
+            elif self.last_find_index != -1:
+                start = self.last_find_index + len(string)
+        self.last_find_index = self.text.find(string, start)
+        return self.last_find_index
+
+    def replace(self, old, new, max_repeat=None):
+        """replace all, max_repeat set to an int to replace less"""
+        where = i = 0
+        while where != -1:
+            where = self.find(old)
+            if where != -1:
+                self.remove(where, where + len(old))
+                self.insert(new, where)
+            i += 1
+            if i == max_repeat:
+                break
+        return self.text
+            
+    
+                
+    def parse(self, first=False, text=u""):
+        """Parses the raw text, then puts the resulted fragments into its respective Fragment object.
+
+See Documentation/how_to_parse.svg for more infos. 
+Or, if first==False then immediately calls the parser of each fragment.
+
+returns results, a list with many informations. See parsers to know what informations."""
+        position = 0
+        results = [] #parse result, position
+
+        if first:
+            parser = HTMLParser()
+            parser.feed(text)
+            parser.close()
+            if parser.is_html():
+                if parser.cutpoints:
+                    self.inlines = [["html", HTMLFragment(text=text[0:parser.cutpoints[0][0]])]]
+                    i = 0
+                    for cutpoint in parser.cutpoints:
+                        if parser.parsedinline[i][0] == "style":
+                            fragmentype = "css"
+                            parser.parsedinline[i][0] = fragmentype
+                        #else ...
+                        parser.parsedinline[i][1] = fragments[fragmentype](text=parser.parsedinline[i][1])    
+                        self.inlines.append(parser.parsedinline[i])
+                        if i+1 == len(parser.cutpoints):
+                            #end
+                            self.inlines.append(["html", HTMLFragment(text=text[cutpoint[1]:])])
+                        else:
+                            self.inlines.append(["html", HTMLFragment(text=text[cutpoint[1]:parser.cutpoints[i+1][0]])]) 
+                        i += 1
+                else:
+                    self.inlines = [["html", HTMLFragment(text=text)]]
+            else:
+                #if is css ...
+                self.inlines = [["css", CSSFragment(text=text)]]
+        #else could be removed
+        else:
+            for fragment in self.inlines:
+                 results.append((fragment[1].parse(), position))
+                 position += len(fragment[1].text)
+        
+            return results
+    
+
+    def save_in_file(self):
+        codecs.open(self.save_path,'w',self.encoding).write(self.text)
+        self.__saved = True
+        
+    #testing
+    def test_file_with_browser(self):
+        webbrowser.open(self.save_path,new=2)#new=2 to open in a new tab if possible
+        
+    @property
+    def saved(self):
+        return self.__saved
+
+    @property
+    def save_path(self):
+        return self.__path
+
+    @save_path.setter
+    def save_path(self,new_path):
+        self.__path = new_path
+
+    @property
+    def encoding(self):
+        return self.__encoding_py
+    
+    @encoding.setter
+    def encoding(self,new_encoding_py):
+        assert new_encoding_py
+        self.__encoding_py = new_encoding_py
+        
+    @property
+    def w3c_encoding(self):
+        #todo return encoding as it should appear in the meta charset
+        return self.encoding
+
+    @w3c_encoding.setter
+    def w3c_encoding(self,new_w3c_encoding):
+        #todo convert to python usable encoding string
+        self.encoding = new_w3c_encoding
+           
+        
+    def __add__(self,other):
+        assert False, "not implemented"
+
+    def __radd__(self,other):
+        assert False, "not implemented"
+        
+    def __str__(self):
+        return self.text
+    
+    def __repr__(self):
+        return str(self)
+
+    #def __getitem__(self, key):
+    #    return deprecated
+    
+    def __len__(self):
+        return len(self.text)
+    
 if __name__ == '__main__':
-    t = Text_HTML(None,content="",saved=True,path="",encoding_py="utf-8",
-                 w3c_encoding="utf-8",version=5.0,document_language="en",
-                 gui=None)
-    assert isinstance(t[:], str)
-    t.add_to_text("The most important thing in your life is to always finish wha")
-    assert t[:] == "The most important thing in your life is to always finish wha"
-    t.replace("finish", "begin")#exist
-    assert t[:] == "The most important thing in your life is to always begin wha"
-    t.replace("honey", "butter")#not exist
-    assert t[:] == "The most important thing in your life is to always begin wha"
-    t.replace("in", "out")#multi
-    assert t[:] == "The most important thoutg in your life is to always begin wha"
-    t.replace("in", "out")#multi
-    assert t[:] == "The most important thoutg out your life is to always begin wha"
-    t.replace("in", "out")#multi
-    assert t[:] == "The most important thoutg out your life is to always begout wha"
-    t.delete(8, 10)
-    assert t[:] == "The most thoutg out your life is to always begout wha"
-    t.add_to_text(" text")
-    assert t[:] == "The most text thoutg out your life is to always begout wha"
+    html = "<html></html>"
+    css = "* {a:b;}"
+    js = "alert('hi');"
     
+    import unittest
+    import time
     
+    BIG = 10
+    class TestHTMLFragment(unittest.TestCase):
+
+        def setUp(self):
+            """do not remove"""
+            self.html = "<html></html>"
+            self.css = "* {a:b;}"
+            self.js = "alert('hi');"
+            self.t = HTMLFragment()
+            
+        def test_append(self):
+            self.t.append(self.html)
+            self.assertEqual(self.t.text, self.html)
+            
+        def test_big_append(self):
+            for i in range(BIG):
+                self.t.append(self.html)
+                self.assertEqual(self.t.text, self.html * (i + 1))
+            
+        def test_insert(self):
+            self.t.insert(self.html,5)
+            self.assertEqual(self.t.text, self.html)
+            
+        def test_big_insert(self):
+            for i in range(BIG):
+                self.t.insert(self.html,5)
+                self.t.insert(self.css,0)
+                self.t.insert(self.js,7)
+            
+            
+        def test_remove(self):
+            self.t.insert(self.html)
+            self.t.remove(3,5)
+            self.assertEqual(self.t.text, "<ht></html>")
+            
+        def test_big_remove(self):
+            self.t.insert(self.html * int((BIG / 10)))
+            for i in range(BIG):
+                self.t.remove(3,5)
+            self.assertEqual(self.t.text, "<ht")
+            
+        def test_find(self):
+            native_string = self.html
+            self.t.append(self.html)
+            searching = "html"
+            
+            self.assertEqual(self.t.find(searching), native_string.find(searching))
+            native_string += self.css
+            self.t.append(self.css)
+            searching = "*"
+            self.assertEqual(self.t.find(searching), native_string.find(searching))
+            
+            native_string += self.js
+            self.t.append(self.js)
+            searching = "alert"
+            self.assertEqual(self.t.find(searching), native_string.find(searching))
+            
+            native_string += self.html
+            self.t.append(self.html)
+            searching = "html"
+            self.assertEqual(self.t.find(searching, 15), native_string.find(searching, 15))
+            
+            searching = "cannot find"
+            self.assertEqual(self.t.find(searching, 0), native_string.find(searching, 0))
+            
+        def test_replace(self):
+            native_string = self.html
+            self.t.append(self.html)
+            old = "html"
+            new = "body"
+            self.t.replace(old, new)
+            native_string = native_string.replace(old, new)
+            self.assertEqual(self.t.text, native_string)
+
+        
+    unittest.main()

@@ -28,10 +28,31 @@ There may also be a verification.json file there. A verification is a dic. Each 
     * "{a:attribute_name:x}tag1,tag2,...,tagn:value or nothing" a means attribute Will look x times for attribute name with the value value in any tags or in tags if tags is there.you must put ":" for no value
     * "{r}" will search in raw mode (without parsing html)
     * "{ro}" search in raw mode without compiling as regular expression
-    * "{do:tag:x}expression" d for data will look if expression  matches x times in tags.d only uses regular expressions and do without regular expression this will only look if expression is ddirectly in tag !
+    * "{do:tag:x}expression" d for data will look if expression  matches x times in tags.d only uses regular expressions and do without regular expression this will only look if expression is directly in tag !
     * No prefix will be searched as data as non regular expression (same as {do::1}expre)
     
 * "showlink" boolean show link to next even if false
 
 
+----------
 
+How does it work ? 
+
+class FileDocument
+
+    is 1 file and on screen 1 tab
+    the instance holds all file related information
+
+    has 0 or more 
+    
+        class HTMLFragment
+            insert, append(str or HTMLFragment)
+            __str__
+            parse all
+        class CSSFragment
+        class JSFragment
+    
+    +parse from rawdata
+    +add raw(is parsed)
+    +insert raw
+    +save...

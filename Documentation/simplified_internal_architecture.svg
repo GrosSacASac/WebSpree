@@ -16,7 +16,15 @@
    inkscape:version="0.48.5 r10040"
    sodipodi:docname="simplified_internal_architecture.svg">
   <defs
-     id="defs4" />
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective3202" />
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -24,11 +32,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.959798"
-     inkscape:cx="312.41037"
-     inkscape:cy="465.65837"
+     inkscape:zoom="0.46"
+     inkscape:cx="497.7787"
+     inkscape:cy="259.21239"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer2"
      showgrid="false"
      inkscape:snap-bbox="true"
      inkscape:window-width="1920"
@@ -49,9 +57,30 @@
     </rdf:RDF>
   </metadata>
   <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="background"
+     style="display:none">
+    <rect
+       style="fill:#000000;fill-opacity:1"
+       id="rect3235"
+       width="1115.2174"
+       height="1204.3478"
+       x="-115.21739"
+       y="-19.376947" />
+    <rect
+       style="fill:#f9f9f9;fill-opacity:1"
+       id="rect3237"
+       width="1297.826"
+       height="1423.9131"
+       x="-156.52174"
+       y="-25.898685" />
+  </g>
+  <g
      inkscape:label="Camada 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     style="display:inline">
     <rect
        style="opacity:0.28120003;fill:#4d4d4d;fill-opacity:1"
        id="rect2985"
@@ -295,21 +324,21 @@
          y="313.07645"
          id="tspan3098">FileDocuments</tspan></text>
     <rect
-       style="opacity:0.28120002999999999;fill:#ff6600;fill-opacity:1"
+       style="opacity:0.28120003;fill:#ff6600;fill-opacity:1"
        id="rect3116"
        width="161.42857"
        height="181.42857"
        x="31.428572"
        y="563.79077" />
     <rect
-       style="opacity:0.28120002999999999;fill:#0000ff;fill-opacity:1"
+       style="opacity:0.28120003;fill:#0000ff;fill-opacity:1"
        id="rect3116-1"
        width="161.42857"
        height="181.42857"
        x="252.85715"
        y="563.07648" />
     <rect
-       style="opacity:0.28120002999999999;fill:#ffcc00;fill-opacity:1"
+       style="opacity:0.28120003;fill:#ffcc00;fill-opacity:1"
        id="rect3116-1-7"
        width="161.42857"
        height="181.42857"
@@ -357,7 +386,7 @@
        y="487.36218" />
     <text
        xml:space="preserve"
-       style="font-size:24px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       style="font-size:24px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#668000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
        x="45"
        y="519.50507"
        id="text3170"
@@ -423,5 +452,75 @@
          x="46.42857"
          y="790.21936"
          id="tspan3190">Parser sends information to GUI via FileDocument</tspan></text>
+    <rect
+       style="opacity:0.28120003;fill:#668000;fill-opacity:1"
+       id="rect3192"
+       width="484.28571"
+       height="155"
+       x="22.857143"
+       y="865.2193" />
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="43.57143"
+       y="890.93359"
+       id="text3194"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3196"
+         x="43.57143"
+         y="890.93359">Parser</tspan><tspan
+         sodipodi:role="line"
+         x="43.57143"
+         y="920.93359"
+         id="tspan3198">return error codes if needed and</tspan><tspan
+         sodipodi:role="line"
+         x="43.57143"
+         y="950.93359"
+         id="tspan3200">color codes with location(where in text)</tspan></text>
+    <g
+       sodipodi:type="inkscape:box3d"
+       style="opacity:0.28120003;fill:#668000;fill-opacity:1"
+       id="g3204"
+       inkscape:perspectiveID="#perspective3202"
+       inkscape:corner0="3.8144834 : -1.0794506 : 0 : 1"
+       inkscape:corner7="3.7523609 : -1.5043763 : 0.25 : 1">
+      <path
+         sodipodi:type="inkscape:box3dside"
+         id="path3214"
+         style="fill:#afafde;fill-rule:evenodd;stroke:none"
+         inkscape:box3dsidetype="13"
+         d="m 77.276669,875.08042 1.010155,4.56078 33.274666,-17.66466 -1.36844,-4.11897 z" />
+      <path
+         sodipodi:type="inkscape:box3dside"
+         id="path3206"
+         style="fill:#353564;fill-rule:evenodd;stroke:none"
+         inkscape:box3dsidetype="6"
+         d="m 77.276669,786.82054 0,88.25988 32.916381,-17.22285 0,-83.90307 z" />
+      <path
+         sodipodi:type="inkscape:box3dside"
+         id="path3216"
+         style="fill:#e9e9ff;fill-rule:evenodd;stroke:none"
+         inkscape:box3dsidetype="11"
+         d="m 110.19305,773.9545 1.36844,3.07701 0,84.94503 -1.36844,-4.11897 z" />
+      <path
+         sodipodi:type="inkscape:box3dside"
+         id="path3208"
+         style="fill:#4d4d9f;fill-rule:evenodd;stroke:none"
+         inkscape:box3dsidetype="5"
+         d="m 77.276669,786.82054 1.010155,3.40706 33.274666,-13.19609 -1.36844,-3.07701 z" />
+      <path
+         sodipodi:type="inkscape:box3dside"
+         id="path3212"
+         style="fill:#d7d7ff;fill-rule:evenodd;stroke:none"
+         inkscape:box3dsidetype="14"
+         d="m 78.286824,790.2276 0,89.4136 33.274666,-17.66466 0,-84.94503 z" />
+      <path
+         sodipodi:type="inkscape:box3dside"
+         id="path3210"
+         style="fill:#8686bf;fill-rule:evenodd;stroke:none"
+         inkscape:box3dsidetype="3"
+         d="m 77.276669,786.82054 1.010155,3.40706 0,89.4136 -1.010155,-4.56078 z" />
+    </g>
   </g>
 </svg>

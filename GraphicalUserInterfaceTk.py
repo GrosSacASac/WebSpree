@@ -5,7 +5,7 @@
 #Role: define the class GraphicalUserInterfaceTk used for WebSpree
 
 #Walle Cyril
-#2014-11-09
+#2015-02-18
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -57,7 +57,10 @@ from HTMLWindows import HTMLWindows
 from CSSWindows import CSSWindows
 ##TOOLS##
 from tks_widgets_1 import *
+from Text__classes import *
 from html_parser import HTMLParser
+from css_parser import CSSParser
+
 def _(l_string):
     return l_string    
 
@@ -175,10 +178,13 @@ class GraphicalUserInterfaceTk(tk.Tk):
         #self.rowconfigure(0,weight=1)
         
     def small_test(self,*event):
-        self.tab_indent()    
+        self.tab_indent()
+        
     def small_test2(self,*event):
         self.tab_indent(add=False)
-        
+        index = self.model.selected_tab
+        text_field = self.text_fields[index][0]
+        self.color_text_syntax(text_field, "css")
         
     def prepare_new_file(self,*event):#view
         self.new_file_dialog = tk.Toplevel(self, bd=1, bg=WINDOW_BACK_COLOR)
@@ -194,13 +200,13 @@ class GraphicalUserInterfaceTk(tk.Tk):
         entry_1.focus()
 
         
-        self.new_doc_radiobutton_var = tk.IntVar(value=0)
+        self.new_doc_radiobutton_var = tk.StringVar(value="standard")
         frame_where_to_start = tk.LabelFrame(self.new_file_dialog, FRAME_STYLE, text=_("Document"))
-        new_doc_radiobutton = ttk.Radiobutton(frame_where_to_start, text=_("Commencer un nouveau document standard"),value=0,variable=self.new_doc_radiobutton_var)
+        new_doc_radiobutton = ttk.Radiobutton(frame_where_to_start, text=_("Commencer un nouveau document standard"),value="standard",variable=self.new_doc_radiobutton_var)
         new_doc_radiobutton.pack(anchor="w")
-        new_blank_doc_radiobutton = ttk.Radiobutton(frame_where_to_start,text=_("Commencer un nouveau document vierge"), value=-1,variable=self.new_doc_radiobutton_var)
+        new_blank_doc_radiobutton = ttk.Radiobutton(frame_where_to_start,text=_("Commencer un nouveau document vierge"), value="blank",variable=self.new_doc_radiobutton_var)
         new_blank_doc_radiobutton.pack(anchor="w")
-        edit_doc_radiobutton = ttk.Radiobutton(frame_where_to_start, text=_("Modifier un document existant"),value=1,variable=self.new_doc_radiobutton_var)
+        edit_doc_radiobutton = ttk.Radiobutton(frame_where_to_start, text=_("Modifier un document existant"),value="open",variable=self.new_doc_radiobutton_var)
         edit_doc_radiobutton.pack(anchor="w")
         
         #to do change this barbar method to control encoding properlyindex=self.model.selected_tab
@@ -259,14 +265,14 @@ class GraphicalUserInterfaceTk(tk.Tk):
         current_close_last = self.text_fields[tab_index][1]
         
         new_encoding_py , new_w3c_encoding = (self._which_encoding_var.get().split(";"))
-        current_object.set_encoding(new_encoding_py)
-        current_object.set_w3c_encoding(new_w3c_encoding)
+        #current_object.set_encoding(new_encoding_py)
+        #current_object.set_w3c_encoding(new_w3c_encoding)
         #this should be passe via start new session method-------
         
-        if current_object.element_still_not_closed_list:
-            current_close_last['state'] = 'normal'
-        else:
-            current_close_last['state'] = 'disabled'
+##        if current_object.element_still_not_closed_list:
+##            current_close_last['state'] = 'normal'
+##        else:
+##            current_close_last['state'] = 'disabled'
         self.new_file_dialog.destroy()
         
     def edit_file_dialog(self,*event):
@@ -298,8 +304,8 @@ class GraphicalUserInterfaceTk(tk.Tk):
         
         
         
-        self.text_fields.append([tk.Text(html_text_tab,yscrollcommand = main_scrollbar.set,state='normal',width = self.adaptedwidth, height=((self.adapted_height * 2) - 3),undo=True),\
-                                             ttk.Button(html_text_tab, text=_("Fermer la dernière balise ouverte"), command=self.confirm_close_element)])
+        self.text_fields.append([tk.Text(html_text_tab,yscrollcommand = main_scrollbar.set,state='normal',width = self.adaptedwidth, height=((self.adapted_height * 2) - 3),undo=True),
+                                ttk.Button(html_text_tab, text=_("Fermer la dernière balise ouverte"), command=self.confirm_close_element)])
         text_field = self.text_fields[tab_index][0]
         main_scrollbar.config(command=text_field.yview)
         text_field.grid(row=0,column=0,sticky='nsw')
@@ -328,6 +334,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
         text_field.tag_config("error", foreground="#f0241f")
         text_field.tag_config("attribute", foreground="#19b52f")
         text_field.tag_config("attribute_value", foreground="#1088cf")
+        text_field.tag_config("selector", foreground="#4588cf")
+        text_field.tag_config("property_", foreground="#19a02f")
+        text_field.tag_config("value", foreground="#9068b0")
         self.text_fields[tab_index][1].grid(row=1,column=0,sticky='nsw')
         self.text_fields[tab_index][1]['state']='disabled'
         self.html_text_tabs.add(html_text_tab,text=title)
@@ -341,9 +350,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
             self.new_html_tab(index,title)
         text_field = self.text_fields[index][0]
         text_field.delete('1.0', 'end-1c')
-        text_field.insert('end', text_to_copy.text.encode('utf-8'))
+        text_field.insert('end', text_to_copy.encode('utf-8'))
         text_field.see('1.0')
-        self.color_text_syntax(text_field, "html")
+        self.color_text_syntax(text_field)
         if new:
             self.reset_undo()
             
@@ -353,15 +362,15 @@ class GraphicalUserInterfaceTk(tk.Tk):
         current_widget.edit_reset()
         
             
-    def tk_insert_text(self, where, inserted_text):
+    def tk_insert_text(self, string, position):
         index = self.model.selected_tab
         text_field = self.text_fields[index][0]
 
-        tk_index = self.tk_index_from_plain(text_field.get('1.0', 'end-1c'), where)
-        text_field.insert(tk_index, inserted_text.encode('utf-8'))
+        tk_index = self.tk_index_from_plain(text_field.get('1.0', 'end-1c'), position)
+        text_field.insert(tk_index, string.encode('utf-8'))
         text_field.edit_separator()
         text_field.see(tk_index)
-        self.color_text_syntax(text_field, "html")
+        self.color_text_syntax(text_field)
         
     def tk_delete_text(self, from_, to_):
         index = self.model.selected_tab
@@ -372,7 +381,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         tk_index_to = self.tk_index_from_plain(text, to_)
         text_field.delete(tk_index_from, tk_index_to)
         text_field.see(tk_index_from)
-        self.color_text_syntax(text_field, "html")
+        self.color_text_syntax(text_field)
             
     def close_tab(self,*event):
         def kill_tab(self,tab_index):
@@ -390,7 +399,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         tab_index = self.model.selected_tab
         current_object = self.model.tabs_html[tab_index]
         if event[0] == "for_save":
-            if not current_object.is_saved():
+            if not current_object.saved:
                 answer = messagebox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer l'onglet %s?" % (self.html_text_tabs.tab(tab_index,option='text'))))#True False ou None 
                 if answer and not self.model.save_html_file():
                         return "cancel"
@@ -398,13 +407,13 @@ class GraphicalUserInterfaceTk(tk.Tk):
                     return "cancel"
             return "no_cancel"
         elif event[0]=="for_save_no_warning":
-            if not current_object.is_saved() and not self.model.save_html_file():
+            if not current_object.saved and not self.model.save_html_file():
                 return "cancel"
             return "no_cancel"
         elif event[0]=="already_saved":
             kill_tab(self,tab_index,)
         else:#manual tab_closing
-            if not current_object.is_saved():
+            if not current_object.saved:
                 answer = messagebox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer cet onglet ?"))#True False ou None 
                 if answer:                                                      # Yes
                     if self.model.save_html_file():
@@ -425,7 +434,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
             self.switch_writing_place()
             if current_object.text != text_field.get('1.0', 'end-1c'):
                 current_object.text = text_field.get('1.0', 'end-1c')
-                self.color_text_syntax(text_field, "html")
+                self.color_text_syntax(text_field)
 
     def confirm_close_element(self):
         tab_index = self.model.selected_tab
@@ -471,8 +480,8 @@ class GraphicalUserInterfaceTk(tk.Tk):
             path_list = []
             for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):
                 #we close all tabs and save the location for the next time
-                if self.model.tabs_html[tab_not_closed_index].get_save_path():
-                    path_list.insert(0,self.model.tabs_html[tab_not_closed_index].get_save_path())
+                if self.model.tabs_html[tab_not_closed_index].save_path:
+                    path_list.insert(0,self.model.tabs_html[tab_not_closed_index].save_path)
                 self.html_text_tabs.select(tab_not_closed_index)
                 self.model.selected_tab = tab_not_closed_index
                 self.close_tab(("already_saved"))
@@ -642,7 +651,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
             
         self.switch_writing_place()
         current_object.text = text_field.get('1.0', 'end-1c')
-        self.color_text_syntax(text_field, "html")
+        self.color_text_syntax(text_field)
         text_field.focus()
     
     def prepare_find_dialog(self, *event):
@@ -725,25 +734,36 @@ class GraphicalUserInterfaceTk(tk.Tk):
             
         
         
-    def color_text_syntax(self, text_field, text_type):
-        """"Colours the given text so that key syntax words in the text_type are highlighted."""
-        content = text_field.get('1.0', 'end-1c')
+    def color_text_syntax(self, text_field):
+        """"Colours the given text so that key syntax words in the text_field are highlighted."""
+        
+        tab_index = self.model.selected_tab
+        current_object = self.model.tabs_html[tab_index]
+        #current_text_field = self.text_fields[tab_index][0]
+
+        # define painter function
+        content = current_object.text        
         def painter(i,j,recognized_as):
             tk_i = self.tk_index_from_plain(content, i)
             tk_j = self.tk_index_from_plain(content, j)
             self.color_word(text_field,tk_i,tk_j,recognized_as)
-
+            
+        # remove old colours syntax highlighting
         for tag_ in text_field.tag_names():
-            text_field.tag_remove(tag_, '1.0',tk.END)#remove current colours
-        if text_type == "html":
-            parser = HTMLParser(for_color=painter)
-            parser.feed(content)
-            parser.close()
-        elif text_type == "css":
-            pass#todo colour css
+            text_field.tag_remove(tag_, '1.0',tk.END)
+
+        # parse and color 
+        results = current_object.parse()
+        for result in results:
+            position = result[1]
+            for color_code in result[0].color_codes_with_location:
+                start = color_code[0][0] + position
+                end = color_code[0][1] + position
+                code = color_code[1]
+                painter(start, end, code)
         
     def color_word(self,text_field,tk_i,tk_j,recognized_as):
-        """Give a text region a recognized_as tag, that region will take appropriate colours."""
+        """Give a text region a recognized_as tag, that region will change."""
         text_field.tag_add(recognized_as, tk_i, tk_j)
 
 
