@@ -174,20 +174,27 @@ creating a copy of this object starts the app."""
         
     def validate_document(self):
         results = self.tabs_html[self.selected_tab].parse()
-        for result in results:
-            result[0] #...
-        return ["good job finish this"]     
-##        if not parsed_html.declaration:
-##        fail_messages.append(_(u"Déclaration du type de document introuvable, insérez <!DOCTYPE html>"))
-##    if not parsed_html.doctype_first:
-##        fail_messages.append(_(u"La déclaration du type de document doit se trouver en haut du document"))
-##    for should,closed in parsed_html.close_before_error_list:
-##        fail_messages.append(_(u"Vous devez fermer {} avant {}").format(should,closed))
-##    if len(parsed_html.start_list) > len(parsed_html.end_list):
-##        fail_messages.append(_(u"Il faut fermer toutes les balises !"))
-##    for parent,child in parsed_html.must_parent_errors:
-##        fail_messages.append(_(u"Les balises {} doivent êtres contenus dans des balises {}").format(child,parent))
-##        
+        messages = []
+        if len(results) > 1:
+            messages.append(_(u"Faites des documents uniques, ne mélangez pas html, css et js"))
+            messages.append(str(len(results)))
+        else:
+            result = results[0][0]
+            if self.tabs_html[self.selected_tab].inlines[0][0] == "html":
+                parsed_html = result
+                if not parsed_html.declaration:
+                    messages.append(_(u"Déclaration du type de document introuvable, insérez <!DOCTYPE html>"))
+                if not parsed_html.doctype_first:
+                    messages.append(_(u"La déclaration du type de document doit se trouver en haut du document"))
+                for should,closed in parsed_html.close_before_error_list:
+                    messages.append(_(u"Vous devez fermer {} avant {}").format(should,closed))
+                if len(parsed_html.start_list) > len(parsed_html.end_list):
+                    messages.append(_(u"Il faut fermer toutes les balises !"))
+                for parent,child in parsed_html.must_parent_errors:
+                    messages.append(_(u"Les balises {} doivent êtres contenus dans des balises {}").format(child,parent))
+            #elif
+            
+        return messages        
 
     def return_fragment(self, wanted="html"):
         for inline in self.tabs_html[self.selected_tab].inlines:

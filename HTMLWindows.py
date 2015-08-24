@@ -75,10 +75,10 @@ class HTMLWindows(tk.Frame):
         frame_element_master = tk.Frame(self, FRAME_STYLE_2, bg=COLOURS_A[0])
         self.element_plus_help = MainPlusHelp(frame_element_master, _("Balises"), _("Aide"))
         self.elements_in_treeviews_lift = ttk.Scrollbar(self.element_plus_help.main_frame)
-        self.elements_in_treeview = ttk.Treeview(self.element_plus_help.main_frame, selectmode='browse',\
-                                            columns=("element", "local"), height=adapted_height, cursor="hand2",\
-                                             yscrollcommand=self.elements_in_treeviews_lift.set, padding=0, takefocus=True,\
-                                             displaycolumns=(1, 0), show='headings')#,show='tree'.
+        self.elements_in_treeview = ttk.Treeview(self.element_plus_help.main_frame,
+            selectmode='browse', columns=("element", "local"), height=adapted_height,
+            cursor="hand2", yscrollcommand=self.elements_in_treeviews_lift.set,
+            padding=0, takefocus=True, displaycolumns=(1, 0), show='headings')#,show='tree'.
         
         
         self.element_plus_help.next_ = next_gen(self.elements_in_treeview)

@@ -377,7 +377,6 @@ Uses HTMLFragment, CSSFragment, JSFragment"""
         #   [doctype3, content3]
         #   ]
         self.parse(first=True, text=content) #will set inlines
-        
         self.gui_link.tk_copy_text(content)
 
 
@@ -499,7 +498,8 @@ returns results, a list with many informations. See parsers to know what informa
             else:
                 #if is css ...
                 self.inlines = [["css", CSSFragment(text=text)]]
-        #else could be removed
+        # else could be removed
+        # but would do work twice
         else:
             for fragment in self.inlines:
                  results.append((fragment[1].parse(), position))

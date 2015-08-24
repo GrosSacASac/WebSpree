@@ -108,9 +108,11 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.general_frame.grid(row=0,column=0,sticky='nswe')
         self.special_frame.grid(row=0,column=1,sticky='nswe')
         
-        self.current_font = tkfont.Font(family='helvetica', size=-15)
-        mystyle = ttk.Style()
-        mystyle.configure('.',font=self.current_font)
+        self.current_font = tkfont.Font(family='helvetica')
+        self.my_style = ttk.Style()
+        self.my_style.configure('.',font=self.current_font)
+        self.reset_zoom()
+        
 
         #keep this do work around a ttk bug: growing treeviews
         self._treeviews = []
@@ -304,28 +306,21 @@ class GraphicalUserInterfaceTk(tk.Tk):
         
         
         
-        self.text_fields.append([tk.Text(html_text_tab,yscrollcommand = main_scrollbar.set,state='normal',width = self.adaptedwidth, height=((self.adapted_height * 2) - 3),undo=True),
+        self.text_fields.append([tk.Text(html_text_tab, yscrollcommand = main_scrollbar.set,
+                                         state='normal', width = self.adaptedwidth,
+                                         height=((self.adapted_height * 2) - 3),
+                                         undo=True, font=self.current_font),
                                 ttk.Button(html_text_tab, text=_("Fermer la dernière balise ouverte"), command=self.confirm_close_element)])
         text_field = self.text_fields[tab_index][0]
         main_scrollbar.config(command=text_field.yview)
         text_field.grid(row=0,column=0,sticky='nsw')
         main_scrollbar.grid(row=0,column=1,sticky='ns')
-
-        """def replace_(*event):
-            self.prepare_replace_dialog()
-            return "break"#prevent default behavior
-        def find_(*event):
-            self.prepare_find_dialog()
-            return "break"#prevent default behavior
-        
-        bind_(text_field, all_=False, modifier="Control", letter="h", callback=replace_)
-        bind_(text_field, all_=False, modifier="Control", letter="f", callback=find_)"""
         
         
         bind_(text_field, all_=False, modifier="Control", letter="h", callback=f_only(self.prepare_replace_dialog))
         bind_(text_field, all_=False, modifier="Control", letter="f", callback=f_only(self.prepare_find_dialog))
         #bind_(text_field, all_=False, modifier="KeyPress", letter="Tab", callback=f_only(self.tab_indent))
-        text_field.bind('<KeyRelease>', self.so_you_decided_to_write_html_directly)
+        text_field.bind('<KeyRelease>', self.key_releaser)
         text_field.bind('<Button-3>',create_context_menu)
         text_field.bind('<ButtonRelease-1>',self.switch_writing_place)
         text_field.tag_config("element", foreground="#905b64")
@@ -426,15 +421,14 @@ class GraphicalUserInterfaceTk(tk.Tk):
             
                 
     
-    def so_you_decided_to_write_html_directly(self,event):
+    def key_releaser(self,event):
         tab_index = self.model.selected_tab
         current_object = self.model.tabs_html[tab_index]
         text_field = self.text_fields[tab_index][0]
-        if text_field.edit_modified():
-            self.switch_writing_place()
-            if current_object.text != text_field.get('1.0', 'end-1c'):
-                current_object.text = text_field.get('1.0', 'end-1c')
-                self.color_text_syntax(text_field)
+        if current_object.text != text_field.get('1.0', 'end-1c'):
+            text_field.edit_separator()
+            current_object.parse(first=True, text=text_field.get('1.0', 'end-1c'))
+            self.color_text_syntax(text_field)
 
     def confirm_close_element(self):
         tab_index = self.model.selected_tab
@@ -531,6 +525,10 @@ class GraphicalUserInterfaceTk(tk.Tk):
         else:
             current_object.insertion = None
             
+    def reset_zoom(self):
+        self.current_font['size'] = -15
+        self.my_style.configure('Treeview', rowheight=20)
+        
     def change_size(self,event):
         try:
             equivalent = event.keysym#when zooms with keyboard
@@ -540,13 +538,17 @@ class GraphicalUserInterfaceTk(tk.Tk):
         for treeview in self._treeviews:
             treeview.column("local",width=200)
         if equivalent== '0':
-            self.current_font['size'] = -15
+            self.reset_zoom()
+            
         elif equivalent == 'plus':
             if self.current_font['size'] > -60:
                 self.current_font['size'] -= 1
+                self.my_style.configure('Treeview', rowheight=self.my_style.configure('Treeview', 'rowheight')+1)
+                
         elif equivalent == 'minus':
             if self.current_font['size'] < -7:
                 self.current_font['size'] += 1
+                self.my_style.configure('Treeview', rowheight=self.my_style.configure('Treeview', 'rowheight')-1)
                 
     def print_text_links(self, messages=[], links=[]):
         self.info = tk.Toplevel(self)

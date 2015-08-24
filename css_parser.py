@@ -436,7 +436,9 @@ Those handlers are overridable.
     # methods used in overridable methods
     def add_to_tree(self, css_object):
         
-        self.tree[-1].append(css_object)
+        if self.tree:
+            self.tree[-1].append(css_object)
+        #else what would it mean to land here ?
         self.tree.append(css_object)
 
     def close_last_sub_tree(self):
