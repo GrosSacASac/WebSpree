@@ -56,7 +56,7 @@ from tks_widgets_1 import *
 
 def _(l_string):
     return l_string
-
+wrap=420
 class HTMLWindows(tk.Frame):
     """HTML  frame."""
 
@@ -124,32 +124,33 @@ class HTMLWindows(tk.Frame):
             self.general_attributes_treeview.insert("",'end',values=(general_attribute,LOCAL_ATTRIBUTES[general_attribute]["translation"]))
         self.general_attributes_treeview.bind('<<TreeviewSelect>>',self.update_attribute_selection,"")
         
-        self.specific_attributes_treeview = ttk.Treeview(self.attribute_plus_help.main_frame,\
+        self.specific_attributes_treeview = ttk.Treeview(self.attribute_plus_help.main_frame,
             selectmode='browse',height=adapted_height,columns=("real","local"),displaycolumns=(1),show='headings')
         self.specific_attributes_treeview.heading("local",text=_("Spécifique"))
         #self.specific_attributes_treeview.tag_configure("specific_attribute")not here later make tag ofr must and specifiq in different colours
         self.specific_attributes_treeview.grid(row=0,column=1,sticky='w')
         self.specific_attributes_treeview.bind('<<TreeviewSelect>>',self.update_attribute_selection,"")
 
-        wrap=100
+        
         #Help element
         frame_element_help_labels = ttk.Frame(self.element_plus_help.help_frame)
         frame_element_help_labels.for_data_type = "html_element"
         frame_element_help_labels.grid(row=0,column=0,columnspan=3)
         str_list_help = ["element", "alt(s)", "must_attributes", "version",
-                         "parent", "specific_attributes", "void"]
+            "parent", "specific_attributes", "void"]
         str_list_help_local = ["translation", "description", "role", "common usage"]
         self.help_element, self.help_element_local = {}, {}
         i = 0
+        #wraplength=wrap)
         for string in str_list_help:
             self.help_element[string] = LabelString(frame_element_help_labels,
-                                                    string=string, text=_(u""),
-                                                    wraplength=wrap)
+                string=string, text=_(u""), wraplength=wrap)
             self.help_element[string].grid(row=i,column=0,sticky='nswe')
             self.help_element[string].bind('<Button-3>',local_menu_print)
             i += 1
         for string in str_list_help_local:
-            self.help_element_local[string] = LabelString(frame_element_help_labels,string=string, text=_(u""))
+            self.help_element_local[string] = LabelString(frame_element_help_labels,
+                string=string, text=_(u""), wraplength=wrap)
             self.help_element_local[string].grid(row=i,column=0,sticky='nswe')
             self.help_element_local[string].bind('<Button-3>',local_menu_print)
             i += 1

@@ -37,7 +37,7 @@
         }
     ],
     [
-        "Informations d'en-t\u00eate",
+        "Informations d'en-tête",
         {
             "link":{
                 "alt(s)":[],
@@ -69,10 +69,12 @@
                 "void":false
             },
             "script":{
-                "alt(s)":"",
-                "must_attributes":"",
+                "alt(s)":[],
+                "must_attributes":[],
                 "parent":"html",
-                "specific_attributes":"type,",
+                "specific_attributes":[
+                    "type"
+                ],
                 "version":"1+",
                 "void":false
             },
@@ -314,10 +316,10 @@
                 "void":false
             },
             "i":{
-                "alt(s)":"em,span",
-                "must_attributes":"",
+                "alt(s)":[],
+                "must_attributes":[],
                 "parent":"body",
-                "specific_attributes":"",
+                "specific_attributes":[],
                 "version":"1+",
                 "void":false
             },
@@ -393,7 +395,7 @@
                 "version":"1+",
                 "void":false
             },
-            "sub":{
+            "sup":{
                 "alt(s)":[],
                 "must_attributes":[],
                 "parent":"body",
@@ -401,7 +403,7 @@
                 "version":"1+",
                 "void":false
             },
-            "sup":{
+            "sub":{
                 "alt(s)":[],
                 "must_attributes":[],
                 "parent":"body",
@@ -426,12 +428,12 @@
                 "void":false
             },
             "wbr":{
-                "alt(s)":"",
-                "must_attributes":"",
+                "alt(s)":[],
+                "must_attributes":[],
                 "parent":"body",
-                "specific_attributes":"",
+                "specific_attributes":[],
                 "version":"1+",
-                "void":true
+                "void":false
             }
         }
     ],
@@ -630,19 +632,29 @@
                 "void":false
             },
             "track":{
-                "alt(s)":"",
-                "must_attributes":"",
+                "alt(s)":[],
+                "must_attributes":[],
                 "parent":"body",
-                "specific_attributes":"",
+                "specific_attributes":[],
                 "version":"1+",
-                "void":true
+                "void":false
             },
             "video":{
-                "alt(s)":"",
-                "must_attributes":"",
+                "alt(s)":[],
+                "must_attributes":[],
                 "parent":"body",
-                "specific_attributes":"src alt autoplay controls loop width height preload poster",
-                "version":"5+",
+                "specific_attributes":[
+                    "src",
+                    "alt",
+                    "autoplay",
+                    "controls",
+                    "loop",
+                    "width",
+                    "height",
+                    "preload",
+                    "poster"
+                ],
+                "version":"1+",
                 "void":false
             }
         }

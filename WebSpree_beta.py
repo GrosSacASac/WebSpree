@@ -78,14 +78,14 @@ creating a copy of this object starts the app."""
         
         self.graphical_user_interface_tk = GraphicalUserInterfaceTk(self)
         self.tabs_html = []
-##        for path in self.get_option("previous_files_opened"):
-##            try:
-##                self.edit_file(path)
-##            except Exception as E:
-##                print(E)
-##                pass#file not found or something
         for path in self.get_option("previous_files_opened"):
-            self.edit_file(path)
+            try:
+                self.edit_file(path)
+            except Exception as E:
+                print(E)
+                pass#file not found or something
+##        for path in self.get_option("previous_files_opened"):
+##            self.edit_file(path) for testing only
             
         if not self.tabs_html:#nothing opened so we provide a blank "new" file
             self.start_mod = "newtab"

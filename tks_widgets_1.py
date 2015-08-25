@@ -192,7 +192,9 @@ class MainPlusHelp(ttk.Notebook):
         self.add(self.main_frame,text=title_content,sticky='swen')
         self.add(self.help_frame,text=title_help,sticky='swen')
 
-        self.short_help=tk.Label(self.main_frame,HELP_LABEL_STYLE, text=_("Cliquer sur un élément pour afficher l'aide"), wrap=400,anchor='nw',fg='#2220dd')
+        self.short_help=tk.Label(self.main_frame,HELP_LABEL_STYLE,
+            text=_("Cliquer sur un élément pour afficher l'aide"), wrap=400,
+            anchor='nw',fg='#2220dd')
         self.short_help.grid(row=1,column=0,columnspan=2,sticky='nsw')
         self.short_help.bind('<ButtonRelease-1>', self.switch_help)
         self.short_help['cursor']="hand2"
@@ -533,7 +535,6 @@ if __name__ == '__main__':
             self.assertTrue(bool_from_user_string("true"))
             
     
-    unittest.main()
     root=tk.Tk()
     F1=tk.LabelFrame(root, FRAME_STYLE,text="links")
     F2=tk.LabelFrame(root, FRAME_STYLE,text="LabelFrame_2")
@@ -567,4 +568,6 @@ if __name__ == '__main__':
     F3.grid(row=0,column=2)
     F4.grid(row=0,column=3)
     root.mainloop()
+    
+    unittest.main()
     
