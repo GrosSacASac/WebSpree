@@ -98,12 +98,15 @@ class HTMLWindows(tk.Frame):
         self.elements_in_treeview.tag_configure("tag_1", background='#cccfff')
         self.elements_in_treeview.tag_configure("tag_2", background='#cfffcc')
         self.elements_in_treeview.tag_configure("tag_3", background='#ffccbc')
-        for couple in ELEMENTS:
-            function = self.elements_in_treeview.insert("",'end',values=("",couple[0]),tag=tags[i%2])
-            i+=1
-            for ele in couple[1]:
-                self.elements_in_treeview.insert(function,'end', \
-                                                 values=(ele,LOCAL_ELEMENTS[ele]["translation"]),tag="tag_3")
+        categories_treeview_part = {}
+        for element in ELEMENTS:
+            category_name = ELEMENTS[element]["category"]
+            if category_name not in categories_treeview_part:
+                categories_treeview_part[category_name] = self.elements_in_treeview.insert("",'end',
+                    values=("",category_name),tag=tags[i%2])
+                i+=1
+            self.elements_in_treeview.insert(categories_treeview_part[category_name],'end',
+                values=(element,LOCAL_ELEMENTS[element]["translation"]),tag="tag_3")
 
         self.elements_in_treeview.grid(row=0,column=0,columnspan=2,sticky='nsw')
         self.elements_in_treeviews_lift.grid(row=0,column=2,sticky='nsw')
@@ -221,14 +224,16 @@ class HTMLWindows(tk.Frame):
         if not attribute in self.attribute_area_form.get('1.0','end-1c'):
             self.attribute_area_form.insert('end',"{}=\"{}\"\n".format(attribute,attribute_details["default_value"]))
 
-        minimum = "{}\n{}\n{}".format(attribute_local_details["description"],attribute_local_details["role"],\
-                                                           attribute_local_details["common usage"]).strip()
+        minimum = "{}\n{}\n{}".format(attribute_local_details["description"],
+            attribute_local_details["role"],
+            attribute_local_details["common usage"]).strip()
+        
         self.attribute_plus_help.short_help['text'] = minimum
         self.help_attributes["attribute"]['text'] = attribute
-        self.help_attributes["alt(s)"]['text'] = attribute_details["alt(s)"]
-        self.help_attributes["default_value"]['text'] = attribute_details["default_value"]
-        self.help_attributes["version"]['text'] = attribute_details["version"]
-        self.help_attributes["possible_values"]['text'] = attribute_details["possible_values"]
+        self.help_attributes["alt(s)"]['text'] = user_stringify(attribute_details["alt(s)"])
+        self.help_attributes["default_value"]['text'] = user_stringify(attribute_details["default_value"])
+        self.help_attributes["version"]['text'] = user_stringify(attribute_details["version"])
+        self.help_attributes["possible_values"]['text'] = user_stringify(attribute_details["possible_values"])
         
         self.help_attributes_local["translation"]['text'] = attribute_local_details["translation"]
         self.help_attributes_local["description"]['text'] = attribute_local_details["description"]
@@ -259,19 +264,20 @@ class HTMLWindows(tk.Frame):
         for item in displayed_specific_attributes:
             self.specific_attributes_treeview.delete(item)
         
-        html_element = html_element_from_name(element_tag)
+        html_element = ELEMENTS[element_tag]
         self.last_selected_element_is_void = html_element["void"]
         minimum = u"{}\n{}\n{}".format(LOCAL_ELEMENTS[element_tag]["description"],LOCAL_ELEMENTS[element_tag]["role"],\
                                            LOCAL_ELEMENTS[element_tag]["common usage"]).strip()
         self.element_plus_help.short_help['text'] = minimum
-        
+
+        #only alt(s) is somehow formated to be seen
         self.help_element["element"]['text'] =  element_tag
-        self.help_element["alt(s)"]['text']  =  html_element["alt(s)"]
-        self.help_element["must_attributes"]['text'] = html_element["must_attributes"]
-        self.help_element["specific_attributes"]['text'] = html_element["specific_attributes"]
-        self.help_element["parent"]['text']  =  html_element["parent"]
-        self.help_element["version"]['text'] =  html_element["version"]
-        self.help_element["void"]['text'] = str(html_element["void"]) #warning !
+        self.help_element["alt(s)"]['text']  =  user_stringify(html_element["alt(s)"])
+        self.help_element["must_attributes"]['text'] = user_stringify(html_element["must_attributes"])
+        self.help_element["specific_attributes"]['text'] = user_stringify(html_element["specific_attributes"])
+        self.help_element["parent"]['text']  =  user_stringify(html_element["parent"])
+        self.help_element["version"]['text'] =  user_stringify(html_element["version"])
+        self.help_element["void"]['text'] = user_stringify(html_element["void"])
         
         self.help_element_local["translation"]['text'] = LOCAL_ELEMENTS[element_tag]["translation"] 
         self.help_element_local["description"]['text'] = LOCAL_ELEMENTS[element_tag]["description"]
@@ -284,8 +290,10 @@ class HTMLWindows(tk.Frame):
             self.content_area_form['state'] = 'disabled'
         #todo add must attributes somewhere
         for attribute in html_element["specific_attributes"]:
+            try:
                 self.specific_attributes_treeview.insert("",'end',values = (attribute,LOCAL_ATTRIBUTES[attribute]["translation"]))#,tags="specific_attribute")
-                            
+            except KeyError:
+                pass #the key is not found in the data (that the user can change)
 
 
                 
@@ -294,11 +302,11 @@ class HTMLWindows(tk.Frame):
         #self.text_fields[tab_index][1]  close_last_element_button
         html_fragment = self.model.return_fragment("html")
        
-        current_close_last = self.master_window.text_fields[tab_index][1]
+        current_close_last = self.master_window.text_fields[self.model.selected_tab][1]
         
         element_tag = self.last_selected_element
         attributes_with_spaces = self.attribute_area_form.get('1.0', 'end-1c').strip()
-        if attributes_with_spaces!="":
+        if attributes_with_spaces != "":
             attributes_with_spaces = " "+attributes_with_spaces.replace("\n"," ")
         
         if self.last_selected_element_is_void:

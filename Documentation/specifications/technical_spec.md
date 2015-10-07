@@ -16,6 +16,7 @@ In tuto.json you find a collection {} with:
 * "level" int between 1-10 to indicate the difficulty (1 for absolute beginners and 10 for experienced webmasters
 * "steps" list strings of all steps in the tutorial. A step should be a html file with exercices
 * "reward" int reward
+* "showlink" boolean show link to next even if false
 
 
 There may also be a verification.json file there. A verification is a dic. Each dic correspond to 1 file
@@ -23,15 +24,22 @@ There may also be a verification.json file there. A verification is a dic. Each 
 * "this" the current html file
 * "show_solution" boolean,show or not show solution link if fail, if true there must be a file solution file "solution_%s" % (this)
 * "verification" list of special regular expression. A special regular expression is defined as**:
-    * "{t:x}tag1,tag2,...,tagn" t means tag. This will look at least x times for the tags
-    * "{tc:x}tag1,tag2,...,tagn" tc means tag closed. Same as above but will also look if that tag is closed
-    * "{a:attribute_name:x}tag1,tag2,...,tagn:value or nothing" a means attribute Will look x times for attribute name with the value value in any tags or in tags if tags is there.you must put ":" for no value
-    * "{r}" will search in raw mode (without parsing html)
-    * "{ro}" search in raw mode without compiling as regular expression
-    * "{do:tag:x}expression" d for data will look if expression  matches x times in tags.d only uses regular expressions and do without regular expression this will only look if expression is directly in tag !
-    * No prefix will be searched as data as non regular expression (same as {do::1}expre)
+    * [["t","x"], ["tag1","tag2","tagn"]] t means tag. This will look at least x times for the tags, must be closed of course
     
-* "showlink" boolean show link to next even if false
+    * [["a","attribute_name","attribute_value"], ["tag1","tag2","tagn"]] a means attribute Will look x times for attribute name with the value value in any tags if not specified or in written tags 
+    * [["r"], ["text"]] will search in raw mode (without parsing html)
+    * [["r","o"], ["text"]] search in raw mode without compiling as regular expression
+    * [["d","o","tag"], ["text"]] d for data will look if expression  matches  in tags. d  uses regular expressions and d + o without regular expression this will only look if expression is directly in tag !
+
+    example:
+    "verification":[
+            [["t","1"],["html","body","p"]],
+            [["a","src","fig1.jpg"], ["img"]],
+            [["d","p"],["bonjour"]],
+            [["r","o"],["<!DOCTYPE html>"]],
+            [["r","o"],["<red>"]]
+        ],
+    
 
 
 ----------

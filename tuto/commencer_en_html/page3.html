@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
     <head>
+
         <meta charset="utf-8"/>
         <link rel="stylesheet" href="../tuto.css"/>
         <title>
@@ -10,13 +11,16 @@
     <body>
         <main>
             <h1>Commencer en HTML, partie 3</h1>
-            <progress value="60" max="100">60%</progress>
+            <progress value="67" max="100">67%</progress>
             
             <section class="information">
             <h2>Découverte des premiers éléments</h2>
-                <h3>&lt;h1&gt;</h3>
-                <p></p>
-                <h3>&lt;a&gt;</h3>
+                <h3>&lt;img&gt; pour ajouter des images</h3>
+                <p></p><h4>Adresse absolue et adresse relative</h4>
+<p>Une adresse absolue est la même et pointe la même chose de n'importe où on se trouve. Une adresse relative change en fonction du lieu de départ mais elle est plus brève. L'adresse relative est aussi constante si tout un site web change de serveurs. Une adresse relative indique le chemin depuis la page sur laquelle on se trouve. On utilise / pour rentrer dans un dossier et /.. pour rentrer dans le dossier parent. Ainsi &lt;a href="/../salut.html" &gt;Exemple relatif&lt;/a&gt; va vous mener sur le fichier salut.html dans le dossier parent et &lt;a href="/a/b/bye.html" &gt;Exemple relatif 2&lt;/a&gt; va vous mener au fichier bye.html qui se trouve dans le dossier b qui se trouve dans le dossier a. L'adresse relative d'un fichier dans le même dossier est simplement le nom du fichier. Les adresses absolue , requirent le protocole  comme http:// par exemple</p>
+<p>En pratique on utilise les adresses absolues pour les fichiers sur les lesquels on a le contrôle dans notre dossier du site web. Pour ajouter une image voici la syntaxe <code>&lt;img src="adresse_de_l_image" alt="texte altenatif" &gt;</code>La valueur de l'attribut alt sera affiché au lieu de l'image s'il y a une erreur lors du chargement. Elle peut également servir pour les aveugles.</p>
+<p>On peut ajouter les attributs height et length pour modifier les dimensions. On verra dans un tutoriel plus avancé sur le CSS plus de détails sur les dimensions.</p>
+                <h3></h3>
                 <p></p>
 
                 <h3>&lt;img&gt;</h3>
@@ -28,9 +32,8 @@
                 <h2>Exercice 3</h2>
                 <ol>
                     <li>Faites une page html standard</li>
-                    <li>Ajoutez un titre principal</li>
-                    <li>Ajoutez un lien vers la page Github de WebSpree "https://github.com/GrosSacASac/WebSpree"</li>
-                    <li>Ajoutez une image</li>
+                    <li>Ajoutez une image avec l'attribut source src="image1.jpg"</li>
+                    <li>Collez une image dans le même dossier que le fichier html, sous le nom image1.jpg</li>
                     
                 </ol>
             </section>

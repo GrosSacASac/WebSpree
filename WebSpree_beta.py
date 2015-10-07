@@ -173,6 +173,9 @@ creating a copy of this object starts the app."""
             return os.path.expanduser('~')
         
     def validate_document(self):
+        """Returns an empty list if the document is correct.
+
+Else returns a list with error messages"""
         results = self.tabs_html[self.selected_tab].parse()
         messages = []
         if len(results) > 1:

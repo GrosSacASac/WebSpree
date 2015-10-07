@@ -557,8 +557,8 @@ class HTMLParser(_markupbase.ParserBase):
         else:
             self.key_attribute_list.append(None)
             self.value_attribute_list.append(None)
-        html_element = html_element_from_name(tag)
-        if html_element is not None: # found in saved, documented text
+        try:
+            html_element = ELEMENTS[tag] # found in saved, documented text
             #in file extractor
             must_parent = html_element["parent"]
             must_parents = must_parent.split(",")
@@ -568,6 +568,8 @@ class HTMLParser(_markupbase.ParserBase):
             else :#this block executes if the for block hasn t broke
                 #the must parent is not open or missing (<li> needs <ul> or <ol> open before)
                 self.must_parent_errors.append([",".join(must_parents), tag])
+        except KeyError:
+            pass
         self.start_list.append(tag)
         self.dynamic_start_list.append(tag)
 

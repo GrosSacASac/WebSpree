@@ -7,9 +7,9 @@
     },
     "action":{
         "common usage":"",
-        "description":"Remplissez les Constantes!",
+        "description":"",
         "role":"",
-        "translation":"a.php- mailto"
+        "translation":"action"
     },
     "align":{
         "common usage":"",
@@ -295,7 +295,7 @@
     },
     "target":{
         "common usage":"Mettez rien pour des liens internes et _blank pour des liens qui font sortir de votre site",
-        "description":"Target vous permet de faire en sorte que votre lien s'ouvrira dans un nouvel onglet, dans l'onglet actif ou dans une iframe particulière",
+        "description":"Target vous permet de faire en sorte que votre lien s'ouvrira dans un nouvel onglet, dans l'onglet actif ou dans une iframe particuli\u00e8re",
         "role":"Controler la navigation",
         "translation":"Cible"
     },

@@ -4,9 +4,8 @@
         "this":"page1.html",
         "show_solution":false,
         "verification":[
-            "{ro}<!DOCTYPE html>",
-            "{tc:1}html,head,meta,title,body,p",
-            "{do:p:1}bonjour"
+            [["t","1"],["html","p"]],
+            [["d","p"],["bonjour"]]
         ],
         "showlink":false
     },
@@ -15,8 +14,9 @@
         "this":"page2.html",
         "show_solution":false,
         "verification":[
-            "{tc:1}html,head,meta,title,body,p,h1,a,img",
-            "{a:href:1}a:https://github.com/GrosSacASac/WebSpree"
+            [["t","1"],["h1"]],
+            [["t","2"],["a"]],
+            [["a","href","https://github.com/GrosSacASac/WebSpree"], ["a"]]
         ],
         "showlink":false
     },
@@ -25,8 +25,8 @@
         "this":"page3.html",
         "show_solution":false,
         "verification":[
-            "{tc:1}html,head,meta,title,body,p,h1,a,img",
-            "{a:href:1}a:https://github.com/GrosSacASac/WebSpree"
+            [["a","src","image1.jpg"], ["img"]],
+            [["a","alt"], ["img"]]
         ],
         "showlink":false
     },
@@ -35,7 +35,7 @@
         "this":"page4.html",
         "show_solution":false,
         "verification":[
-            
+            [["t","1"],["h1","p","a","img"]]            
         ],
         "showlink":false
     }

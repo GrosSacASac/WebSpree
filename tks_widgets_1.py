@@ -30,6 +30,7 @@
 
 #
 import webbrowser
+import time
 
 try:#3.X
     import tkinter as tk
@@ -63,11 +64,9 @@ HTML_ELEMENT_FORMAT = {
 
 HTML_ATTRIBUTE_FORMAT = {
     "alt(s)":list,
-    "must_attributes":list,
-    "parent":list,
-    "specific_attributes":list,
+    "default_value":str,
+    "possible_values":list,
     "version":str,
-    "void":bool,
     "common usage":str,
     "description":str,
     "role":str,
@@ -83,7 +82,7 @@ HTML_ATTRIBUTE_FORMAT = {
 
 
 def list_from_string(string):
-    return string.split(",")
+    return list(filter(bool, map(str.strip, string.split(","))))
 
 def bool_from_string(string):
     string_lower = string.lower()
@@ -96,7 +95,6 @@ def list_of_strings_from_user_string(user_string):
             if user_string.endswith("]") or user_string.endswith(")"):
                 user_string = user_string[:-1]
         list_1 = list_from_string(user_string)
-        list_1 = list(map(str.strip, list_1))
         
     except Exception:
         list_1 = list() # empty list
@@ -141,11 +139,38 @@ def float_from_user_string(user_string):
         return float_1
     
 DATA_FROM_USER_STRING_LINK = {
-    list:list_of_strings_from_user_string,
-    str:string_from_user_string,
-    bool:bool_from_user_string,
-    int:int_from_user_string,
-    float:float_from_user_string}
+    list: list_of_strings_from_user_string,
+    str: string_from_user_string,
+    bool: bool_from_user_string,
+    int: int_from_user_string,
+    float: float_from_user_string}
+
+def user_string_from_bool(bool_):
+    if bool_:
+        return u"True"
+    return u"False"
+
+def user_string_from_list_of_strings(list_of_strings):
+    return u", ".join(list_of_strings)
+    
+def user_string_from_string(string):
+    return string
+    
+def user_string_from_int(int_):
+    return str(int_)
+    
+def user_string_from_float(float_):
+    return str(float_)
+    
+USER_STRING_FROM_DATA_LINK = {
+    list: user_string_from_list_of_strings,
+    str: user_string_from_string,
+    bool: user_string_from_bool,
+    int: user_string_from_int,
+    float: user_string_from_float}
+
+def user_stringify(data):
+    return USER_STRING_FROM_DATA_LINK[type(data)](data)
 
 def f_only(function):
     def function_then_break(*event):
@@ -387,28 +412,17 @@ def soft_destruction(root,window):
 def warn_user(message):
     print(message)#use GUI
     
-def save_data_changes(data_key, data_type, new_key_values):
-    if data_type == "html_element":
-        data_holder = ELEMENTS
-        data_holder_local = LOCAL_ELEMENTS
-        data_holder_in = html_element_from_name(data_key)#!understand before changing
-    else:
-        if data_type == "html_attribute":
-            data_holder = ATTRIBUTES
-            data_holder_local = LOCAL_ATTRIBUTES
-        #elif data_type == "css selector" ...
-        data_holder_in = data_holder[data_key]
-        
-    if copy_new_values(data_holder_in,new_key_values):#if anything has changed
-        store_change_in_source(data_holder)
-    if copy_new_values(data_holder_local_in,new_key_values):
-        store_change_in_source(data_holder_local)
     
 def receive_data_changes(data_type, keys, old_values, get_new_values):
+    # data_key is the name of the thing the user wants to change
+    # for data_type == "html_element" it is the name of the element
+    
     if data_type == "html_element":
         format_rule = HTML_ELEMENT_FORMAT
+        place = keys.index("element")
     elif data_type == "html_attribute" :
         format_rule = HTML_ATTRIBUTE_FORMAT
+        place = keys.index("attribute")
 ##    elif data_type == "x" :
 ##        format_rule = HTML_ELEMENT_FORMAT
 ##    elif data_type == "y" :
@@ -416,24 +430,46 @@ def receive_data_changes(data_type, keys, old_values, get_new_values):
 ##    elif data_type == "z" :
 ##        format_rule = HTML_ELEMENT_FORMAT
     new_values = get_new_values()
+    data_key = old_values[place]
+    del keys[place]
+    del old_values[place]
+    del new_values[place]
     clean_new_values = []
     i = 0
+    
     for new_value in new_values:
         clean_new_values.append(DATA_FROM_USER_STRING_LINK[format_rule[keys[i]]](new_value))
-        if not clean_new_values[i]:
-            #perhaps throw error instead of sending
-            #false values so that you can use false values
-            #then replace if with except
-            warn_user("False,void or 0 value for {} we take the old value back".format(keys[i]))
-            clean_new_values[i] = old_values[i]
+        # certain values are meant to be false, this is not the correct way to solve it
+##        if not clean_new_values[i]:
+##            #perhaps throw error instead of sending
+##            #false values so that you can use false values
+##            #then replace if with except
+##            warn_user("False,void or 0 value for {} we take the old value back".format(keys[i]))
+##            if old_values[i]:
+##                clean_new_values[i] = old_values[i]
         i += 1
     new_key_values = dict(zip(keys, clean_new_values))
     old_key_values = dict(zip(keys, old_values)) 
-    data_key = new_data.pop(keys[0])
     
     
     save_data_changes(data_key, data_type, new_key_values)
     
+def save_data_changes(data_key, data_type, new_key_values):
+    if data_type == "html_element":
+        data_holder = ELEMENTS
+        data_holder_local = LOCAL_ELEMENTS
+    elif data_type == "html_attribute":
+        data_holder = ATTRIBUTES
+        data_holder_local = LOCAL_ATTRIBUTES
+    #elif data_type == "css selector" ...
+    data_holder_in = data_holder[data_key]
+    data_holder_local_in = data_holder_local[data_key]
+    
+    if copy_new_values(data_holder_in,new_key_values):#if anything has changed
+        store_change_in_source(data_holder)
+    if copy_new_values(data_holder_local_in,new_key_values):
+        store_change_in_source(data_holder_local)
+        
 def general_editing_dialog(root, data_type, keys, old_values, focus_first=""):
     """Displays a form with default values ready to be edited."""
     edit_variable_dialog = tk.Toplevel(root)
@@ -483,7 +519,7 @@ def specific_editing_dialog_factory(event):
             old_values.append(widget_brother['text'])
 
     def specific_editing_dialog():
-        general_editing_dialog(w,parent_widget.for_data_type,keys,old_values,w.string)
+        general_editing_dialog(w, parent_widget.for_data_type, keys, old_values, w.string)
     return specific_editing_dialog
 
 def local_menu_print(event):
@@ -521,6 +557,10 @@ if __name__ == '__main__':
             self.assertEqual(list_of_strings_from_user_string("[a,and, b]"), wanted)
             self.assertEqual(list_of_strings_from_user_string("(  a, and,b  )"), wanted)
             self.assertEqual(list_of_strings_from_user_string("a,and,b"), wanted)
+            
+            wanted = []            
+            self.assertEqual(list_of_strings_from_user_string(""), wanted)
+            self.assertEqual(list_of_strings_from_user_string(" "), wanted)
             
         def test_string_from_user_string(self):
             wanted = "Hi"

@@ -7,7 +7,7 @@
     },
     "action":{
         "alt(s)":[],
-        "default_value":"Remplissez les Constantes!",
+        "default_value":"",
         "possible_values":[],
         "version":"1+"
     },
@@ -173,8 +173,12 @@
     },
     "lang":{
         "alt(s)":[],
-        "default_value":"en",
-        "possible_values":[],
+        "default_value":"",
+        "possible_values":[
+            "en",
+            "fr",
+            "de"
+        ],
         "version":"1+"
     },
     "list":{

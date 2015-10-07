@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
     <head>
         <meta charset="utf-8"/>
@@ -14,37 +14,65 @@
             
             <section class="information">
             <h2>Présentation</h2>
-                <h3>Le HTML, c'est quoi ?</h3>
-                <p>HTML pour <em lang="en">HyperText Markup Language</em> est le langage standard pour créer des pages web. En HTML vous pourrez structurez vos données de manière sémantique , les organiser de façon logique et même créer des documents interactifs. Vous aurez la possiblilité d'intégrer directement des éléments multimédias</p>
-                <h3>Changements</h3>
-                <p>Le HTML est défini par le <a href="http://w3.org/" target="_blank" >World Wide Web Consortium</a>. En ce moment la version vivante est le HTML5 toujours en cours de définition. Le w3c est la réfèrence ultime pour le HTML. Le w3c s'occupe de la création des spécification, et de la recommandation des bonnes pratiques.</p>
+                <h3>Le HTML, c'est quoi et pourquoi faire?</h3>
+                <p>HTML pour <em lang="en">HyperText Markup Language</em> est le langage standard pour créer des pages web. En HTML vous pourrez structurez vos données de manière sémantique , les organiser de façon logique et même créer des documents interactifs. Vous aurez la possiblilité d'intégrer directement des éléments multimédias. Il a été inventé pour créer des documents statiques qui peuvent se lier façilement aux débuts. Une fois les bases du HTML aquises vous pourrez découvrir d'autres languages pour multiplier vos possibilités de créations et réaliser des documents riches, interactifs, des jeux, des graphiques dynamiques, des applications connectés et bien plus encore.</p>
+                <h3>Evolutions</h3>
+                <p>Le HTML est défini par le <a href="http://w3.org/" target="_blank" >World Wide Web Consortium</a>. En ce moment même le HTML est toujours en cours de définition. Le w3c est la réfèrence ultime pour le HTML. Le w3c s'occupe de la création des spécification, et de la recommandation des bonnes pratiques. Ensuite les développeurs de navigateurs web peuvent implémenter les idées du w3c pour les rendres utilisables. Ces dernières annés le HTML a beaucoup changé notamment grâce à l'utilisation grandissante des smartphones pour visiter le web</p>
                 <figure>
-                    <a href="http://www.w3.org/html/logo/" target="_blank"><img src="http://www.w3.org/html/logo/badge/html5-badge-h-solo.png" width="63" height="64" alt="HTML5" title="HTML5"></a>
+                    <img src="http://www.w3.org/html/logo/badge/html5-badge-h-solo.png" width="63" height="64" alt="HTML5" title="HTML5">
                     <figcaption>Identité visuelle pour HTML5</figcaption>
                 </figure>
                 <h3>Et comment je fais pour créer du HTML moi ?</h3>
-                <p>Le HTML est d'abord un language du web, il faut donc déjà commencer par indiquer que c'est un document HTML en écrivant <code>&lt;!DOCTYPE html&gt;</code>. Ensuite il faut mettre tout le reste entre <code>&lt;html&gt;</code> et <code>&lt;/html&gt;</code>. Et de la même manière il faudra toujours mettre votre <strong>contenu entre la balise ouvrante et fermante</strong> qui correspond à la sémantique du contenu. La balise ouvrante s'écrit <code>&lt;nom de la balise&gt;</code> et la balise fermante <code>&lt;/nom de la balise&gt;</code>. Il existe aussi des balises autofermantes qui n'ont pas de contenu qui s'écrivent <code>&lt;nom attibut1=valeur1 attibut2=valeur2 &gt;</code>. Les attributs permettent de mieux décrire l'élément. Il faut aussi impérativement déclarer l'encodage.</p>
-                <h3>Au final ça ressemble à quoi ?</h3>
-                <figure><figcaption>Début d'un document HTML</figcaption>
-                <pre><code>&lt;!DOCTYPE html&gt;
-&lt;html lang="fr"&gt;
-    &lt;head&gt;
-        &lt;meta charset="utf-8"&gt;
-        &lt;link rel="stylesheet" href="coming_style.css"&gt;
-        &lt;title&gt;
-            Titre de la page
-        &lt;/title&gt;
-    &lt;/head&gt;
-    &lt;body&gt;</code></pre></figure>
-                <p>Dans WebSpree vous pouvez insérer tout cela en faisant Fichier Nouveau |Entrée|</p>
-            </section>
+                <p>En suivant ce guide vous allez tout savoir pour bien commencer. Le HTML est un language intermediare entre l'ordinateur et les sens de la créature qui s'y intéresse. Je veux simplement dire que le html est purement textuel et que le reste est genéré par un programme appelé navigateur web. Pour que le navigateur le fasse rapidement et simplement le html est un language avec des règles précises. C'est la syntaxe. Ce premier tutoriel va donc surtout se consacrer à expliquer comment écire du HTML juste.</p>
+
+<h3>Introduction à l'écriture de HTML</h3>
+<p>Ouvrez un simple éditeur de texte, c'est là que vous allez écrire le code HTML. Si vous avez WebSpree d'ouvert, c'est parfait car il contient un éditeur de texte intégré. Il faut commencer par indiquer que c'est un document HTML en écrivant <code>&lt;!DOCTYPE html&gt;</code>. Ensuite il faut mettre tout le reste entre <code>&lt;html&gt;</code> et <code>&lt;/html&gt;</code>. Et de la même manière il faut toujours mettre votre <strong>contenu entre la balise ouvrante et fermante</strong> qui correspond à la sémantique du contenu. La balise ouvrante se différencie <code>&lt;nom de la balise&gt;</code> de la balise fermante <code>&lt;/nom de la balise&gt;</code> par un slash ( / ) en moins. Il existe aussi des balises autofermantes qui n'ont pas de contenu qui s'écrivent <code>&lt;nom&gt;</code>. Tout cela peut sembler compliqué. La logique est très simple: Tout ce que vous écrivez entre une balise ouvrante et une balise fermante <em> est dedans </em> tout le reste est en dehors et les balises autofermantes n'ont pas de sens avec quelque chose dedans. Les balises peuvent s'emboiter comme des poupées russes. Un élément X est la balise ouvrante X + son contenu + la balise X fermante.</p>
+                <h4>Au final ça ressemble à quoi ?</h4>
+                <figure><figcaption>Simple document HTML</figcaption>
+                <pre><code>&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;p&gt;
+    Ceci est du texte qui est dans un élément p	
+&lt;/p&gt;
+&lt;p&gt;
+    Voici un simple document html
+&lt;/p&gt;
+&lt;/html&gt;</code></pre></figure>
+
+                <h4>Et oui c'est aussi simple</h4>
+                <p>Dans WebSpree vous pouvez insérer tout cela en faisant Fichier->Nouveau |Entrée| puis copiez collez puis Fichier->Essayer ! Pour modifiers le résultat retournez sur WebSpree, changez puis Fichier->Essayer à nouveau!</p>
+
+                <h4>Différents types d'élements</h4>
+                <p>Ici nous avons vu <code>html</code> et <code>p</code>. Tout le code doit se trouver dans l'élément html. L'élément p est là pour 1 paragraphe de texte. Un paragraphe par élément p, pas plus pas moins. Il y a beaucoup d'élément qui existent, mais il ne faut pas tous les connaîtres seulement savoir les chercher. Pour cela je vous invite à en découvrir quelque uns en cliquant dans WebSpree sur ce tableau:</p><img src="fig1.jpg" height="500"><p>Les éléments sont dans des catégories: Listes, Tableaux, Formulaires, etc. Par exemple la balise <code>&lt;h1&gt;</code> permet de créer un titre, textarea de créer un champ de saisie etc.</p>
+
+                <h4>Les attributs</h4>
+                <p>Les attributs sont là pour mieux décrire, étendre et parfois modifier le comportement d'un élément . Par exemple l'attribut contenteditable permet de rendre modifiable un élément. La syntaxe est <code>&lt;p attibut1=valeur1 attibut2=valeur2&gt;
+    Ceci est du texte qui est dans un élément p	
+&lt;/p&gt; </code> </p><p>Par exemple <code>&lt;p contenteditable="" &gt;
+    Ceci devrait être modifiable sur la page créé
+&lt;/p&gt; </code> Résultat, essayez de modifiez ce paragraphe:</p><p contenteditable="" > MODIFIEZ MOI
+</p>
+                <h4>Le doctype et la validité</h4>
+                <p>Le doctype est nécessaire en début de fichier. &lt;!doctype html&gt;
+</p>         <p>Pour qu'un document soit valide il faut que toute balise ouverte retrouve une balise fermante, et les balises n'ont pas le droit de s'entre croiser. Exemple d'interdit: </p>         <p><code>&lt;p&gt;
+    &lt;strong&gt;
+   bla bla
+&lt;/p&gt;	
+&lt;/strong&gt;</code> 	</p>         <p>On ne peut pas dire quoi est dans quoi.Voici la version juste, où on voit de suite que strong est dans p :</p>         <p>
+<code>&lt;p&gt;
+    &lt;strong&gt;
+   bla bla
+&lt;/strong&gt;	
+&lt;/p&gt;</code></p></section>
             
             <section class="exercices">
                 <h2>Exercice 1</h2>
+                <p>Faites un document valide.</p>
                 <ol>
                     <li>Commencez un nouveau document standard en allant dans Fichier puis Nouveau et enfin confirmez</li>
                     <li>&Eacute;crivez "bonjour" dans un paragraphe. Utilisez &lt;p&gt; pour commencer un paragraphe.</li>
                     <li>Valider l'exercice en cliquant sur [Check exercice]</li>
+                    <li>Cliquez ensuite sur le lien pour poursuivre le tutoriel</li>
                     
                 </ol>
             </section>

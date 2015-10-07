@@ -95,7 +95,8 @@ def object_to_json_file(data, directory_name="", file_name=""):
 ENCODINGS = table_with_textfile(os.path.normpath(os.path.join("Constantes","encodings.txt")),3)
 
 
-ELEMENTS = json_file_to_object(staticf,"html5_elements.json")
+
+ELEMENTS = json_file_to_object(staticf,"htmlelements.json")
 ATTRIBUTES = json_file_to_object(staticf,"html5_attributes.json")
 GENERAL_ATTRIBUTES_LIST = json_file_to_object(staticf,"html5_general_attributes.json")
 
@@ -104,18 +105,12 @@ CSS_SELECTORS = json_file_to_object(staticf,"css_selectors.json")
 (LOCAL_ELEMENTS, LOCAL_ATTRIBUTES,
  LOCAL_CSS_SELECTORS)               = load_local_strings("fr")
 
-def html_element_from_name(element_tag):
-    """Takes the element name as a string and return its complete structure."""
-    for couple in ELEMENTS:
-        for element in couple[1]:
-            if element == element_tag:
-                return couple[1][element]
-    return None #unknown element for WebSpree or custom element
+
 
 def store_change_in_source(data_holder,lang="fr"):
     """Saves the source file so that it has the same value as the current variable."""    
     if data_holder is ELEMENTS: #id(data_holder) == id(ELEMENTS)
-        object_to_json_file(data_holder,staticf,"html5_elements.json")
+        object_to_json_file(data_holder,staticf,"htmlelements.json")
     elif data_holder is ATTRIBUTES:
         object_to_json_file(data_holder,staticf,"html5_attributes.json")
     elif data_holder is GENERAL_ATTRIBUTES_LIST:
