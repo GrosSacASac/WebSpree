@@ -105,8 +105,9 @@ creating a copy of this object starts the app."""
     def _start_new_session(self):
         self.selected_tab = len(self.tabs_html)
         if self.start_mod == "standard":
-            self.create_document(self.selected_tab, self.get_option("last_html_document_title"))
-            self.tabs_html[selected_tab].add_standard_beginning()
+            self.create_document(self.selected_tab, self.get_option("last_html_document_title"),
+                STANDARD_BEGINNING_HTML)
+            
             
         elif self.start_mod == "blank":
             self.create_document(self.selected_tab, self.get_option("last_html_document_title"))
@@ -204,7 +205,10 @@ Else returns a list with error messages"""
             if inline[0] == wanted:
                 return inline[1]
         else:
-            print("wanted fragment not found")
+            print("wanted fragment not found")        
+
+    def return_copy_document(self, wanted="html"):
+        return self.tabs_html[self.selected_tab].text
         
 
 

@@ -42,7 +42,17 @@ def _(l_string):
     return l_string
 
 #export FileDocument, HTMLFragment, CSSFragment, JSFragment
-
+STANDARD_BEGINNING_HTML = u"""<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>  </title>
+    </head>
+    <body>
+       
+        
+    </body>
+</html>"""
 
 def raw_insert(base, new, position=None):
     """Inserts str into str after character at position position.
@@ -99,7 +109,6 @@ class HTMLFragment(CommonFragment):
 
         #editing data
         # get self.element_still_not_closed_list = []
-        # get self.instant_indenting_level = 0
         # get self.current_direction = 0
         #helps to indent properly
         self.current_translation_needed = True
@@ -147,94 +156,29 @@ class HTMLFragment(CommonFragment):
         else:
             return normal_char
 
-    def add_indent_and_line(self, text, first=False):
-        if text == "":
-            return ""
-        #else:
-        tr_level = self.get_option("translate_html_level")
-        indented_text = "\n"
-        if first:
-            indented_text = ""
-        for i in range(self.instant_indenting_level+self.current_direction):
-            indented_text += (self.get_option("indent_size") * self.get_option("indent_style"))
-            
-        if not(self.current_translation_needed) or tr_level == 0:
-            indented_text += text
-        else:
-            for character in text:
-                new = self.normal_char_to_html(character,tr_level)
-                indented_text += new
-                if new == "<br />":
-                    indented_text += "\n"
-                    for i in range(self.instant_indenting_level+self.current_direction):
-                        indented_text += (self.get_option("indent_size") * self.get_option("indent_style"))
-        self.current_direction = 0
-        self.current_translation_needed = True
-        return indented_text
 
   #editing macros with border effect
     def open_close_void_element(self,lone_element,attributes=""):
+        """Adds < > to the arguments.
+
+<br /> is an syntax error silently ignored in latest spec
+<br> is correct syntax"""
         self.current_translation_needed = False
         return "<"+lone_element+attributes+">"
 
     def open_element(self,lone_element,attributes=""):
-        opening_tag = "<"+lone_element+attributes+">"
-        closing_tag = "</"+lone_element+">"
-        self.element_still_not_closed_list.append(closing_tag)
-        self.instant_indenting_level += 1
         self.current_direction = -1
         self.current_translation_needed = False
-        return opening_tag
+        return "<"+lone_element+attributes+">"
 
     def close_element(self,closing_tag=""):
-        if not closing_tag:
-            closing_tag = self.element_still_not_closed_list.pop()
-        else:
-            closing_tag = "</"+closing_tag+">"
-        self.instant_indenting_level -= 1
         self.current_translation_needed = False
-        return closing_tag#len(self.element_still_not_closed_list)>0
+        return "</"+closing_tag+">"
 
-#editing super macros with direct border effect on the text
+#editing macros
         
     def add_standard_beginning(self):
-        beginning = ""
-        previous_insertion = self.insertion
-        previous_translate = self.get_option("translate_html_level")
-        self.set_option("translate_html_level",0)
-        self.insertion = None
-        if self.version == 5.0:
-            beginning += self.add_indent_and_line("<!DOCTYPE html>",first=True)
-            beginning += self.add_indent_and_line(self.open_element("html"," lang=\"{}\"".format(self.document_language)))
-            beginning += self.add_indent_and_line(self.open_element("head"))
-            beginning += self.add_indent_and_line(self.open_close_void_element("meta"," charset=\"{}\"".format(self.get_w3c_encoding())))
-            beginning += self.add_indent_and_line(self.open_close_void_element("link"," rel=\"stylesheet\" href=\"{}\"".format("coming_style.css")))
-            beginning += self.add_indent_and_line(self.open_element("title"))
-            beginning += self.add_indent_and_line(self.get_option("last_html_document_title"))
-            beginning += self.add_indent_and_line(self.close_element())#title close
-            beginning += self.add_indent_and_line(self.close_element())#head close
-            beginning += self.add_indent_and_line(self.open_element("body"))
-        elif self.version == "HTML 4.01 Strict":
-            beginning +=  self.add_indent_and_line("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">",first=True)
-            beginning += self.add_indent_and_line(self.open_element("html"," lang=\"{}\"".format(self.document_language)))
-            beginning += self.add_indent_and_line(self.open_element("head"))
-            beginning += self.add_indent_and_line(self.open_close_void_element("meta"," charset=\"{}\"".format(self.get_w3c_encoding())))
-            beginning += self.add_indent_and_line(self.open_close_void_element("link"," rel=\"stylesheet\" href=\"{}\"".format("coming_style.css")))
-            beginning += self.add_indent_and_line(self.open_element("title"))
-            beginning += self.add_indent_and_line(self.get_option("last_html_document_title"))
-            beginning += self.add_indent_and_line(self.close_element())#title close
-            beginning += self.add_indent_and_line(self.close_element())#head close
-            beginning += self.add_indent_and_line(self.open_element("body"))
-        elif self.version == "HTML 4.01 Transitional":
-            pass
-            
-        self.insert(beginning)
-        #if self.tk_text:
-            #self.tk_text.reset_undo()
-
-        #revert effects
-        self.insertion = previous_insertion
-        self.set_option("translate_html_level",previous_translate)
+        return  STANDARD_BEGINNING_HTML
 
 
     @property
@@ -565,6 +509,9 @@ returns results, a list with many informations. See parsers to know what informa
     
     def __len__(self):
         return len(self.text)
+
+
+        
     
 if __name__ == '__main__':
     html = "<html></html>"

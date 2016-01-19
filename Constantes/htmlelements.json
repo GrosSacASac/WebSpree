@@ -3,7 +3,9 @@
         "alt(s)":[],
         "category":"Contenu basique",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "href",
             "target"
@@ -16,7 +18,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -26,7 +30,9 @@
         "alt(s)":[],
         "category":"Structure",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -36,7 +42,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":true,
@@ -76,7 +84,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "src",
             "alt",
@@ -94,7 +104,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -104,7 +116,9 @@
         "alt(s)":[],
         "category":"Sp\u00e9cial",
         "must_attributes":[],
-        "parent":"head",
+         "parent":[
+            "head"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":true,
@@ -114,7 +128,9 @@
         "alt(s)":[],
         "category":"Contenu basique",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -124,7 +140,9 @@
         "alt(s)":[],
         "category":"Sp\u00e9cial",
         "must_attributes":[],
-        "parent":"html",
+         "parent":[
+            "html"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -134,7 +152,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -144,7 +164,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -154,7 +176,9 @@
         "alt(s)":[],
         "category":"Tableaux",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -164,7 +188,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -174,7 +200,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -184,7 +212,9 @@
         "alt(s)":[],
         "category":"Tableaux",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":true,
@@ -194,7 +224,9 @@
         "alt(s)":[],
         "category":"Tableaux",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -204,7 +236,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -214,7 +248,7 @@
         "alt(s)":[],
         "category":"Listes",
         "must_attributes":[],
-        "parent":"dl",
+        "parent":["dl"],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -224,7 +258,9 @@
         "alt(s)":[],
         "category":"Modifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -234,7 +270,9 @@
         "alt(s)":[],
         "category":"Interactifs",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -244,7 +282,9 @@
         "alt(s)":[],
         "category":"Structure",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -254,7 +294,9 @@
         "alt(s)":[],
         "category":"Listes",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -264,7 +306,7 @@
         "alt(s)":[],
         "category":"Listes",
         "must_attributes":[],
-        "parent":"dl",
+        "parent":["dl"],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -274,7 +316,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -284,7 +328,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":true,
@@ -294,7 +340,7 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"form",
+        "parent":["form"],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -304,7 +350,7 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"figure",
+        "parent":["figure"],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -314,7 +360,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -324,7 +372,9 @@
         "alt(s)":[],
         "category":"Structure",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -334,7 +384,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "method",
             "action"
@@ -347,7 +399,9 @@
         "alt(s)":[],
         "category":"Titres",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "align"
         ],
@@ -359,7 +413,9 @@
         "alt(s)":[],
         "category":"Titres",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "align"
         ],
@@ -371,7 +427,9 @@
         "alt(s)":[],
         "category":"Titres",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "align"
         ],
@@ -383,7 +441,9 @@
         "alt(s)":[],
         "category":"Titres",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -393,7 +453,9 @@
         "alt(s)":[],
         "category":"Titres",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -403,7 +465,9 @@
         "alt(s)":[],
         "category":"Titres",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -413,7 +477,9 @@
         "alt(s)":[],
         "category":"Sp\u00e9cial",
         "must_attributes":[],
-        "parent":"html",
+         "parent":[
+            "html"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -423,7 +489,9 @@
         "alt(s)":[],
         "category":"Structure",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -433,7 +501,9 @@
         "alt(s)":[],
         "category":"Contenu basique",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":true,
@@ -443,7 +513,7 @@
         "alt(s)":[],
         "category":"Sp\u00e9cial",
         "must_attributes":[],
-        "parent":"root",
+        "parent":["root"],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -453,7 +523,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -463,7 +535,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -473,7 +547,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "src",
             "alt"
@@ -486,7 +562,7 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"form",
+        "parent":["form","body"],
         "specific_attributes":[
             "type",
             "name",
@@ -510,7 +586,9 @@
         "alt(s)":[],
         "category":"Modifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -520,7 +598,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -530,7 +610,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -540,7 +622,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "for"
         ],
@@ -552,7 +636,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -562,7 +648,9 @@
         "alt(s)":[],
         "category":"Listes",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -572,7 +660,9 @@
         "alt(s)":[],
         "category":"Informations d'en-t\u00eate",
         "must_attributes":[],
-        "parent":"html",
+         "parent":[
+            "head"
+        ],
         "specific_attributes":[
             "rel",
             "href"
@@ -585,7 +675,9 @@
         "alt(s)":[],
         "category":"Structure",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -595,7 +687,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -605,7 +699,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -615,7 +711,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -625,7 +723,9 @@
         "alt(s)":[],
         "category":"Interactifs",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -635,7 +735,9 @@
         "alt(s)":[],
         "category":"Interactifs",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -645,7 +747,9 @@
         "alt(s)":[],
         "category":"Informations d'en-t\u00eate",
         "must_attributes":[],
-        "parent":"head",
+         "parent":[
+            "head"
+        ],
         "specific_attributes":[
             "charset"
         ],
@@ -657,7 +761,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -667,7 +773,9 @@
         "alt(s)":[],
         "category":"Structure",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -677,7 +785,9 @@
         "alt(s)":[],
         "category":"Informations d'en-t\u00eate",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -687,7 +797,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -697,7 +809,9 @@
         "alt(s)":[],
         "category":"Listes",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -707,7 +821,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "label"
         ],
@@ -719,7 +835,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "value",
             "selected"
@@ -732,7 +850,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -742,7 +862,9 @@
         "alt(s)":[],
         "category":"Contenu basique",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -752,7 +874,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":true,
@@ -762,7 +886,9 @@
         "alt(s)":[],
         "category":"Contenu basique",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -772,7 +898,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -782,7 +910,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -792,7 +922,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -802,7 +934,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -812,7 +946,9 @@
         "alt(s)":[],
         "category":"Informations d'en-t\u00eate",
         "must_attributes":[],
-        "parent":"html",
+         "parent":[
+            "head"
+        ],
         "specific_attributes":[
             "type"
         ],
@@ -824,7 +960,9 @@
         "alt(s)":[],
         "category":"Structure",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -834,7 +972,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "name"
         ],
@@ -846,7 +986,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -868,7 +1010,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -878,7 +1022,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -888,7 +1034,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -898,7 +1046,9 @@
         "alt(s)":[],
         "category":"Interactifs",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -908,7 +1058,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -918,7 +1070,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -928,7 +1082,9 @@
         "alt(s)":[],
         "category":"Tableaux",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -938,7 +1094,9 @@
         "alt(s)":[],
         "category":"Tableaux",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -948,7 +1106,9 @@
         "alt(s)":[],
         "category":"Tableaux",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -958,7 +1118,9 @@
         "alt(s)":[],
         "category":"Formulaires",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "value",
             "rows",
@@ -972,7 +1134,9 @@
         "alt(s)":[],
         "category":"Tableaux",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -982,7 +1146,9 @@
         "alt(s)":[],
         "category":"Tableaux",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -992,7 +1158,9 @@
         "alt(s)":[],
         "category":"Tableaux",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -1002,7 +1170,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -1012,7 +1182,9 @@
         "alt(s)":[],
         "category":"Informations d'en-t\u00eate",
         "must_attributes":[],
-        "parent":"head",
+         "parent":[
+            "head"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -1022,7 +1194,9 @@
         "alt(s)":[],
         "category":"Tableaux",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -1032,7 +1206,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -1042,7 +1218,9 @@
         "alt(s)":[],
         "category":"Listes",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -1052,7 +1230,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,
@@ -1062,7 +1242,9 @@
         "alt(s)":[],
         "category":"Contenu multim\u00e9dia",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[
             "src",
             "alt",
@@ -1082,7 +1264,9 @@
         "alt(s)":[],
         "category":"Qualifications",
         "must_attributes":[],
-        "parent":"body",
+         "parent":[
+            "body"
+        ],
         "specific_attributes":[],
         "version":"1+",
         "void":false,

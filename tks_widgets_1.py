@@ -60,7 +60,8 @@ HTML_ELEMENT_FORMAT = {
     "common usage":str,
     "description":str,
     "role":str,
-    "translation":str}
+    "translation":str
+}
 
 HTML_ATTRIBUTE_FORMAT = {
     "alt(s)":list,
@@ -70,7 +71,8 @@ HTML_ATTRIBUTE_FORMAT = {
     "common usage":str,
     "description":str,
     "role":str,
-    "translation":str}
+    "translation":str
+}
 ##CSS_SELECTOR_FORMAT = {
 ##    "define later":list}
 ##CSS_SELECTOR_FORMAT = {
@@ -85,6 +87,7 @@ def list_from_string(string):
     return list(filter(bool, map(str.strip, string.split(","))))
 
 def bool_from_string(string):
+    # for testing only, function is bad at multiple levels
     string_lower = string.lower()
     return "true" in string_lower or "yes" in string_lower
 

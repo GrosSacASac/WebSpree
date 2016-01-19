@@ -298,38 +298,34 @@ class HTMLWindows(tk.Frame):
 
                 
     def confirm_write(self):
+        """Adds to the text the selected code from the gui.
+
+Ignores identation !"""
         #self.text_fields[tab_index][0]  Text
         #self.text_fields[tab_index][1]  close_last_element_button
-        html_fragment = self.model.return_fragment("html")
-       
-        current_close_last = self.master_window.text_fields[self.model.selected_tab][1]
-        
+
         element_tag = self.last_selected_element
         attributes_with_spaces = self.attribute_area_form.get('1.0', 'end-1c').strip()
+        
+        html_fragment = self.model.return_fragment("html")
+        current_close_last = self.master_window.text_fields[self.model.selected_tab][1]
+        
+        
         if attributes_with_spaces != "":
             attributes_with_spaces = " "+attributes_with_spaces.replace("\n"," ")
         
         if self.last_selected_element_is_void:
-            text_to_add = html_fragment.add_indent_and_line(current_object.open_close_void_element(element_tag,attributes_with_spaces))
+            text_to_add = html_fragment.open_close_void_element(element_tag,attributes_with_spaces)
         else:#if not void
-            text_to_add = html_fragment.add_indent_and_line(current_object.open_element(element_tag, attributes_with_spaces))
-            text_to_add += html_fragment.add_indent_and_line(self.content_area_form.get('1.0','end-1c'))
+            text_to_add = html_fragment.open_element(element_tag, attributes_with_spaces) +\
+                self.content_area_form.get('1.0','end-1c')
             if self.var_for_auto_close_checkbutton.get():
-                text_to_add += html_fragment.add_indent_and_line(current_object.close_element())
+                text_to_add += html_fragment.close_element(element_tag)
         html_fragment.append(text_to_add)
-
-        
-        if not html_fragment.element_still_not_closed_list:
-            current_close_last['state'] = 'disabled'
-        else:
-            current_close_last['state'] = 'active'###
+        #we need to display the new text
+        self.master_window.tk_copy_text(self.model.return_copy_document())
     #todo here put the cursor at the end of what is just added
 
-    
-                   
-##    def write_in_real_time(self,*event):#TODO
-        
-    
         
 #Intern methods called by other or by changing an option --------------###############################
         
