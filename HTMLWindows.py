@@ -321,9 +321,10 @@ Ignores identation !"""
                 self.content_area_form.get('1.0','end-1c')
             if self.var_for_auto_close_checkbutton.get():
                 text_to_add += html_fragment.close_element(element_tag)
-        html_fragment.append(text_to_add)
-        #we need to display the new text
-        self.master_window.tk_copy_text(self.model.return_copy_document())
+        cursor_position = self.master_window.get_cursor_position()
+        html_fragment.insert(text_to_add, cursor_position)
+        #do same on textfield
+        self.master_window.tk_insert_text(text_to_add, cursor_position)
     #todo here put the cursor at the end of what is just added
 
         

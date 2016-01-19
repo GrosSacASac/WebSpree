@@ -356,11 +356,19 @@ class GraphicalUserInterfaceTk(tk.Tk):
         current_widget = self.text_fields[index][0]
         current_widget.edit_reset()
         
-            
-    def tk_insert_text(self, string, position):
+    def get_cursor_position(self):
+        index = self.model.selected_tab
+        text_field = self.text_fields[index][0]
+        return len(text_field.get('1.0', 'insert'))
+    
+    def tk_insert_text(self, string, position=None):
+        """insert string in textfield, position is a 1 dimensional index or None."""
         index = self.model.selected_tab
         text_field = self.text_fields[index][0]
 
+        if position is None:
+            position = self.get_cursor_position()
+            
         tk_index = self.tk_index_from_plain(text_field.get('1.0', 'end-1c'), position)
         text_field.insert(tk_index, string.encode('utf-8'))
         text_field.edit_separator()
@@ -521,7 +529,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         current_text_field = self.text_fields[tab_index][0]
         if self.insertion_tk_var.get():
             before_cursor_text = current_text_field.get('1.0', 'insert')
-            current_object.insertion = len(before_cursor_text)
+            current_object.insertion = len(before_cursor_text)  
         else:
             current_object.insertion = None
             
