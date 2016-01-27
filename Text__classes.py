@@ -413,6 +413,7 @@ See Documentation/how_to_parse.svg for more infos.
 Or, if first==False then immediately calls the parser of each fragment.
 
 returns results, a list with many informations. See parsers to know what informations."""
+        self.__saved = False
         position = 0
         results = [] #parse result, position
 

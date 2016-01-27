@@ -152,6 +152,7 @@ creating a copy of this object starts the app."""
         return True#only when success
 
     def save_html_file(self,*event):
+        print("save_html_file")
         current_text_html = self.tabs_html[self.selected_tab]
         if current_text_html.save_path:
             current_text_html.save_in_file()

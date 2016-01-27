@@ -2,11 +2,11 @@
 
 Learn Web-related technologies
 
-##What is it ?
+##What ?
 
-  WeBspree is a desktop text editor designed around html css ans js, It will help you in  this huge jungle of many keywords and guide you with integrated tutorials and progression guide.
+  WeBspree is a desktop text editor built around html css ans js, It will help you in this huge jungle of many keywords and guide you with integrated tutorials and progression guides.
   
-  Here's a screeshot of what it looks like(early 2015): 
+  Here's a screeshot of what it looks like.(early 2015): 
   
   ![Screenchot](Images/Histoire_en_Captures/Capture9.jpg)
     
@@ -17,31 +17,28 @@ Learn Web-related technologies
 * Run WebSpree.py or WebSpree_beta.py
 * If you use a Mac [click here](https://github.com/GrosSacASac/WebSpree/wiki/Installation-for-Mac)
   
-##Tests
+##Platform tests
 
-* Test all ok for Windows (Vista, 7, 8)
-* On Mac there are some minor problems but should be ok for basic use
-* Not tested yet on Linux
+* Test all ok for Windows Vista, 7, 8, 10.
+* On Mac there are some minor problems but should be ok for basic use.
+* Not tested yet on Linux.
 
 ##Updates
 
-  You can see the complete patch notes in the Documentation in [Patch_Notes.html](http://rawgit.com/GrosSacASac/WebSpree/master/Documentation/Patch_Notes.html)
+  You can see the complete patch notes in the Documentation in [Patch_Notes.html](http://rawgit.com/GrosSacASac/WebSpree/master/Documentation/Patch_Notes.html).
   
   
 ##How to join and contribute ?
 
-  Look for interesting missions in To_do.html in the Documentation folder
+  Look for To_do.html in the Documentation folder. Open issues filled with details.
 
 ##Developpement Status
 
-  5/10 :: Early alpha - Heavy changes are made every day
+  5/10 :: Early alpha - Heavy changes are made every day.
   
 ##How does it work ?
 
+   Uses python and tkinter ui. Read the technical specification for more details.
   ![simplified_internal_architecture](Documentation/simplified_internal_architecture.svg)
-  
-##More
-
-  You want to know more ? Read files in Documentation
   
 

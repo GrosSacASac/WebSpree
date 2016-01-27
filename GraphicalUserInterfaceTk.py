@@ -288,7 +288,6 @@ class GraphicalUserInterfaceTk(tk.Tk):
                                                  initialdir=self.model.guess_dir(),
                                                  filetypes=FILE_TYPES,
                                                  initialfile=self.model.get_option("last_html_document_title"))
-        
         return file_path and self.model._save_html_file_as(file_path)
 
     def save_file_to_test_control(self,*event):#Try with CTRL+Shift+T
