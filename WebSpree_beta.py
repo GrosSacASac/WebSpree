@@ -75,7 +75,7 @@ creating a copy of this object starts the app."""
         
         #this is the variable to know which one the user is currently editing
         self.selected_tab = 0
-        
+        self.current_verification = None
         self.graphical_user_interface_tk = GraphicalUserInterfaceTk(self)
         self.tabs_html = []
         for path in self.get_option("previous_files_opened"):

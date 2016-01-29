@@ -153,11 +153,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         
         
         content_frame.grid(row=0,column=2,sticky='nsw',columnspan=1)
-        self.tutorial_frame = tk.LabelFrame(tools, text=_("Tutoriel"), relief='ridge', borderwidth=1,bg="#d0c5e0")
-        self.tutorial_check = ttk.Button(self.tutorial_frame, text="Check exercice", command=lambda:verify(self.model))
-        self.tutorial_check.grid(row=0,column=0,sticky='')
-        self.tutorial_leave = ttk.Button(self.tutorial_frame, text="Leave tutorial", command=lambda:self.lock_tutorial(False))
-        self.tutorial_leave.grid(row=0,column=1,sticky='')
+
         
         if self.model.get_option("developper_interface"):
             future_search = tk.StringVar()
@@ -306,10 +302,10 @@ class GraphicalUserInterfaceTk(tk.Tk):
         
         
         self.text_fields.append([tk.Text(html_text_tab, yscrollcommand = main_scrollbar.set,
-                                         state='normal', width = self.adaptedwidth,
-                                         height=((self.adapted_height * 2) - 3),
-                                         undo=True, font=self.current_font),
-                                ttk.Button(html_text_tab, text=_("Fermer la dernière balise ouverte"), command=self.confirm_close_element)])
+            state='normal', width = self.adaptedwidth,
+            height=((self.adapted_height * 2) - 3),
+            undo=True, font=self.current_font),
+            ttk.Button(html_text_tab, text=_("Fermer la dernière balise ouverte"), command=self.confirm_close_element)])
         text_field = self.text_fields[tab_index][0]
         main_scrollbar.config(command=text_field.yview)
         text_field.grid(row=0,column=0,sticky='nsw')
@@ -573,13 +569,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.print_text_links(messages,links)        
         
     def lock_tutorial(self, lock=True):
-        if lock:
-            state="disabled"
-            self.tutorial_frame.grid(row=0,column=2,sticky='')
-        else:
-            state=tk.NORMAL
-            self.tutorial_frame.grid_forget()
-        self.Menus_tk.entryconfigure(self.tuto_label, state=state)
+        pass
     
     def change_mod(self):
         """Displays the selected tab."""
@@ -851,19 +841,24 @@ class GraphicalUserInterfaceTk(tk.Tk):
                 if tutorial_progress[folder]["finished"]:
                     score += info["reward"]
                     color = "#46a717"#green
-                    expl = _(" (tutoriel terminé)")
+                    label = _("{} (tutoriel terminé)")
                 else:
                     current = tutorial_progress[folder]["current"]
                     size = len(info["steps"])
                     score += int(float(current)/float(size) * float(info["reward"]))
                     color = "#e3b333"#yellow
-                    expl = _(" (tutoriel en cours)")
+                    label = _("{} (tutoriel en cours)")
             else:
                 color = "#fefefe"#near white
                 expl = ""
-            TUTORIALMENU["command"].append({'label':name+expl,"bg":color,'command':lambda: start_tutorial(folder,self)})
-        
+            TUTORIALMENU["command"].append({'label':label.format(name),"bg":color,
+                'command':lambda: start_tutorial(folder,self)})
+        TUTORIALMENU["command"].append({'label':_(u"Vérifier l'exercice"),"bg":"#aa88bb",
+                'command':lambda: verify(self.model)})
+        TUTORIALMENU["command"].append({'label':_(u"Quitter le tutoriel"),"bg":"#aa88bb",
+                'command':lambda: self.lock_tutorial(False)})
         TUTORIALMENU["radiobutton"] = []
+        
         
         HELPMENU = {}
         HELPMENU["name"] = _("Aide")
