@@ -773,7 +773,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         FILEMENU["command"] = [
              {'label':_("Nouveau [Ctrl+N]"),'command':self.prepare_new_file},\
              {'label':_("Ouvrir [Ctrl+O]"),'command':self.edit_file_dialog},\
-             {'label':_("Enregistrer [Ctrl+S]"),'command':lambda: self.model.ggg_html_file()},\
+             {'label':_("Enregistrer [Ctrl+S]"),'command':lambda: self.model.save_html_file()},\
              {'label':_("Enregistrer sous[Ctrl+Shift+S]"),'command':lambda: self._save_file_dialog()},\
              {'label':_("Enregistrer tout [Ctrl+Shift+A]"),'command':lambda: self.save_all("forced_arg")},\
              {'label':_("Essayer ! [Ctrl+Shift+T]"),'command':lambda: self.save_file_to_test_control()},\
@@ -851,6 +851,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
             else:
                 color = "#fefefe"#near white
                 expl = ""
+                label = _("{}")
             TUTORIALMENU["command"].append({'label':label.format(name),"bg":color,
                 'command':lambda: start_tutorial(folder,self)})
         TUTORIALMENU["command"].append({'label':_(u"Vérifier l'exercice"),"bg":"#aa88bb",
