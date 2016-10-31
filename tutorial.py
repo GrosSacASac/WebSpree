@@ -154,8 +154,7 @@ dans l'élément {}").format(search_content,tag))
 def verify(model):
     self = model
     if self.current_verification is None:
-        print("none")
-        return
+        return #  no tutorial selected
     fail_messages = do_verification(model, self.tabs_html[self.selected_tab],
         self.current_verification[self.current_step]["verification"])
 
