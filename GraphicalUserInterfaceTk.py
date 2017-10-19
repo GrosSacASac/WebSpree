@@ -62,7 +62,8 @@ from html_parser import HTMLParser
 from css_parser import CSSParser
 
 def _(l_string):
-    return l_string    
+    return l_string
+
 
 class GraphicalUserInterfaceTk(tk.Tk):
     """tkinter interface for WebSpree.
@@ -104,6 +105,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         
         self.general_frame = ttk.Frame(self,border=1)#this contains the common widgets e.g text editor
         self.special_frame = ttk.Frame(self,border=1)#this contains every specifiq widget,html,css,...
+        self.special_frame_hidden = False    
 
         self.general_frame.grid(row=0,column=0,sticky='nswe')
         self.special_frame.grid(row=0,column=1,sticky='nswe')
@@ -118,8 +120,8 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self._treeviews = []
         self.adaptedwidth = int(float(self.winfo_screenwidth())/25.0)
         self.adapted_height = int(float(self.winfo_screenheight())/50.0)
-        self.html_window = HTMLWindows(self.special_frame,self,model,self.adapted_height)#html frame
-        self.css_window = CSSWindows(self.special_frame,self,model,self.adapted_height)#css frame
+        self.html_window = HTMLWindows(self.special_frame,self,model,self.adapted_height)
+        self.css_window = CSSWindows(self.special_frame,self,model,self.adapted_height)
         self.js_window = tk.Frame(self.special_frame)#js frame
         self.t_frames = [self.html_window, self.css_window, self.js_window]
         ttk.Label(self.js_window,text="coming pretty soon . really.").grid()        
@@ -552,6 +554,15 @@ class GraphicalUserInterfaceTk(tk.Tk):
             if self.current_font['size'] < -7:
                 self.current_font['size'] += 1
                 self.my_style.configure('Treeview', rowheight=self.my_style.configure('Treeview', 'rowheight')-1)
+
+    def toggleHelp(self):
+        # https://stackoverflow.com/questions/10267465/showing-and-hiding-widgets#10268076
+        if (self.special_frame_hidden == False):
+            self.special_frame.grid_remove()
+        else:
+            self.special_frame.grid()
+        self.special_frame_hidden = not self.special_frame_hidden
+
                 
     def print_text_links(self, messages=[], links=[]):
         self.info = tk.Toplevel(self)
@@ -801,9 +812,10 @@ class GraphicalUserInterfaceTk(tk.Tk):
         VIEWMENU = {}
         VIEWMENU["name"] = _("Vue")
         VIEWMENU["command"] = [
-             {'label':_("Pas de Zoom[Ctrl+0]"),'command':lambda: self.change_size("0")},\
-             {'label':_("Zoom +[Ctrl+ +]"),'command':lambda: self.change_size("plus")},\
-             {'label':_("Zoom -[Ctrl+ -]"),'command':lambda: self.change_size("minus")}
+             {'label':_("Pas de Zoom[Ctrl+0]"),'command':lambda: self.change_size("0")},
+             {'label':_("Zoom +[Ctrl+ +]"),'command':lambda: self.change_size("plus")},
+             {'label':_("Zoom -[Ctrl+ -]"),'command':lambda: self.change_size("minus")},
+             {'label':_("Cacher/Montrer Aide"),'command':lambda: self.toggleHelp()},
          ]
         VIEWMENU["radiobutton"] = []
 

@@ -87,7 +87,7 @@ Here's the output of __repr__ method
 If the property is already there, we only overwrite the old value."""
         for s_css_property_value in self.css_property_values:
             if s_css_property_value.property_ == css_property_value.property_:
-                s_css_property_value.value = ss_property_value.value
+                s_css_property_value.value = css_property_value.value
                 break
         else: #the property is new to the rule
             self.css_property_values.append(css_property_value)
