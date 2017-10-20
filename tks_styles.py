@@ -85,9 +85,9 @@ FRAME_STYLE={'font':PoFrame,'fg':CFrame,'bg':FRAME_BACK_COLOR,'borderwidth':Eppa
 
 #Frame
 FRAME_STYLE_2={'bg':FRAME_BACK_COLOR,'borderwidth':EppaisseurCadres}
-COLOURS_A=["#ffd0d0","#ffffd0","#d0ffd0","#d0d0ff"]#eye friendly
-COLOURS_B=["#ffe2e2","#ffffe2","#e2ffe2","#e2e2ff"]#light
-COLOURS_A=COLOURS_B
+COLOURS_A=["#ffd0d0","#ffffd0","#d0ffd0","#d0d0ff", "#af2222"]#eye friendly
+COLOURS_B=["#ffe2e2","#ffffe2","#e2ffe2","#e2e2ff", "#af2222"]#light
+
 #todo let user choose his own set of coulours
 
 #Fen

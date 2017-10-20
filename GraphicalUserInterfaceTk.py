@@ -65,6 +65,14 @@ def _(l_string):
     return l_string
 
 
+def gridExpandMax(widget, parent, column=0, row=0, columnspan=1, rowspan=1, weight=1, minsize=1):
+    widget.grid(column=column, row=row,
+                columnspan=columnspan, rowspan=rowspan,
+                sticky=(tk.N, tk.S, tk.E, tk.W))
+
+    parent.rowconfigure(row, weight=weight, minsize=minsize)
+    parent.columnconfigure(column, weight=weight, minsize=minsize)
+
 class GraphicalUserInterfaceTk(tk.Tk):
     """tkinter interface for WebSpree.
 
@@ -102,13 +110,14 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.JS_PHOTO_ICO = tk.PhotoImage(file=os.path.normpath("images/icos/js32.gif"))
         self.images = [self.HTML5_PHOTO_ICO, self.CSS3_PHOTO_ICO, self.JS_PHOTO_ICO]
         #self.plus_image = tk.PhotoImage(file=os.path.normpath("images/widgets/plus_1.gif"))
-        
-        self.general_frame = ttk.Frame(self,border=1)#this contains the common widgets e.g text editor
-        self.special_frame = ttk.Frame(self,border=1)#this contains every specifiq widget,html,css,...
+
+        self.general_frame = tk.Frame(self,border=1, bg=COLOURS_A[4])#this contains the common widgets e.g text editor
+        self.special_frame = ttk.Frame(self,border=1)#this contains every specific widget,html,css,...
         self.special_frame_hidden = False    
 
-        self.general_frame.grid(row=0,column=0,sticky='nswe')
-        self.special_frame.grid(row=0,column=1,sticky='nswe')
+        
+        gridExpandMax(self.general_frame, self)
+        gridExpandMax(self.special_frame, self,column=1)
         
         self.current_font = tkfont.Font(family='helvetica')
         self.my_style = ttk.Style()
@@ -126,9 +135,8 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.t_frames = [self.html_window, self.css_window, self.js_window]
         ttk.Label(self.js_window,text="coming pretty soon . really.").grid()        
         
-        content_frame = tk.Frame(self.general_frame, FRAME_STYLE_2,bg=COLOURS_A[3])
-        self.html_text_tabs = ttk.Notebook(content_frame)
-        self.html_text_tabs.grid(row=0,column=0,sticky='nsw',columnspan=2)
+        self.html_text_tabs = ttk.Notebook(self.general_frame)
+        gridExpandMax(self.html_text_tabs, self.general_frame, columnspan=2)
         self.html_text_tabs.bind('<<NotebookTabChanged>>',self.change_tab)
 
         self.mode = tk.IntVar(value=0)
@@ -143,7 +151,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.change_mod()
         
         self.insertion_tk_var = tk.BooleanVar(value=True)
-        tools = tk.LabelFrame(content_frame, text=_("Outils"), relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)
+        tools = tk.LabelFrame(self.general_frame, text=_("Outils"), relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)
         
         write_cursor_choice = ttk.Radiobutton(tools, text=_("Insérer au curseur"),variable=self.insertion_tk_var, value=True,command=self.switch_writing_place )
         write_cursor_choice.grid(row=0,column=0,sticky='nw')
@@ -151,12 +159,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         write_end_choice.grid(row=0,column=1,sticky='nw')
         report=HyperLink(tools,URL="https://github.com/GrosSacASac/WebSpree/issues/new",text="Feedback")
         report.grid(row=0,column=3,sticky='nw')
-        tools.grid(row=1,column=0,sticky='nw')
-        
-        
-        content_frame.grid(row=0,column=2,sticky='nsw',columnspan=1)
-
-        
+        gridExpandMax(tools, self.general_frame, row=1)
         if self.model.get_option("developper_interface"):
             future_search = tk.StringVar()
             search_global = ttk.Entry(self.special_frame,textvariable=future_search)
@@ -310,7 +313,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
             ttk.Button(html_text_tab, text=_("Fermer la dernière balise ouverte"), command=self.confirm_close_element)])
         text_field = self.text_fields[tab_index][0]
         main_scrollbar.config(command=text_field.yview)
-        text_field.grid(row=0,column=0,sticky='nsw')
+        gridExpandMax(text_field, html_text_tab)
         main_scrollbar.grid(row=0,column=1,sticky='ns')
         
         
@@ -331,7 +334,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         text_field.tag_config("value", foreground="#9068b0")
         self.text_fields[tab_index][1].grid(row=1,column=0,sticky='nsw')
         self.text_fields[tab_index][1]['state']='disabled'
-        self.html_text_tabs.add(html_text_tab,text=title)
+        self.html_text_tabs.add(html_text_tab, text=title, sticky='nswe')
         self.html_text_tabs.select(tab_index)
         
         
@@ -400,7 +403,11 @@ class GraphicalUserInterfaceTk(tk.Tk):
         current_object = self.model.tabs_html[tab_index]
         if event[0] == "for_save":
             if not current_object.saved:
-                answer = messagebox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer l'onglet %s?" % (self.html_text_tabs.tab(tab_index,option='text'))))#True False ou None 
+                answer = messagebox.askyesnocancel(
+                    title=_("Attention"),
+                    message=_("Voulez vous sauvegarder avant de fermer l'onglet %s?" %
+                              (self.html_text_tabs.tab(tab_index,option='text')))
+                    ) # True False ou None 
                 if answer and not self.model.save_html_file():
                         return "cancel"
                 elif answer is None:                                      # Cancel or X pressed
