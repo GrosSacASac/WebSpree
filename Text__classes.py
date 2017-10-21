@@ -126,7 +126,6 @@ class HTMLFragment(CommonFragment):
                    
     #editing methods
     def html_to_normal_char(self,html_conversion):
-        #not used yet
         #uses dictionnaire html5
         if html_conversion[0] == '&':
             if html_conversion[1::] in html5:
@@ -143,6 +142,8 @@ class HTMLFragment(CommonFragment):
             translator = minimum_translation
         elif tr_level == 10:
             translator = html5reci
+        else:
+            return normal_char
             
         if normal_char in translator:
             html_conversion = translator[normal_char]
@@ -155,6 +156,13 @@ class HTMLFragment(CommonFragment):
             return html_conversion
         else:
             return normal_char
+
+    def escapeHTML(self, anyString, tr_level):
+        # returns escaped HTML
+        escaped = u""
+        for c in anyString:
+            escaped += self.normal_char_to_html(c, tr_level)
+        return escaped
 
 
   #editing macros with border effect

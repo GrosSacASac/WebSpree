@@ -310,15 +310,27 @@ Ignores identation !"""
         html_fragment = self.model.return_fragment("html")
         current_close_last = self.master_window.text_fields[self.model.selected_tab][1]
         
+        enteredText = self.content_area_form.get('1.0','end-1c')
+
+        translate_html_level = self.model.get_option("translate_html_level")
+        # all 10 , minimum 1 , nothing 0
+
+
+        
+        
+        if translate_html_level > 0:
+            translated = html_fragment.escapeHTML(enteredText, translate_html_level)
+        else:
+            translated = enteredText
+
         
         if attributes_with_spaces != "":
             attributes_with_spaces = " "+attributes_with_spaces.replace("\n"," ")
         
         if self.last_selected_element_is_void:
             text_to_add = html_fragment.open_close_void_element(element_tag,attributes_with_spaces)
-        else:#if not void
-            text_to_add = html_fragment.open_element(element_tag, attributes_with_spaces) +\
-                self.content_area_form.get('1.0','end-1c')
+        else:
+            text_to_add = html_fragment.open_element(element_tag, attributes_with_spaces) + translated
             if self.var_for_auto_close_checkbutton.get():
                 text_to_add += html_fragment.close_element(element_tag)
         cursor_position = self.master_window.get_cursor_position()
