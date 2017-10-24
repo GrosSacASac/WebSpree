@@ -315,8 +315,6 @@ Ignores identation !"""
         translate_html_level = self.model.get_option("translate_html_level")
         # all 10 , minimum 1 , nothing 0
 
-
-        
         
         if translate_html_level > 0:
             translated = html_fragment.escapeHTML(enteredText, translate_html_level)
