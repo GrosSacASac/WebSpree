@@ -311,6 +311,7 @@ Uses HTMLFragment, CSSFragment, JSFragment"""
     
         if self.gui_link:
             self.gui_link.reset_undo()
+        self.__saved = True
         
     @property
     def text(self):
@@ -330,6 +331,7 @@ Uses HTMLFragment, CSSFragment, JSFragment"""
         #   ]
         self.parse(first=True, text=content) #will set inlines
         self.gui_link.tk_copy_text(content)
+        self.__saved = False
 
 
     def insert(self, string, position=None):
@@ -421,7 +423,7 @@ See Documentation/how_to_parse.svg for more infos.
 Or, if first==False then immediately calls the parser of each fragment.
 
 returns results, a list with many informations. See parsers to know what informations."""
-        self.__saved = False
+        
         position = 0
         results = [] #parse result, position
 

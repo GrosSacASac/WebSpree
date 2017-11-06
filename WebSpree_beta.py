@@ -5,7 +5,7 @@
 #Role: main file
 
 #Walle Cyril
-#2014-11-09
+#2017-11
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
@@ -94,11 +94,15 @@ creating a copy of this object starts the app."""
         
     def create_document(self, selected_tab, title, text=u"", path=u""):
         self.graphical_user_interface_tk.new_html_tab(selected_tab, title)
-        current_text_html = FileDocument(self.options_file_object,content=text,
-                                      saved=True, path=path,
-                                      encoding_py=DEFAULT_ENCODING_PY,
-                                      document_language="fr", # !
-                                      gui_link=self.graphical_user_interface_tk)
+        current_text_html = FileDocument(
+            self.options_file_object,
+            content=text,
+            saved=True,
+            path=path,
+            encoding_py=DEFAULT_ENCODING_PY,
+            document_language="fr",
+            gui_link=self.graphical_user_interface_tk
+        )
         self.tabs_html.append(current_text_html)
         current_text_html.start()
         
@@ -152,12 +156,11 @@ creating a copy of this object starts the app."""
         return True#only when success
 
     def save_html_file(self,*event):
-        print("save_html_file")
         current_text_html = self.tabs_html[self.selected_tab]
         if current_text_html.save_path:
             current_text_html.save_in_file()
             return True
-        else:#ask for a new path
+        else: #ask for a new path
             return self.graphical_user_interface_tk._save_file_dialog()
             
         
