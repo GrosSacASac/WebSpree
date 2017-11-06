@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #-*-coding:utf-8*
 
-#HTMLWindows.py
+#HTMLFrame.py
 #Role: Define the HTML specific tools in tkinter
 
 #Walle Cyril
@@ -57,7 +57,7 @@ from tks_widgets_1 import *
 def _(l_string):
     return l_string
 wrap=420
-class HTMLWindows(tk.Frame):
+class HTMLFrame(tk.Frame):
     """HTML  frame."""
 
     def __init__(self, parent, master_window, model, adapted_height):

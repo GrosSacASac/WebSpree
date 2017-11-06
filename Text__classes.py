@@ -95,6 +95,9 @@ defines insert append remove find replace"""
 
     def find(self, *args):
         return self.text.find(*args)
+    
+    def parse(self):
+        pass
 
     def replace(self, *args):
         self.text = self.text.replace(*args)
@@ -338,8 +341,8 @@ Uses HTMLFragment, CSSFragment, JSFragment"""
         if not string:
             return
         if position is None:
-            self.inlines[-1][1].text += string
             position = len(self.text)
+            self.inlines[-1][1].text += string
         else:
             travelled = 0
             for inline in self.inlines:
@@ -451,8 +454,9 @@ returns results, a list with many informations. See parsers to know what informa
                 else:
                     self.inlines = [["html", HTMLFragment(text=text)]]
             else:
-                #if is css ...
-                self.inlines = [["css", CSSFragment(text=text)]]
+                self.inlines = [["txt", CommonFragment(text=text)]]
+                #if is css ... change this
+                    # self.inlines = [["css", CSSFragment(text=text)]]
         # else could be removed
         # but would do work twice
         else:

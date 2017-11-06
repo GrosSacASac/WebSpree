@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #-*-coding:utf-8*
 
-#CSSWindows.py
+#CSSFrame.py
 #Role: Define the CSS specific tools in tkinter
 
 #Walle Cyril
@@ -112,7 +112,7 @@ VALUE_LIST_2={
     }
 ######this data will be exported in external json files soon
 
-class CSSWindows(tk.Frame):
+class CSSFrame(tk.Frame):
     """CSS  frame."""
 
     def __init__(self, parent, master_window, model, adapted_height):
@@ -425,7 +425,7 @@ Swow the first child and destroys previous choices"""
         tab_index = self.model.selected_tab
         current_object=self.model.tabs_html[tab_index]
         text_to_add=(self.content_area_form.get('1.0','end-1c'))
-        current_object.add_to_text(text_to_add + "\n")
+        current_object.append(text_to_add + "\n")
         #delete the added
         self.delete_current()
 

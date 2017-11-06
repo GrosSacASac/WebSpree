@@ -403,9 +403,10 @@ Those handlers are overridable.
     
     # Overridable
     def handle_value(self, value, start, end):
-        self.color(start, end, "value")
-        self.tree[-1].value = value.strip()
-        self.close_last_sub_tree()
+        if (len(self.tree) > 0):
+            self.color(start, end, "value")
+            self.tree[-1].value = value.strip()
+            self.close_last_sub_tree()
     
     # Overridable
     def handle_rule(self, rule):
@@ -442,7 +443,8 @@ Those handlers are overridable.
         self.tree.append(css_object)
 
     def close_last_sub_tree(self):
-        return self.tree.pop()
+        if (len(self.tree) > 0):
+            self.tree.pop()
 
     def start_block(self, start):
         self.block_started += 1

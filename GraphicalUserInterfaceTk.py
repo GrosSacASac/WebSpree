@@ -52,9 +52,10 @@ from file_extractor import*
 from tks_styles import*
 ##LOG##
 from log_writer import log_writer
-##Window##
-from HTMLWindows import HTMLWindows
-from CSSWindows import CSSWindows
+##Frames##
+from HTMLFrame import HTMLFrame
+from CSSFrame import CSSFrame
+from JSFrame import JSFrame
 ##TOOLS##
 from tks_widgets_1 import *
 from Text__classes import *
@@ -129,11 +130,10 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self._treeviews = []
         self.adaptedwidth = int(float(self.winfo_screenwidth())/25.0)
         self.adapted_height = int(float(self.winfo_screenheight())/50.0)
-        self.html_window = HTMLWindows(self.special_frame,self,model,self.adapted_height)
-        self.css_window = CSSWindows(self.special_frame,self,model,self.adapted_height)
-        self.js_window = tk.Frame(self.special_frame)#js frame
-        self.t_frames = [self.html_window, self.css_window, self.js_window]
-        ttk.Label(self.js_window,text="coming pretty soon . really.").grid()        
+        self.html_frame = HTMLFrame(self.special_frame,self,model,self.adapted_height)
+        self.css_frame = CSSFrame(self.special_frame,self,model,self.adapted_height)
+        self.js_frame = JSFrame(self.special_frame,self,model,self.adapted_height)
+        self.t_frames = [self.html_frame, self.css_frame, self.js_frame]      
         
         self.html_text_tabs = ttk.Notebook(self.general_frame)
         gridExpandMax(self.html_text_tabs, self.general_frame, columnspan=2)
@@ -773,11 +773,12 @@ class GraphicalUserInterfaceTk(tk.Tk):
         results = current_object.parse()
         for result in results:
             position = result[1]
-            for color_code in result[0].color_codes_with_location:
-                start = color_code[0][0] + position
-                end = color_code[0][1] + position
-                code = color_code[1]
-                painter(start, end, code)
+            if result[0] is not None:
+                for color_code in result[0].color_codes_with_location:
+                    start = color_code[0][0] + position
+                    end = color_code[0][1] + position
+                    code = color_code[1]
+                    painter(start, end, code)
         
     def color_word(self,text_field,tk_i,tk_j,recognized_as):
         """Give a text region a recognized_as tag, that region will change."""
@@ -826,7 +827,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
          ]
         VIEWMENU["radiobutton"] = []
 
-        self.html_window.translate_html_level_tk_var = tk.IntVar(value=self.model.get_option("translate_html_level"))
+        self.html_frame.translate_html_level_tk_var = tk.IntVar(value=self.model.get_option("translate_html_level"))
         if self.model.get_option("indent_style")=="\t":
             self.indent_size_tk_var = tk.IntVar(value=-1)
         else:
@@ -840,7 +841,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         OPTIONMENU["radiobutton"] = []
         for text_,value_ in trans:
             OPTIONMENU["radiobutton"].append(
-                {'label':text_, 'command':self.html_window.set_translation,'value':value_,"variable":self.html_window.translate_html_level_tk_var})
+                {'label':text_, 'command':self.html_frame.set_translation,'value':value_,"variable":self.html_frame.translate_html_level_tk_var})
         for size in [0,2,3,4,8]:
             OPTIONMENU["radiobutton"].append(
                 {'label':_(u"Indenter avec {} espaces").format(size), 'command':self.set_indent_size,'value':size,"variable":self.indent_size_tk_var})
