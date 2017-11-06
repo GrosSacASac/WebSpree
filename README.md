@@ -4,19 +4,33 @@ Text editor for Web-related technologies
 
 ## What ?
 
-  WeBspree is a desktop text editor built around HTML CSS and JS, It will help you in this huge jungle of many keywords and guide you with integrated tutorials and progression guides.
+  WebSpree is a desktop text editor built around HTML CSS and JS, It will help you in this huge jungle of many keywords and guide you with integrated tutorials and progression guides.
   
   Here's a screeshot of what it looks like.(early 2015): 
   
   ![Screenchot](Images/Histoire_en_Captures/Capture9.jpg)
-    
+
+## Features
+
+ * Text Editor
+ * Built-in Tutorials
+ * Built-in Documentation about HTML, CSS
+ * Light
+ * Tabbed Editor
+ * Macros
+ * Find Replace Indent
+ * Cross Platform
+
+
 ## How to run the sofware ?
 
-* Download the entire repository.
-* Dowload Python 3
-* Run WebSpree.py or WebSpree_beta.py
-* If you use a Mac [click here](https://github.com/GrosSacASac/WebSpree/wiki/Installation-for-Mac)
-  
+* If you use a Mac [click here first](https://www.python.org/download/mac/tcltk/)
+* [Download WebSpree](https://github.com/GrosSacASac/WebSpree/archive/master.zip)
+* Unzip it
+* [Download Python 3](https://www.python.org/downloads/)
+* Double Click `WebSpree_beta.py` or
+* right click `WebSpree_beta.py` -> Edit with IDLE -> `F5` on the keyboard
+
 ## Platform tests
 
 * Test all ok for Windows Vista, 7, 8, 10.
