@@ -279,8 +279,8 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.new_file_dialog.destroy()
         
     def edit_file_dialog(self,*event):
-        file_path = filedialog.askopenfilename(self.model.guess_dir(),
-                                               filetypes = FILE_TYPES)
+        file_path = filedialog.askopenfilename(initialdir=self.model.guess_dir(),
+                                               filetypes=FILE_TYPES)
         self.model.edit_file(file_path)
 
     def _save_file_dialog(self,*event):

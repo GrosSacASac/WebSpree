@@ -33,10 +33,10 @@ import os
 import json
 
 DEFAULT_ENCODING_PY = DEFAULT_ENCODING_WEB = "utf-8"
-FILE_TYPES = [("HyperText Mark-Up Language file", "*.html" ),
+FILE_TYPES = [("All","*.*"),
+              ("HyperText Mark-Up Language file", "*.html" ),
               ("Cascade Style Sheet", "*.css"),
-              ("JavaScript", "*.js"),
-              ("All","*.*")]
+              ("JavaScript", "*.js")]
 ######----Constantes longues et extracteurs-----######
 #This will not be used anymore:
 def table_with_textfile(NomDuDocument,NbColonnes,Tableau=None):
