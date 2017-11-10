@@ -412,15 +412,13 @@ class GraphicalUserInterfaceTk(tk.Tk):
                 elif answer is None:                                      # Cancel or X pressed
                     return "cancel"
             return "no_cancel"
-        elif event[0]=="for_save_no_warning":
-            if not current_object.saved and not self.model.save_html_file():
-                return "cancel"
-            return "no_cancel"
         elif event[0]=="already_saved":
             kill_tab(self,tab_index,)
         else:#manual tab_closing
             if not current_object.saved:
-                answer = messagebox.askyesnocancel(title=_("Attention"), message=_("Voulez vous sauvegarder avant de fermer cet onglet ?"))#True False ou None 
+                answer = messagebox.askyesnocancel(
+                    title=_("Attention"),
+                    message=_("Voulez vous sauvegarder avant de fermer cet onglet ?"))
                 if answer:                                                      # Yes
                     if self.model.save_html_file():
                         kill_tab(self,tab_index)
@@ -439,6 +437,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
         if current_object.text != text_field.get('1.0', 'end-1c'):
             text_field.edit_separator()
             current_object.parse(first=True, text=text_field.get('1.0', 'end-1c'))
+            current_object.saved = False
             self.color_text_syntax(text_field)
 
     def confirm_close_element(self):
@@ -469,19 +468,22 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.destroy()
 
     def save_all(self,*event):
-        m = "for_save"
-        if event:#called directly
-            m = "for_save_no_warning"
         for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):#we save all tabs or cancel
             self.html_text_tabs.select(tab_not_closed_index)
             self.model.selected_tab = tab_not_closed_index
-            close_all = self.close_tab((m))
-            if close_all == "cancel":
-                return close_all
+            self.model.save_html_file()
+
+
+    def save_all_before_quit(self,*event):
+        for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):#we save all tabs or cancel
+            self.html_text_tabs.select(tab_not_closed_index)
+            self.model.selected_tab = tab_not_closed_index
+            if self.close_tab("for_save") == "cancel":
+                return "cancel"
         return "no_cancel"
     
     def intercept_close(self):
-        if self.save_all() != "cancel":
+        if self.save_all_before_quit() != "cancel":
             path_list = []
             for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):
                 #we close all tabs and save the location for the next time
@@ -793,9 +795,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
              {'label':_("Ouvrir [Ctrl+O]"),'command':self.edit_file_dialog},\
              {'label':_("Enregistrer [Ctrl+S]"),'command':lambda: self.model.save_html_file()},\
              {'label':_("Enregistrer sous[Ctrl+Shift+S]"),'command':lambda: self._save_file_dialog()},\
-             {'label':_("Enregistrer tout [Ctrl+Shift+A]"),'command':lambda: self.save_all("forced_arg")},\
+             {'label':_("Enregistrer tout [Ctrl+Shift+A]"),'command':lambda: self.save_all()},\
              {'label':_("Essayer ! [Ctrl+Shift+T]"),'command':lambda: self.save_file_to_test_control()},\
-             {'label':_("Fermer Onglet [Ctrl+W]"),'command':lambda: self.close_tab(("easy"))},\
+             {'label':_("Fermer Onglet [Ctrl+W]"),'command':lambda: self.close_tab("easy")},\
              {'label':_("Quitter"),'command':lambda: self.intercept_close()}
         ]
         FILEMENU["radiobutton"] = []

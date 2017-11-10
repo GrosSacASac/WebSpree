@@ -478,6 +478,10 @@ returns results, a list with many informations. See parsers to know what informa
     @property
     def saved(self):
         return self.__saved
+    
+    @saved.setter
+    def saved(self, status):
+        self.__saved = status
 
     @property
     def save_path(self):
