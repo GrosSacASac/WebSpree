@@ -356,6 +356,7 @@ Uses HTMLFragment, CSSFragment, JSFragment"""
             else:
                 self.inlines[-1][1].text += string
         self.gui_link.tk_insert_text(string, position)
+        self.__saved = False
      
     def append(self, string):
         self.insert(string)           
