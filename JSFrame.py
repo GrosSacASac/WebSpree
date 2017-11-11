@@ -106,8 +106,9 @@ class JSFrame(tk.Frame):
             
     def insert_text(self, text):
         tab_index = self.model.selected_tab
+        cursor_position = self.master_window.get_cursor_position()
         current_object=self.model.tabs_html[tab_index]
-        current_object.append(text + "\n")
+        current_object.insert(text + "\n", cursor_position)
 
     def save_file_to_test_control(self,*event):
         self.model.save_file_totest()

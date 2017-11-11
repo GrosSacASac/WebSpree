@@ -371,7 +371,10 @@ Ignores identation !"""
             current_text_field = self.master_window.text_fields[tab_index][0]
             if self.drag_element != "" and self.winfo_containing(event.x_root,event.y_root) is current_text_field:            
                 line_dot_char = current_text_field.index("@%s,%s" % (event.x, event.y))
-                current_object.insertion = len("\n".join(current_object.text.split("\n")[0:int(line_dot_char.split(".")[0])]))
+                line = int(line_dot_char.split(".")[0])
+                current_object.insertion = len("\n".join(
+                    current_object.text.split("\n")[0:line]
+                ))
                 self.confirm_write()
         except AttributeError:
             pass
