@@ -69,9 +69,12 @@ class JSFrame(tk.Frame):
         self.master_window = master_window
 
         commandsAndLabels = [
+            [self.insert_import, _(u"Import")],
+            [self.insert_export, _(u"Export")],
             [self.insert_function, _(u"Fonction")],
-            [self.insert_class, _(u"Classe")],
-            [self.insert_if_else_else_if, _(u"If else...")]
+            [self.insert_iife, _(u"IIFE")],
+            [self.insert_if_else_else_if, _(u"If else...")],
+            [self.insert_class, _(u"Classe")]
         ]
         i = 0
         for command, label in commandsAndLabels:
@@ -103,6 +106,17 @@ class JSFrame(tk.Frame):
 } else {
 
 }""")
+    def insert_import(self):
+        self.insert_text("""import {AAA, BBB}  from "./EXAMPLE.js";""")
+
+    def insert_export(self):
+        self.insert_text("""export {AAA, BBB};""")
+
+    def insert_iife(self):
+
+        self.insert_text("""(function () {
+   // function body 
+}());""")
             
     def insert_text(self, text):
         tab_index = self.model.selected_tab
