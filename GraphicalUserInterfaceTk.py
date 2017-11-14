@@ -44,6 +44,7 @@ except ImportError:#2.X
 import webbrowser
 import codecs
 import os
+import json
 
 ##DATA##
 from tutorial import detect_existing_tutorials,start_tutorial,verify
@@ -290,6 +291,36 @@ class GraphicalUserInterfaceTk(tk.Tk):
                                                  initialfile=self.model.get_option("last_html_document_title"))
         return file_path and self.model._save_html_file_as(file_path)
 
+    def save_session_dialog(self,*event):
+        
+        path_list = []
+        for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):
+            if self.model.tabs_html[tab_not_closed_index].save_path:
+                path_list.insert(0,self.model.tabs_html[tab_not_closed_index].save_path)
+         # True False or None 
+        answer = messagebox.askyesnocancel(
+            title=_(u"Question"),
+            message=_(u"Voulez vous sauvegarder la session dans un fichier spécifique ?")
+        )
+        if answer:
+           file_path = filedialog.asksaveasfilename(defaultextension=".json",
+                                                 initialdir=self.model.guess_dir(),
+                                                 filetypes=[("JSON", "*.json"), ("All","*.*")],
+                                                 initialfile="webspree_session.json")
+           if file_path:
+               session_object = {
+                   "webspree":"webspree_session",
+                   "path_list": path_list
+               }
+                   
+               JSON_TEXT = json.dumps(session_object,sort_keys=False, indent=4, separators=(',',':'))
+               codecs.open(file_path, 'w', "utf-8").write(JSON_TEXT)
+        elif not answer:
+            self.model.set_option("previous_files_opened", path_list)
+        elif answer is None:
+            pass
+
+    
     def save_file_to_test_control(self,*event):#Try with CTRL+Shift+T
         self.model.save_file_totest()
         
@@ -406,7 +437,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
                     title=_("Attention"),
                     message=_("Voulez vous sauvegarder avant de fermer l'onglet %s?" %
                               (self.html_text_tabs.tab(tab_index,option='text')))
-                    ) # True False ou None 
+                    ) # True False or None 
                 if answer and not self.model.save_html_file():
                         return "cancel"
                 elif answer is None:                                      # Cancel or X pressed
@@ -492,7 +523,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
                 self.html_text_tabs.select(tab_not_closed_index)
                 self.model.selected_tab = tab_not_closed_index
                 self.close_tab(("already_saved"))
-            self.model.set_option("previous_files_opened",path_list)
+            self.model.set_option("previous_files_opened", path_list)
             self._end()
     
     def view_license(self,already_accepted = False):
@@ -791,13 +822,14 @@ class GraphicalUserInterfaceTk(tk.Tk):
         FILEMENU = {}
         FILEMENU["name"] = _("Fichier")
         FILEMENU["command"] = [
-             {'label':_("Nouveau [Ctrl+N]"),'command':self.prepare_new_file},\
-             {'label':_("Ouvrir [Ctrl+O]"),'command':self.edit_file_dialog},\
-             {'label':_("Enregistrer [Ctrl+S]"),'command':lambda: self.model.save_html_file()},\
-             {'label':_("Enregistrer sous[Ctrl+Shift+S]"),'command':lambda: self._save_file_dialog()},\
-             {'label':_("Enregistrer tout [Ctrl+Shift+A]"),'command':lambda: self.save_all()},\
-             {'label':_("Essayer ! [Ctrl+Shift+T]"),'command':lambda: self.save_file_to_test_control()},\
-             {'label':_("Fermer Onglet [Ctrl+W]"),'command':lambda: self.close_tab("easy")},\
+             {'label':_("Nouveau [Ctrl+N]"),'command':self.prepare_new_file},
+             {'label':_("Ouvrir [Ctrl+O]"),'command':self.edit_file_dialog},
+             {'label':_("Enregistrer [Ctrl+S]"),'command':lambda: self.model.save_html_file()},
+             {'label':_("Enregistrer sous[Ctrl+Shift+S]"),'command':lambda: self._save_file_dialog()},
+             {'label':_("Enregistrer tout [Ctrl+Shift+A]"),'command':lambda: self.save_all()},
+             {'label':_("Enregistrer la session"),'command':lambda: self.save_session_dialog()},
+             {'label':_("Essayer ! [Ctrl+Shift+T]"),'command':lambda: self.save_file_to_test_control()},
+             {'label':_("Fermer Onglet [Ctrl+W]"),'command':lambda: self.close_tab("easy")},
              {'label':_("Quitter"),'command':lambda: self.intercept_close()}
         ]
         FILEMENU["radiobutton"] = []
