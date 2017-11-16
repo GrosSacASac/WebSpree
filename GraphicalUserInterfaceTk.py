@@ -66,6 +66,10 @@ from css_parser import CSSParser
 def _(l_string):
     return l_string
 
+JSON = {
+    "defaultextension": ".json",
+    "filetypes": [("JSON", "*.json"), ("All","*.*")]
+}
 
 def gridExpandMax(widget, parent, column=0, row=0, columnspan=1, rowspan=1, weight=1, minsize=1):
     widget.grid(column=column, row=row,
@@ -303,13 +307,14 @@ class GraphicalUserInterfaceTk(tk.Tk):
             message=_(u"Voulez vous sauvegarder la session dans un fichier spécifique ?")
         )
         if answer:
-           file_path = filedialog.asksaveasfilename(defaultextension=".json",
+           file_path = filedialog.asksaveasfilename(defaultextension=JSON["defaultextension"],
                                                  initialdir=self.model.guess_dir(),
-                                                 filetypes=[("JSON", "*.json"), ("All","*.*")],
+                                                 filetypes=JSON["filetypes"],
                                                  initialfile="webspree_session.json")
            if file_path:
                session_object = {
                    "webspree":"webspree_session",
+                   "version": "1.0.0",
                    "path_list": path_list
                }
                    
@@ -417,17 +422,21 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.color_text_syntax(text_field)
             
     def close_tab(self,*event):
+        """
+"for_save" does not close the tab at all but asks to save it
+"already_saved" immediately closes the tab even if unsaved
+anything else would be a combination of the two above
+"""
         def kill_tab(self,tab_index):
             del self.model.tabs_html[tab_index]
             del self.text_fields[tab_index]
             self.html_text_tabs.forget(tab_index)
-            if len(self.model.tabs_html)>0:
+            if len(self.model.tabs_html) > 0:
                 self.html_text_tabs.select(0)
                 self.model.selected_tab = 0
             else:
-#here is the way to let open at least 1 tab instead of closing the app
-                self.model.start_mod = 2
-                self.model._start_new_session()#open with a different name than last name used
+                self.model.start_mod = "blank"
+                self.model._start_new_session()
         
         tab_index = self.model.selected_tab
         current_object = self.model.tabs_html[tab_index]
@@ -440,22 +449,22 @@ class GraphicalUserInterfaceTk(tk.Tk):
                     ) # True False or None 
                 if answer and not self.model.save_html_file():
                         return "cancel"
-                elif answer is None:                                      # Cancel or X pressed
+                elif answer is None: # Cancel or X pressed
                     return "cancel"
             return "no_cancel"
-        elif event[0]=="already_saved":
+        elif event[0] == "already_saved":
             kill_tab(self,tab_index,)
-        else:#manual tab_closing
+        else: # manual tab_closing
             if not current_object.saved:
                 answer = messagebox.askyesnocancel(
                     title=_("Attention"),
                     message=_("Voulez vous sauvegarder avant de fermer cet onglet ?"))
-                if answer:                                                      # Yes
+                if answer: # Yes
                     if self.model.save_html_file():
                         kill_tab(self,tab_index)
-                elif answer is None: pass                                  # Cancel or X pressed
+                elif answer is None: pass # Cancel or X pressed
                 else :
-                    kill_tab(self,tab_index)                             # No
+                    kill_tab(self,tab_index) # No
             else:
                 kill_tab(self,tab_index)
             
@@ -498,6 +507,22 @@ class GraphicalUserInterfaceTk(tk.Tk):
     def _end(self):
         self.destroy()
 
+    def open_other_session(self):
+        file_path = filedialog.askopenfilename(initialdir=self.model.guess_dir(),
+            defaultextension=JSON["defaultextension"], filetypes=JSON["filetypes"])
+        if (file_path):
+            if self.save_all_before_quit() == "no_cancel":
+                try:
+                    json_text = codecs.open(file_path,'r','utf-8').read() # can throw
+                    session = json.loads(json_text) # can throw
+                    path_list = session["path_list"] # can throw
+                    self.close_all_tabs_without_save()
+                    self.model.open_session(path_list)
+                except Exception:
+                    print(Exception)
+                    pass
+
+            
     def save_all(self,*event):
         for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):#we save all tabs or cancel
             self.html_text_tabs.select(tab_not_closed_index)
@@ -506,6 +531,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
 
 
     def save_all_before_quit(self,*event):
+        # or close all tabs with prompts to save
         for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):#we save all tabs or cancel
             self.html_text_tabs.select(tab_not_closed_index)
             self.model.selected_tab = tab_not_closed_index
@@ -513,6 +539,12 @@ class GraphicalUserInterfaceTk(tk.Tk):
                 return "cancel"
         return "no_cancel"
     
+    def close_all_tabs_without_save(self):
+        for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):
+            self.html_text_tabs.select(tab_not_closed_index)
+            self.model.selected_tab = tab_not_closed_index
+            self.close_tab(("already_saved"))
+            
     def intercept_close(self):
         if self.save_all_before_quit() != "cancel":
             path_list = []
@@ -522,7 +554,7 @@ class GraphicalUserInterfaceTk(tk.Tk):
                     path_list.insert(0,self.model.tabs_html[tab_not_closed_index].save_path)
                 self.html_text_tabs.select(tab_not_closed_index)
                 self.model.selected_tab = tab_not_closed_index
-                self.close_tab(("already_saved"))
+                # self.close_tab(("already_saved"))
             self.model.set_option("previous_files_opened", path_list)
             self._end()
     
@@ -828,8 +860,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
              {'label':_("Enregistrer sous[Ctrl+Shift+S]"),'command':lambda: self._save_file_dialog()},
              {'label':_("Enregistrer tout [Ctrl+Shift+A]"),'command':lambda: self.save_all()},
              {'label':_("Enregistrer la session"),'command':lambda: self.save_session_dialog()},
+             {'label':_("Ouvrir une session"),'command':lambda: self.open_other_session()},
              {'label':_("Essayer ! [Ctrl+Shift+T]"),'command':lambda: self.save_file_to_test_control()},
-             {'label':_("Fermer Onglet [Ctrl+W]"),'command':lambda: self.close_tab("easy")},
+             {'label':_("Fermer Onglet [Ctrl+W]"),'command':lambda: self.close_tab("other")},
              {'label':_("Quitter"),'command':lambda: self.intercept_close()}
         ]
         FILEMENU["radiobutton"] = []

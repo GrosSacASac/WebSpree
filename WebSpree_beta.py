@@ -74,23 +74,26 @@ creating a copy of this object starts the app."""
         #each tab is stored as 1 element of this list
         
         #this is the variable to know which one the user is currently editing
+        self.fileCounter = 0
         self.selected_tab = 0
         self.current_verification = None
         self.graphical_user_interface_tk = GraphicalUserInterfaceTk(self)
         self.tabs_html = []
-        for path in self.get_option("previous_files_opened"):
-            try:
-                self.edit_file(path)
-            except Exception as E:
-                print(E)
-                pass#file not found or something
-##        for path in self.get_option("previous_files_opened"):
-##            self.edit_file(path) for testing only
+        self.open_session(self.get_option("previous_files_opened"))
+
             
         if not self.tabs_html:#nothing opened so we provide a blank "new" file
             self.start_mod = "newtab"
             self._start_new_session()
         self.graphical_user_interface_tk._start()
+        
+    def open_session(self, path_list):
+        for path in path_list:
+            try:
+                self.edit_file(path)
+            except Exception as E:
+                # file not found or something
+                pass
         
     def create_document(self, selected_tab, title, text=u"", path=u""):
         self.graphical_user_interface_tk.new_html_tab(selected_tab, title)
@@ -124,7 +127,7 @@ creating a copy of this object starts the app."""
         elif self.start_mod == "newtab":
             self.create_document(self.selected_tab, _("nouveau"))
                      
-    def edit_file(self,file_path):
+    def edit_file(self, file_path):
         if not os.path.isfile(file_path):
             return #we stop here because the file has been lost        
         #print("edit_file:", file_path)
@@ -136,15 +139,14 @@ creating a copy of this object starts the app."""
                              text=text_in_file, path=file_path)       
 
         
+        self.fileCounter += 1
+        self.set_option("last_html_document_title",u"DOC{}".format(self.fileCounter))
         #todo
         #change the way it sniffs out the encoding  and redo this method
         
-    def _save_html_file_as(self,file_path):
+    def _save_html_file_as(self, file_path):
         tab_index = self.selected_tab
         current_text_html = self.tabs_html[tab_index]
-        if self.get_option("footer_bonus"):
-            optional_bonus = ("<!-- Document produit avec WebSpree\n{}\n{} -->".format(get_time(),"Fait par Cyril Walle\ncapocyril [ (a ] hotmail.com"))
-            current_text_html.add_to_text(optional_bonus)
         
         #if os.path.splitext(file_path)[1] != ".html":
             #file_path=os.path.splitext(file_path)[0]+".html"
