@@ -6,9 +6,9 @@ Text editor for Web-related technologies
 
   WebSpree is a desktop text editor built around HTML CSS and JS, It will help you in this huge jungle of many keywords and guide you with integrated tutorials and progression guides.
   
-  Here's a screeshot of what it looks like.(early 2015): 
+  Here's a screeshot of what it looks like.(2017): 
   
-  ![Screenchot](Images/Histoire_en_Captures/Capture9.jpg)
+  ![Screenchot](Images/Histoire_en_Captures/Capture10.jpg)
 
 ## Features
 
@@ -46,13 +46,17 @@ Text editor for Web-related technologies
 
   Look for To_do.html in the Documentation folder. Open issues filled with details.
 
-## Developpement Status
+## Development Status
 
   5/10 :: Early alpha - Heavy changes are made.
   
 ## How does it work ?
 
-   Uses python and tkinter ui. Read the technical specification for more details.
+   Uses python and tkinter. Read the technical specification for more details.
   ![simplified_internal_architecture](Documentation/simplified_internal_architecture.svg)
+  
+## Warning
+
+There are some issues with this software, as many parts were written way back then in 2012 when I was getting started in programming in Python. For example parsing is done on every keystroke : it does not work well for large documents (can be fixed).
   
 
