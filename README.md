@@ -20,6 +20,7 @@ Text editor for Web-related technologies
  * Macros
  * Find Replace Indent
  * Cross Platform
+ * Manage Sessions
 
 
 ## How to run the sofware ?
