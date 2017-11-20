@@ -425,16 +425,17 @@ class GraphicalUserInterfaceTk(tk.Tk):
         """
 "for_save" does not close the tab at all but asks to save it
 "already_saved" immediately closes the tab even if unsaved
+"already_saved_self_managed" same but does not open a blank tab if 0 tab
 anything else would be a combination of the two above
 """
-        def kill_tab(self,tab_index):
+        def kill_tab(self,tab_index, open_at_least_one=True):
             del self.model.tabs_html[tab_index]
             del self.text_fields[tab_index]
             self.html_text_tabs.forget(tab_index)
             if len(self.model.tabs_html) > 0:
                 self.html_text_tabs.select(0)
                 self.model.selected_tab = 0
-            else:
+            elif open_at_least_one:
                 self.model.start_mod = "blank"
                 self.model._start_new_session()
         
@@ -453,7 +454,9 @@ anything else would be a combination of the two above
                     return "cancel"
             return "no_cancel"
         elif event[0] == "already_saved":
-            kill_tab(self,tab_index,)
+            kill_tab(self,tab_index)
+        elif event[0] == "already_saved_self_managed":
+            kill_tab(self,tab_index, False)
         else: # manual tab_closing
             if not current_object.saved:
                 answer = messagebox.askyesnocancel(
@@ -543,7 +546,7 @@ anything else would be a combination of the two above
         for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):
             self.html_text_tabs.select(tab_not_closed_index)
             self.model.selected_tab = tab_not_closed_index
-            self.close_tab(("already_saved"))
+            self.close_tab("already_saved_self_managed")
             
     def intercept_close(self):
         if self.save_all_before_quit() != "cancel":
