@@ -66,17 +66,6 @@ from css_parser import CSSParser
 def _(l_string):
     return l_string
 
-def k(handler):
-    """decorates an event handler in such a way
-that the default shortcut command is not triggered
-same as event.preventDefault() in HTML5 but
-as a decorator"""
-    def prevent_default(event):
-        handler(event)
-        print("return break")
-        return 'break'
-    return prevent_default
-
 JSON = {
     "defaultextension": ".json",
     "filetypes": [("JSON", "*.json"), ("All","*.*")]

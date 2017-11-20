@@ -364,7 +364,7 @@ class DragDropFeedback(tk.Toplevel):
         self.geometry('200x25+%d+%d' % (0+x,0+y))
         
 def cut(event):
-    event.widget.event_generate('<k-x>')
+    event.widget.event_generate('<Control-x>')
     event.widget.event_generate('<KeyRelease>')
 def copy(event):
     event.widget.event_generate('<Control-c>')
