@@ -175,11 +175,15 @@ USER_STRING_FROM_DATA_LINK = {
 def user_stringify(data):
     return USER_STRING_FROM_DATA_LINK[type(data)](data)
 
-def f_only(function):
-    def function_then_break(*event):
-        function()
-        return "break"#prevent default behavior
-    return function_then_break
+def k(handler):
+    """decorates an event handler in such a way
+that the default shortcut command is not triggered
+same as event.preventDefault() in HTML5 but
+as a decorator"""
+    def prevent_default(*event):
+        handler(event)
+        return 'break'
+    return prevent_default
 
 class memoized(object):
     """Decorator. Caches a function's return value each time it is called.
@@ -360,7 +364,7 @@ class DragDropFeedback(tk.Toplevel):
         self.geometry('200x25+%d+%d' % (0+x,0+y))
         
 def cut(event):
-    event.widget.event_generate('<Control-x>')
+    event.widget.event_generate('<k-x>')
     event.widget.event_generate('<KeyRelease>')
 def copy(event):
     event.widget.event_generate('<Control-c>')
@@ -396,11 +400,11 @@ def bind_(widget, all_=False, modifier="", letter="", callback=None, add='',):
     if modifier and letter:
         letter = "-" + letter
     if all_:
-        widget.bind_all('<{}{}>'.format(modifier,letter.upper()), callback, add)
-        widget.bind_all('<{}{}>'.format(modifier,letter.lower()), callback, add)
+        widget.bind_all('<{}{}>'.format(modifier, letter.upper()), callback, add)
+        widget.bind_all('<{}{}>'.format(modifier, letter.lower()), callback, add)
     else:
-        widget.bind('<{}{}>'.format(modifier,letter.upper()), callback, add)
-        widget.bind('<{}{}>'.format(modifier,letter.lower()), callback, add)
+        widget.bind('<{}{}>'.format(modifier, letter.upper()), callback, add)
+        widget.bind('<{}{}>'.format(modifier, letter.lower()), callback, add)
 
 
 def soft_destruction(root,window):

@@ -66,6 +66,17 @@ from css_parser import CSSParser
 def _(l_string):
     return l_string
 
+def k(handler):
+    """decorates an event handler in such a way
+that the default shortcut command is not triggered
+same as event.preventDefault() in HTML5 but
+as a decorator"""
+    def prevent_default(event):
+        handler(event)
+        print("return break")
+        return 'break'
+    return prevent_default
+
 JSON = {
     "defaultextension": ".json",
     "filetypes": [("JSON", "*.json"), ("All","*.*")]
@@ -93,20 +104,20 @@ class GraphicalUserInterfaceTk(tk.Tk):
         #self.geometry('1700x600+0+0')#static size is bad, it doesn t adapt
         self.configure(bd=1,bg=WINDOW_BACK_COLOR)
         self.iconbitmap(os.path.normpath(LOGO1_PATH))#problems here, icon should be insert when freezing the app not here
-        bind_(self, all_=True, modifier="Control-plus", letter="", callback=self.change_size)
-        bind_(self, all_=True, modifier="Control-minus", letter="", callback=self.change_size)
-        bind_(self, all_=True, modifier="Control-0", letter="", callback=self.change_size)
-        bind_(self, all_=True, modifier="Control", letter="w", callback=self.close_tab)
-        bind_(self, all_=True, modifier="Control", letter="n", callback= self.prepare_new_file)
-        bind_(self, all_=True, modifier="Control", letter="s", callback=self.model.save_html_file)
-        bind_(self, all_=True, modifier="Control", letter="o", callback=self.edit_file_dialog)
-        bind_(self, all_=True, modifier="Control", letter="f", callback=self.prepare_find_dialog)
-        bind_(self, all_=True, modifier="Control", letter="g", callback=self.find_next)
-        bind_(self, all_=True, modifier="Control", letter="h", callback=self.prepare_replace_dialog)
-        bind_(self, all_=True, modifier="F3", letter="", callback=self.find_next)
-        bind_(self, all_=True, modifier="Control-Shift", letter="t", callback=self.save_file_to_test_control)
-        bind_(self, all_=True, modifier="Control-Shift", letter="s", callback=self._save_file_dialog)
-        bind_(self, all_=True, modifier="Control-Shift", letter="a", callback=self.save_all)
+        bind_(self, all_=True, modifier="Control-plus", letter="", callback=k(self.change_size))
+        bind_(self, all_=True, modifier="Control-minus", letter="", callback=k(self.change_size))
+        bind_(self, all_=True, modifier="Control-0", letter="", callback=k(self.change_size))
+        bind_(self, all_=True, modifier="Control", letter="w", callback=k(self.close_tab))
+        bind_(self, all_=True, modifier="Control", letter="n", callback=k(self.prepare_new_file))
+        bind_(self, all_=True, modifier="Control", letter="s", callback=k(self.model.save_html_file))
+        bind_(self, all_=True, modifier="Control", letter="o", callback=k(self.edit_file_dialog))
+        bind_(self, all_=True, modifier="Control", letter="f", callback=k(self.prepare_find_dialog))
+        bind_(self, all_=True, modifier="Control", letter="g", callback=k(self.find_next))
+        bind_(self, all_=True, modifier="Control", letter="h", callback=k(self.prepare_replace_dialog))
+        bind_(self, all_=True, modifier="F3", letter="", callback=k(self.find_next))
+        bind_(self, all_=True, modifier="Control-Shift", letter="t", callback=k(self.save_file_to_test_control))
+        bind_(self, all_=True, modifier="Control-Shift", letter="s", callback=k(self._save_file_dialog))
+        bind_(self, all_=True, modifier="Control-Shift", letter="a", callback=k(self.save_all))
         self.bind("<FocusIn>", self.app_got_focus)
         
         
@@ -341,23 +352,27 @@ class GraphicalUserInterfaceTk(tk.Tk):
         
         
         
-        self.text_fields.append([tk.Text(html_text_tab, yscrollcommand = main_scrollbar.set,
+        text_field = tk.Text(html_text_tab, yscrollcommand = main_scrollbar.set,
             state='normal', width = self.adaptedwidth,
             height=((self.adapted_height * 2) - 3),
-            undo=True, font=self.current_font),
-            ttk.Button(html_text_tab, text=_("Fermer la dernière balise ouverte"), command=self.confirm_close_element)])
-        text_field = self.text_fields[tab_index][0]
+            undo=True, font=self.current_font)
+        close_last_button = ttk.Button(html_text_tab,
+            text=_("Fermer la dernière balise ouverte"),
+            command=self.confirm_close_element)
+        self.text_fields.append([text_field, close_last_button])
         main_scrollbar.config(command=text_field.yview)
         gridExpandMax(text_field, html_text_tab)
         main_scrollbar.grid(row=0,column=1,sticky='ns')
         
         
-        bind_(text_field, all_=False, modifier="Control", letter="h", callback=f_only(self.prepare_replace_dialog))
-        bind_(text_field, all_=False, modifier="Control", letter="f", callback=f_only(self.prepare_find_dialog))
-        #bind_(text_field, all_=False, modifier="KeyPress", letter="Tab", callback=f_only(self.tab_indent))
+        bind_(text_field, all_=False, modifier="Control", letter="h", callback=k(self.prepare_replace_dialog))
+        bind_(text_field, all_=False, modifier="Control", letter="f", callback=k(self.prepare_find_dialog))
+        bind_(text_field, all_=False, modifier="Control", letter="f", callback=k(self.prepare_find_dialog))
+        bind_(text_field, all_=False, modifier="Control", letter="o", callback=k(self.edit_file_dialog))
+        #bind_(text_field, all_=False, modifier="KeyPress", letter="Tab", callback=k(self.tab_indent))
         text_field.bind('<KeyRelease>', self.key_releaser)
         text_field.bind('<Button-3>',create_context_menu)
-        text_field.bind('<ButtonRelease-1>',self.switch_writing_place)
+        text_field.bind('<ButtonRelease-1>',self.switch_writing_place) # what about arrows
         text_field.tag_config("element", foreground="#905b64")
         text_field.tag_config("html_declaration", foreground="#999")
         text_field.tag_config("comment", foreground="#121000")
@@ -367,8 +382,8 @@ class GraphicalUserInterfaceTk(tk.Tk):
         text_field.tag_config("selector", foreground="#4588cf")
         text_field.tag_config("property_", foreground="#19a02f")
         text_field.tag_config("value", foreground="#9068b0")
-        self.text_fields[tab_index][1].grid(row=1,column=0,sticky='nsw')
-        self.text_fields[tab_index][1]['state']='disabled'
+        close_last_button.grid(row=1,column=0,sticky='nsw')
+        close_last_button['state']='disabled'
         self.html_text_tabs.add(html_text_tab, text=title, sticky='nswe')
         self.html_text_tabs.select(tab_index)
         
