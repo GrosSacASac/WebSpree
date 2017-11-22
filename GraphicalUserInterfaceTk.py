@@ -28,13 +28,13 @@
 ##by sending an email to the following adress:capocyril [ (a ] hotmail.com
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-try:#3.X
+try: # 3.X
     import tkinter as tk
     import tkinter.ttk  as ttk
     import tkinter.filedialog as filedialog
     import tkinter.messagebox as messagebox
     import tkinter.font as tkfont
-except ImportError:#2.X
+except ImportError: # 2.X
     import Tkinter as tk
     import ttk as ttk
     import tkFileDialog as filedialog
@@ -46,18 +46,13 @@ import codecs
 import os
 import json
 
-##DATA##
 from tutorial import detect_existing_tutorials,start_tutorial,verify
 from file_extractor import*
-##STYLES##
 from tks_styles import*
-##LOG##
 from log_writer import log_writer
-##Frames##
 from HTMLFrame import HTMLFrame
 from CSSFrame import CSSFrame
 from JSFrame import JSFrame
-##TOOLS##
 from tks_widgets_1 import *
 from Text__classes import *
 from html_parser import HTMLParser
@@ -79,16 +74,20 @@ def gridExpandMax(widget, parent, column=0, row=0, columnspan=1, rowspan=1, weig
     parent.rowconfigure(row, weight=weight, minsize=minsize)
     parent.columnconfigure(column, weight=weight, minsize=minsize)
 
+MAX_ZOOM = 45
+MIN_ZOOM = -8
 class GraphicalUserInterfaceTk(tk.Tk):
     """tkinter interface for WebSpree.
 
-"""    
+"""
+    
     def __init__(self,model):
         tk.Tk.__init__(self)
         self.model = model
         self.text_fields = []
         self.title(MAIN_TITLE)
         self.protocol("WM_DELETE_WINDOW", self.intercept_close)
+        self.zoom_level = 0
         #self.attributes('-fullscreen', 1)#, '-topmost', 1)fullscreen #doesnt exist everywhere
         #self.geometry('1700x600+0+0')#static size is bad, it doesn t adapt
         self.configure(bd=1,bg=WINDOW_BACK_COLOR)
@@ -314,8 +313,11 @@ class GraphicalUserInterfaceTk(tk.Tk):
            if file_path:
                session_object = {
                    "webspree":"webspree_session",
-                   "version": "1.0.0",
-                   "path_list": path_list
+                   "version": "1.1.0",
+                   "path_list": path_list,
+                   "tab_index": self.model.selected_tab,
+                   "zoom": self.zoom_level,
+                   "edit_mod": self.mode.get()
                }
                    
                JSON_TEXT = json.dumps(session_object,sort_keys=False, indent=4, separators=(',',':'))
@@ -326,11 +328,11 @@ class GraphicalUserInterfaceTk(tk.Tk):
             pass
 
     
-    def save_file_to_test_control(self,*event):#Try with CTRL+Shift+T
+    def save_file_to_test_control(self,*event):
         self.model.save_file_totest()
         
     def change_tab(self,*event):
-        #mysteriously non functional# this has been fixed otherwise #comment out of date
+        # mysteriously non functional# this has been fixed otherwise #comment out of date
         self.html_text_tabs.update_idletasks()
         self.model.selected_tab = self.html_text_tabs.index(self.html_text_tabs.select())
         
@@ -338,7 +340,6 @@ class GraphicalUserInterfaceTk(tk.Tk):
     def new_html_tab(self, tab_index, title):
         html_text_tab = tk.Frame(self.html_text_tabs)
         main_scrollbar  =  ttk.Scrollbar(html_text_tab)
-        
         
         
         text_field = tk.Text(html_text_tab, yscrollcommand = main_scrollbar.set,
@@ -609,22 +610,25 @@ anything else would be a combination of the two above
             current_object.insertion = None
             
     def reset_zoom(self):
+        self.zoom_level = 0
         self.current_font['size'] = -15
         self.my_style.configure('Treeview', rowheight=20)
         
     def change_size(self, intent):
         for treeview in self._treeviews:
             treeview.column("local",width=200)
-            
+
         if intent == 'reset':
             self.reset_zoom()
         elif intent == 'plus':
-            if self.current_font['size'] > -60:
+            if self.zoom_level < MAX_ZOOM:
+                self.zoom_level += 1
                 self.current_font['size'] -= 1
                 self.my_style.configure('Treeview', rowheight=self.my_style.configure('Treeview', 'rowheight')+1)
                 
         elif intent == 'minus':
-            if self.current_font['size'] < -7:
+            if self.zoom_level > MIN_ZOOM:
+                self.zoom_level -= 1
                 self.current_font['size'] += 1
                 self.my_style.configure('Treeview', rowheight=self.my_style.configure('Treeview', 'rowheight')-1)
                 
