@@ -93,9 +93,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
         #self.geometry('1700x600+0+0')#static size is bad, it doesn t adapt
         self.configure(bd=1,bg=WINDOW_BACK_COLOR)
         self.iconbitmap(os.path.normpath(LOGO1_PATH))#problems here, icon should be insert when freezing the app not here
-        bind_(self, all_=True, modifier="Control-plus", letter="", callback=k(self.change_size))
-        bind_(self, all_=True, modifier="Control-minus", letter="", callback=k(self.change_size))
-        bind_(self, all_=True, modifier="Control-0", letter="", callback=k(self.change_size))
+        bind_(self, all_=True, modifier="Control-plus", letter="", callback=k(self.zoom_in))
+        bind_(self, all_=True, modifier="Control-minus", letter="", callback=k(self.zoom_out))
+        bind_(self, all_=True, modifier="Control-0", letter="", callback=k(self.reset_zoom_user))
         bind_(self, all_=True, modifier="Control", letter="w", callback=k(self.close_tab))
         bind_(self, all_=True, modifier="Control", letter="n", callback=k(self.prepare_new_file))
         bind_(self, all_=True, modifier="Control", letter="s", callback=k(self.model.save_html_file))
@@ -612,26 +612,30 @@ anything else would be a combination of the two above
         self.current_font['size'] = -15
         self.my_style.configure('Treeview', rowheight=20)
         
-    def change_size(self,event):
-        try:
-            equivalent = event.keysym#when zooms with keyboard
-        except AttributeError:
-            equivalent = event#zoom with something else (menu)
-
+    def change_size(self, intent):
         for treeview in self._treeviews:
             treeview.column("local",width=200)
-        if equivalent== '0':
-            self.reset_zoom()
             
-        elif equivalent == 'plus':
+        if intent == 'reset':
+            self.reset_zoom()
+        elif intent == 'plus':
             if self.current_font['size'] > -60:
                 self.current_font['size'] -= 1
                 self.my_style.configure('Treeview', rowheight=self.my_style.configure('Treeview', 'rowheight')+1)
                 
-        elif equivalent == 'minus':
+        elif intent == 'minus':
             if self.current_font['size'] < -7:
                 self.current_font['size'] += 1
                 self.my_style.configure('Treeview', rowheight=self.my_style.configure('Treeview', 'rowheight')-1)
+                
+    def zoom_in(self, *event):
+        self.change_size("plus")
+        
+    def zoom_out(self, *event):
+        self.change_size("minus")
+        
+    def reset_zoom_user(self, *event):
+        self.change_size("reset")
 
     def toggleHelp(self):
         # https://stackoverflow.com/questions/10267465/showing-and-hiding-widgets#10268076
@@ -893,11 +897,12 @@ anything else would be a combination of the two above
         VIEWMENU = {}
         VIEWMENU["name"] = _("Vue")
         VIEWMENU["command"] = [
-             {'label':_("Pas de Zoom[Ctrl+0]"),'command':lambda: self.change_size("0")},
-             {'label':_("Zoom +[Ctrl+ +]"),'command':lambda: self.change_size("plus")},
-             {'label':_("Zoom -[Ctrl+ -]"),'command':lambda: self.change_size("minus")},
-             {'label':_("Cacher/Montrer Aide"),'command':lambda: self.toggleHelp()},
+             {'label':_("Pas de Zoom[Ctrl+0]"),'command': self.reset_zoom_user},
+             {'label':_("Zoom +[Ctrl+ +]"),'command': self.zoom_in},
+             {'label':_("Zoom -[Ctrl+ -]"),'command': self.zoom_out},
+             {'label':_("Cacher/Montrer Aide"),'command': self.toggleHelp},
          ]
+
         VIEWMENU["radiobutton"] = []
 
         self.html_frame.translate_html_level_tk_var = tk.IntVar(value=self.model.get_option("translate_html_level"))
