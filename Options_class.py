@@ -157,25 +157,26 @@ class InterfaceOptions():
     def get_option(self,option_name):
         return self.options_file_object.read_file(read_this_key_only=option_name)
 
-DEFAULT_VALUES={\
+DEFAULT_VALUES={
 #editing global
-    "translate_html_level": 1,\
-    "indent_size":2,\
-    "indent_style":" ",\
-    "footer_bonus":False,\
+    "translate_html_level": 1,
+    "indent_size": 2,
+    "indent_style": " ",
+    "footer_bonus": False,
 #editing local (read only to set a default value)
-    "html_version":5.0,\
-    "document_language":"fr",\
+    "html_version": 5.0,
+    "document_language": "fr",
 #history
-    "last_html_document_title":_("Titre"),\
-    "last_css_document_title":_("Titre"),\
-    "previous_files_opened":[],\
+    "last_html_document_title": _("Titre"),
+    "last_css_document_title": _("Titre"),
+     # old "previous_files_opened": [],
+    "webspree_session": {},
 #app
-    "license_accepted_and_read":False,\
-    "app_language":"fr",\
-    "developper_interface":False,\
+    "license_accepted_and_read": False,
+    "app_language": "fr",
+    "developper_interface": False,
 #tutorials
-    "tutorial_progress":{}\
+    "tutorial_progress":{}
     }
 #demo
 if __name__ == '__main__':
