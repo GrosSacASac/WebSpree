@@ -4,12 +4,12 @@
 #file_extractor.py
 #Role:extracts data from static data files
 
-#Walle Cyril
+
 #2014-11-09
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
-##Copyright (C) 2014 Walle Cyril
+
 ##
 ##WebSpree is free software: you can redistribute it and/or modify
 ##it under the terms of the GNU General Public License as published by
@@ -24,8 +24,8 @@
 ##You should have received a copy of the GNU General Public License
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
-##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril [ (a ] hotmail.com
+##If you have questions concerning this license you may contact
+##by opening an issue
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 import codecs
@@ -91,7 +91,7 @@ def object_to_json_file(data, directory_name="", file_name=""):
                     json.dumps(data,sort_keys=True, indent=4,
                                separators=(',',':'))
                     )
-    
+
 ENCODINGS = table_with_textfile(os.path.normpath(os.path.join("Constantes","encodings.txt")),3)
 
 
@@ -108,7 +108,7 @@ CSS_SELECTORS = json_file_to_object(staticf,"css_selectors.json")
 
 
 def store_change_in_source(data_holder,lang="fr"):
-    """Saves the source file so that it has the same value as the current variable."""    
+    """Saves the source file so that it has the same value as the current variable."""
     if data_holder is ELEMENTS: #id(data_holder) == id(ELEMENTS)
         object_to_json_file(data_holder,staticf,"htmlelements.json")
     elif data_holder is ATTRIBUTES:
@@ -123,7 +123,7 @@ def store_change_in_source(data_holder,lang="fr"):
         object_to_json_file(data_holder,staticf+lang, lang+"_html5_attributes.json")
     elif data_holder is LOCAL_CSS_SELECTORS:
         object_to_json_file(data_holder,staticf+lang, lang+"_css_selectors.json")
-                
+
 
 if __name__ == '__main__':
     pass

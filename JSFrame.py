@@ -4,12 +4,12 @@
 #JSFrame.py
 #Role: Define the JS specific tools in tkinter
 
-#Walle Cyril
+
 #2017-11-09
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
-##Copyright (C) 2014 Walle Cyril
+
 ##
 ##WebSpree is free software: you can redistribute it and/or modify
 ##it under the terms of the GNU General Public License as published by
@@ -24,8 +24,8 @@
 ##You should have received a copy of the GNU General Public License
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
-##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril [ (a ] hotmail.com
+##If you have questions concerning this license you may contact
+##by opening an issue
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 #import tkinter ...

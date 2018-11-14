@@ -4,12 +4,11 @@
 """Text__classes.py
 Role: define objects containing documents
 
-Authors: Walle Cyril
 Last-edit: 2015-05-25
 """
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
-##Copyright (C) 2014 Walle Cyril
+
 ##
 ##WebSpree is free software: you can redistribute it and/or modify
 ##it under the terms of the GNU General Public License as published by
@@ -24,8 +23,8 @@ Last-edit: 2015-05-25
 ##You should have received a copy of the GNU General Public License
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
-##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril [ (a ] hotmail.com
+##If you have questions concerning this license you may contact
+##by opening an issue
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 import codecs
@@ -49,8 +48,8 @@ STANDARD_BEGINNING_HTML = u"""<!doctype html>
         <title>  </title>
     </head>
     <body>
-       
-        
+
+
     </body>
 </html>"""
 
@@ -58,7 +57,7 @@ def raw_insert(base, new, position=None):
     """Inserts str into str after character at position position.
 
     if position is not given concatenation happens"""
-            
+
     if not new or not isinstance(new, str):
         return base
     length = len(base)
@@ -66,14 +65,14 @@ def raw_insert(base, new, position=None):
         return base + new
     else:
         return u"{}{}{}".format(base[0:position], new, base[position::])
-    
+
 def raw_remove(base, from_, to_):
     """removes"""
     assert 0 <= from_ <= to_
     if not base:
         return base
     return u"{}{}".format(base[0:from_], base[to_::])
-    
+
 class CommonFragment():
     """holds what doesn t change.
 
@@ -83,7 +82,7 @@ defines insert append remove find replace"""
 
     def insert(self, string, position=None):
         self.text = raw_insert(self.text, string, position)
-            
+
     def append(self, string):
         self.insert(string)
 
@@ -95,13 +94,13 @@ defines insert append remove find replace"""
 
     def find(self, *args):
         return self.text.find(*args)
-    
+
     def parse(self):
         pass
 
     def replace(self, *args):
         self.text = self.text.replace(*args)
-            
+
 class HTMLFragment(CommonFragment):
     """Stores an html text and has methods to edit it."""
     def __init__(self, text=u"", document_language="en", doctype="html"):
@@ -119,14 +118,14 @@ class HTMLFragment(CommonFragment):
         # or to protect tags themselves (e.g. for <p>)
         self.insertion = None
 
-        
+
     def parse(self):
         parser = HTMLParser()
         parser.feed(self.text)
         parser.close()
         return parser # parser is an object with results
-            
-                   
+
+
     #editing methods
     def html_to_normal_char(self,html_conversion):
         #uses dictionnaire html5
@@ -140,14 +139,14 @@ class HTMLFragment(CommonFragment):
         return normal_char
 
     def normal_char_to_html(self,normal_char,tr_level):
-        
+
         if tr_level == 1:
             translator = minimum_translation
         elif tr_level == 10:
             translator = html5reci
         else:
             return normal_char
-            
+
         if normal_char in translator:
             html_conversion = translator[normal_char]
             if html_conversion[0] !='&':
@@ -187,7 +186,7 @@ class HTMLFragment(CommonFragment):
         return "</"+closing_tag+">"
 
 #editing macros
-        
+
     def add_standard_beginning(self):
         return  STANDARD_BEGINNING_HTML
 
@@ -201,43 +200,43 @@ class HTMLFragment(CommonFragment):
     def w3c_encoding(self,new_w3c_encoding):
         #todo convert to python usable encoding string
         self.encoding = new_w3c_encoding
-           
-        
+
+
     def __add__(self,other):
         assert False, "not implemented"
 
     def __radd__(self,other):
         assert False, "not implemented"
-        
+
     def __str__(self):
         return self.text
-    
+
     def __repr__(self):
         return str(self)
 
     #def __getitem__(self, key):
     #    return deprecated
-    
+
     def __len__(self):
         return len(self.text)
-    
 
-            
-class CSSFragment(CommonFragment):        
+
+
+class CSSFragment(CommonFragment):
     """Stores a parsed css text
 
 and has methods to edit it fast."""
-    
+
     def __init__(self,text=u""):
         CommonFragment.__init__(self,text=text)
         #specific addition for CSS
         self.doctype = "CSS"
         self.content_list = []
-##   
+##
 ##    def insert(self, to_add, position=None):
 ##        """Adds the given object to the css text, delegating it to special methods."""
 ##        CommonFragment.insert(self, to_add, position)#
-##        
+##
 ##        place_method = self.content_list.insert
 ##        if position is None or position >= len(self.text):
 ##            def eater(f): #append only takes 1 argument
@@ -247,12 +246,12 @@ and has methods to edit it fast."""
 ##            place_method = eater(self.content_list.append)
 ##        place_method(position,to_add)
 ##        if isinstance(to_add, str):
-##            
+##
 ##            self.parse()
-##        
+##
 ##        #if self.tk_text:
 ##            #self.tk_text.tk_copy_text(self.text)
-            
+
 
     def __repr__(self):
         return "\n".join(list(map(repr,self.content_list)))
@@ -264,7 +263,7 @@ and has methods to edit it fast."""
         # parsed css structure
         # is kept for faster future changes on the css
         return parser # parser is an object with results
-        
+
     def __eq__(self, other):
         if isinstance(other, str):
             return repr(self) == other
@@ -272,7 +271,7 @@ and has methods to edit it fast."""
             return repr(self) == repr(other)
         else:
             return self == other
-            
+
 
 fragments = {"html": HTMLFragment,
              "css": CSSFragment
@@ -311,11 +310,11 @@ Uses HTMLFragment, CSSFragment, JSFragment"""
         """Separate init to put the object in a list that is used by methods in start."""
         self.text = self.initial_content #calls setter
         del self.initial_content
-    
+
         if self.gui_link:
             self.gui_link.reset_undo()
         self.__saved = True
-        
+
     @property
     def text(self):
         #complete_text (str)
@@ -357,9 +356,9 @@ Uses HTMLFragment, CSSFragment, JSFragment"""
                 self.inlines[-1][1].text += string
         self.gui_link.tk_insert_text(string, position)
         self.__saved = False
-     
+
     def append(self, string):
-        self.insert(string)           
+        self.insert(string)
 
     def remove(self, start, end):
         assert start <= end
@@ -368,7 +367,7 @@ Uses HTMLFragment, CSSFragment, JSFragment"""
         travelled = 0
         for inline in self.inlines:
             local_start = start - travelled
-            local_end = end - travelled            
+            local_end = end - travelled
             if start == end:  # 1
                 if end < (travelled + len(inline[1].text)):
                     inline[1].text = u""
@@ -377,7 +376,7 @@ Uses HTMLFragment, CSSFragment, JSFragment"""
             elif start < (travelled + len(inline[1].text)):
                 if end < (travelled + len(inline[1].text)):
 
-                    
+
                     inline[1].text = u"".join((inline[1].text[0:local_start],
                                           inline[1].text[local_end::]))
                     break
@@ -386,16 +385,16 @@ Uses HTMLFragment, CSSFragment, JSFragment"""
                     start = end  # 1
             travelled += len(inline[1].text)
         self.gui_link.tk_delete_text(start, end)
-                
+
         def is_empty_text(a):
             return bool(a[1].text)
-        
+
         self.inlines = list(filter(is_empty_text, self.inlines))
         # self.tk_text.tk_delete_text(start, start+length)
-    
+
     def delete(self, start, length):
         assert False
-        
+
     def find(self, string, start=-2):
         if start == -2 :
             if self.last_find_index == -1:
@@ -417,17 +416,17 @@ Uses HTMLFragment, CSSFragment, JSFragment"""
             if i == max_repeat:
                 break
         return self.text
-            
-    
-                
+
+
+
     def parse(self, first=False, text=u""):
         """Parses the raw text, then puts the resulted fragments into its respective Fragment object.
 
-See Documentation/how_to_parse.svg for more infos. 
+See Documentation/how_to_parse.svg for more infos.
 Or, if first==False then immediately calls the parser of each fragment.
 
 returns results, a list with many informations. See parsers to know what informations."""
-        
+
         position = 0
         results = [] #parse result, position
 
@@ -444,13 +443,13 @@ returns results, a list with many informations. See parsers to know what informa
                             fragmentype = "css"
                             parser.parsedinline[i][0] = fragmentype
                         #else ...
-                        parser.parsedinline[i][1] = fragments[fragmentype](text=parser.parsedinline[i][1])    
+                        parser.parsedinline[i][1] = fragments[fragmentype](text=parser.parsedinline[i][1])
                         self.inlines.append(parser.parsedinline[i])
                         if i+1 == len(parser.cutpoints):
                             #end
                             self.inlines.append(["html", HTMLFragment(text=text[cutpoint[1]:])])
                         else:
-                            self.inlines.append(["html", HTMLFragment(text=text[cutpoint[1]:parser.cutpoints[i+1][0]])]) 
+                            self.inlines.append(["html", HTMLFragment(text=text[cutpoint[1]:parser.cutpoints[i+1][0]])])
                         i += 1
                 else:
                     self.inlines = [["html", HTMLFragment(text=text)]]
@@ -464,22 +463,22 @@ returns results, a list with many informations. See parsers to know what informa
             for fragment in self.inlines:
                  results.append((fragment[1].parse(), position))
                  position += len(fragment[1].text)
-        
+
             return results
-    
+
 
     def save_in_file(self):
         codecs.open(self.save_path,'w',self.encoding).write(self.text)
         self.__saved = True
-        
+
     #testing
     def test_file_with_browser(self):
         webbrowser.open(self.save_path,new=2)#new=2 to open in a new tab if possible
-        
+
     @property
     def saved(self):
         return self.__saved
-    
+
     @saved.setter
     def saved(self, status):
         self.__saved = status
@@ -495,12 +494,12 @@ returns results, a list with many informations. See parsers to know what informa
     @property
     def encoding(self):
         return self.__encoding_py
-    
+
     @encoding.setter
     def encoding(self,new_encoding_py):
         assert new_encoding_py
         self.__encoding_py = new_encoding_py
-        
+
     @property
     def w3c_encoding(self):
         #todo return encoding as it should appear in the meta charset
@@ -510,37 +509,37 @@ returns results, a list with many informations. See parsers to know what informa
     def w3c_encoding(self,new_w3c_encoding):
         #todo convert to python usable encoding string
         self.encoding = new_w3c_encoding
-           
-        
+
+
     def __add__(self,other):
         assert False, "not implemented"
 
     def __radd__(self,other):
         assert False, "not implemented"
-        
+
     def __str__(self):
         return self.text
-    
+
     def __repr__(self):
         return str(self)
 
     #def __getitem__(self, key):
     #    return deprecated
-    
+
     def __len__(self):
         return len(self.text)
 
 
-        
-    
+
+
 if __name__ == '__main__':
     html = "<html></html>"
     css = "* {a:b;}"
     js = "alert('hi');"
-    
+
     import unittest
     import time
-    
+
     BIG = 10
     class TestHTMLFragment(unittest.TestCase):
 
@@ -550,62 +549,62 @@ if __name__ == '__main__':
             self.css = "* {a:b;}"
             self.js = "alert('hi');"
             self.t = HTMLFragment()
-            
+
         def test_append(self):
             self.t.append(self.html)
             self.assertEqual(self.t.text, self.html)
-            
+
         def test_big_append(self):
             for i in range(BIG):
                 self.t.append(self.html)
                 self.assertEqual(self.t.text, self.html * (i + 1))
-            
+
         def test_insert(self):
             self.t.insert(self.html,5)
             self.assertEqual(self.t.text, self.html)
-            
+
         def test_big_insert(self):
             for i in range(BIG):
                 self.t.insert(self.html,5)
                 self.t.insert(self.css,0)
                 self.t.insert(self.js,7)
-            
-            
+
+
         def test_remove(self):
             self.t.insert(self.html)
             self.t.remove(3,5)
             self.assertEqual(self.t.text, "<ht></html>")
-            
+
         def test_big_remove(self):
             self.t.insert(self.html * int((BIG / 10)))
             for i in range(BIG):
                 self.t.remove(3,5)
             self.assertEqual(self.t.text, "<ht")
-            
+
         def test_find(self):
             native_string = self.html
             self.t.append(self.html)
             searching = "html"
-            
+
             self.assertEqual(self.t.find(searching), native_string.find(searching))
             native_string += self.css
             self.t.append(self.css)
             searching = "*"
             self.assertEqual(self.t.find(searching), native_string.find(searching))
-            
+
             native_string += self.js
             self.t.append(self.js)
             searching = "alert"
             self.assertEqual(self.t.find(searching), native_string.find(searching))
-            
+
             native_string += self.html
             self.t.append(self.html)
             searching = "html"
             self.assertEqual(self.t.find(searching, 15), native_string.find(searching, 15))
-            
+
             searching = "cannot find"
             self.assertEqual(self.t.find(searching, 0), native_string.find(searching, 0))
-            
+
         def test_replace(self):
             native_string = self.html
             self.t.append(self.html)
@@ -615,5 +614,5 @@ if __name__ == '__main__':
             native_string = native_string.replace(old, new)
             self.assertEqual(self.t.text, native_string)
 
-        
+
     unittest.main()
