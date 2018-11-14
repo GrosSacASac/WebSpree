@@ -4,12 +4,12 @@
 #WebSpree.py
 #Role: main file
 
-#Walle Cyril
+
 #2017-11
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
-##Copyright (C) 2014 Walle Cyril
+
 ##
 ##WebSpree is free software: you can redistribute it and/or modify
 ##it under the terms of the GNU General Public License as published by
@@ -24,8 +24,8 @@
 ##You should have received a copy of the GNU General Public License
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
-##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril [ (a ] hotmail.com
+##If you have questions concerning this license you may contact
+##by opening an issue
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 try:
@@ -79,21 +79,22 @@ creating a copy of this object starts the app."""
         self.current_verification = None
         self.graphical_user_interface_tk = GraphicalUserInterfaceTk(self)
         self.tabs_html = []
-        self.open_session(self.get_option("previous_files_opened"))
+        self.open_session(self.get_option("webspree_session"))
 
-            
-        if not self.tabs_html:#nothing opened so we provide a blank "new" file
+        if not self.tabs_html:
+            # nothing opened so we provide a blank "new" file
             self.start_mod = "newtab"
             self._start_new_session()
         self.graphical_user_interface_tk._start()
         
-    def open_session(self, path_list):
-        for path in path_list:
-            try:
-                self.edit_file(path)
-            except Exception as E:
-                # file not found or something
-                pass
+    def open_session(self, webspree_session):
+        if "previous_files_opened" in webspree_session:
+            for path in webspree_session["previous_files_opened"]:
+                try:
+                    self.edit_file(path)
+                except Exception as E:
+                    # file not found or something
+                    pass
         
     def create_document(self, selected_tab, title, text=u"", path=u""):
         self.graphical_user_interface_tk.new_html_tab(selected_tab, title)

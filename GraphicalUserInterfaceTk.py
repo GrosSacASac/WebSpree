@@ -4,12 +4,12 @@
 #GraphicalUserInterfaceTk.py
 #Role: define the class GraphicalUserInterfaceTk used for WebSpree
 
-#Walle Cyril
+
 #2015-02-18
 
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ##WebSpree
-##Copyright (C) 2014 Walle Cyril
+
 ##
 ##WebSpree is free software: you can redistribute it and/or modify
 ##it under the terms of the GNU General Public License as published by
@@ -24,8 +24,8 @@
 ##You should have received a copy of the GNU General Public License
 ##along with WebSpree. If not, see <http://www.gnu.org/licenses/>.
 ##
-##If you have questions concerning this license you may contact via email Walle Cyril
-##by sending an email to the following adress:capocyril [ (a ] hotmail.com
+##If you have questions concerning this license you may contact
+##by opening an issue
 ##=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 try: # 3.X
@@ -139,9 +139,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.js_frame = JSFrame(self.special_frame,self,model,self.adapted_height)
         self.t_frames = [self.html_frame, self.css_frame, self.js_frame]      
         
-        self.html_text_tabs = ttk.Notebook(self.general_frame)
-        gridExpandMax(self.html_text_tabs, self.general_frame, columnspan=2)
-        self.html_text_tabs.bind('<<NotebookTabChanged>>',self.change_tab)
+        self.text_areas_container = ttk.Notebook(self.general_frame)
+        gridExpandMax(self.text_areas_container, self.general_frame, columnspan=2)
+        self.text_areas_container.bind('<<NotebookTabChanged>>', self.change_tab)
 
         self.mode = tk.IntVar(value=0)
         mode = tk.LabelFrame(self.special_frame, text=_("Mode d'édition"), relief='ridge', borderwidth=1,bg=WINDOW_BACK_COLOR)
@@ -294,13 +294,31 @@ class GraphicalUserInterfaceTk(tk.Tk):
                                                  initialfile=self.model.get_option("last_html_document_title"))
         return file_path and self.model._save_html_file_as(file_path)
 
-    def save_session_dialog(self,*event):
-        
+    def get_session(self):
         path_list = []
         for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):
             if self.model.tabs_html[tab_not_closed_index].save_path:
-                path_list.insert(0,self.model.tabs_html[tab_not_closed_index].save_path)
-         # True False or None 
+                path_list.insert(0, self.model.tabs_html[tab_not_closed_index].save_path)
+
+        session_object = {
+            "webspree": "webspree_session",
+            "version": "1.1.0",
+            "path_list": path_list,
+            "tab_index": self.model.selected_tab,
+            "zoom": self.zoom_level,
+            "edit_mod": self.mode.get()
+        }
+           
+        return session_object
+    
+    def get_sessionJSON(self):
+        session_object = self.get_session()
+        JSON_TEXT = json.dumps(session_object,sort_keys=False, indent=4, separators=(',',':'))
+        return JSON_TEXT
+
+    def save_session_dialog(self,*event):
+        
+
         answer = messagebox.askyesnocancel(
             title=_(u"Question"),
             message=_(u"Voulez vous sauvegarder la session dans un fichier spécifique ?")
@@ -311,19 +329,9 @@ class GraphicalUserInterfaceTk(tk.Tk):
                                                  filetypes=JSON["filetypes"],
                                                  initialfile="webspree_session.json")
            if file_path:
-               session_object = {
-                   "webspree":"webspree_session",
-                   "version": "1.1.0",
-                   "path_list": path_list,
-                   "tab_index": self.model.selected_tab,
-                   "zoom": self.zoom_level,
-                   "edit_mod": self.mode.get()
-               }
-                   
-               JSON_TEXT = json.dumps(session_object,sort_keys=False, indent=4, separators=(',',':'))
-               codecs.open(file_path, 'w', "utf-8").write(JSON_TEXT)
+               codecs.open(file_path, 'w', "utf-8").write(self.get_sessionJSON())
         elif not answer:
-            self.model.set_option("previous_files_opened", path_list)
+            self.model.set_option("webspree_session", self.get_session())
         elif answer is None:
             pass
 
@@ -332,13 +340,16 @@ class GraphicalUserInterfaceTk(tk.Tk):
         self.model.save_file_totest()
         
     def change_tab(self,*event):
-        # mysteriously non functional# this has been fixed otherwise #comment out of date
-        self.html_text_tabs.update_idletasks()
-        self.model.selected_tab = self.html_text_tabs.index(self.html_text_tabs.select())
+        try:
+            self.model.selected_tab = self.text_areas_container.index(self.text_areas_container.select())
+        except tk.TclError:
+            # happens when no tab open, only when open new session
+            self.model.selected_tab = 0
+            print(tk.TclError) #track down
         
 
     def new_html_tab(self, tab_index, title):
-        html_text_tab = tk.Frame(self.html_text_tabs)
+        html_text_tab = tk.Frame(self.text_areas_container)
         main_scrollbar  =  ttk.Scrollbar(html_text_tab)
         
         
@@ -374,8 +385,8 @@ class GraphicalUserInterfaceTk(tk.Tk):
         text_field.tag_config("value", foreground="#9068b0")
         close_last_button.grid(row=1,column=0,sticky='nsw')
         close_last_button['state']='disabled'
-        self.html_text_tabs.add(html_text_tab, text=title, sticky='nswe')
-        self.html_text_tabs.select(tab_index)
+        self.text_areas_container.add(html_text_tab, text=title, sticky='nswe')
+        self.text_areas_container.select(tab_index)
         
         
     def tk_copy_text(self, text_to_copy, new=False):
@@ -436,9 +447,9 @@ anything else would be a combination of the two above
         def kill_tab(self,tab_index, open_at_least_one=True):
             del self.model.tabs_html[tab_index]
             del self.text_fields[tab_index]
-            self.html_text_tabs.forget(tab_index)
+            self.text_areas_container.forget(tab_index)
             if len(self.model.tabs_html) > 0:
-                self.html_text_tabs.select(0)
+                self.text_areas_container.select(0)
                 self.model.selected_tab = 0
             elif open_at_least_one:
                 self.model.start_mod = "blank"
@@ -451,7 +462,7 @@ anything else would be a combination of the two above
                 answer = messagebox.askyesnocancel(
                     title=_("Attention"),
                     message=_("Voulez vous sauvegarder avant de fermer l'onglet %s?" %
-                              (self.html_text_tabs.tab(tab_index,option='text')))
+                              (self.text_areas_container.tab(tab_index,option='text')))
                     ) # True False or None 
                 if answer and not self.model.save_html_file():
                         return "cancel"
@@ -518,7 +529,7 @@ anything else would be a combination of the two above
     def open_other_session(self):
         file_path = filedialog.askopenfilename(initialdir=self.model.guess_dir(),
             defaultextension=JSON["defaultextension"], filetypes=JSON["filetypes"])
-        if (file_path):
+        if file_path:
             if self.save_all_before_quit() == "no_cancel":
                 try:
                     json_text = codecs.open(file_path,'r','utf-8').read() # can throw
@@ -533,7 +544,7 @@ anything else would be a combination of the two above
             
     def save_all(self,*event):
         for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):#we save all tabs or cancel
-            self.html_text_tabs.select(tab_not_closed_index)
+            self.text_areas_container.select(tab_not_closed_index)
             self.model.selected_tab = tab_not_closed_index
             self.model.save_html_file()
 
@@ -541,7 +552,7 @@ anything else would be a combination of the two above
     def save_all_before_quit(self,*event):
         # or close all tabs with prompts to save
         for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):#we save all tabs or cancel
-            self.html_text_tabs.select(tab_not_closed_index)
+            self.text_areas_container.select(tab_not_closed_index)
             self.model.selected_tab = tab_not_closed_index
             if self.close_tab("for_save") == "cancel":
                 return "cancel"
@@ -549,21 +560,13 @@ anything else would be a combination of the two above
     
     def close_all_tabs_without_save(self):
         for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):
-            self.html_text_tabs.select(tab_not_closed_index)
+            self.text_areas_container.select(tab_not_closed_index)
             self.model.selected_tab = tab_not_closed_index
             self.close_tab("already_saved_self_managed")
             
     def intercept_close(self):
         if self.save_all_before_quit() != "cancel":
-            path_list = []
-            for tab_not_closed_index in range(len(self.model.tabs_html)-1,-1,-1):
-                #we close all tabs and save the location for the next time
-                if self.model.tabs_html[tab_not_closed_index].save_path:
-                    path_list.insert(0,self.model.tabs_html[tab_not_closed_index].save_path)
-                self.html_text_tabs.select(tab_not_closed_index)
-                self.model.selected_tab = tab_not_closed_index
-                # self.close_tab(("already_saved"))
-            self.model.set_option("previous_files_opened", path_list)
+            self.model.set_option("webspree_session", self.get_session())
             self._end()
     
     def view_license(self,already_accepted = False):
